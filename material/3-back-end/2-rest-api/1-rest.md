@@ -358,6 +358,8 @@ We have added `"dev": "tsx watch src"` and `"start": "tsx src"` to the `package.
 - run `npm run dev` to start a server in development mode, which will automatically restart the server when you make changes to your code. We will use this command most of the time.
 - run `npm run start` to start a server without restarting it when you make changes to your code.
 
+**Note if you can't start the project.** Since the time the material was created, `tsx` version has been updated to be compatible with Node 18.16+ and some later Node 20 versions. If you can not launch your project, try removing and reinstalling `tsx` with `npm rm tsx && npm i tsx -D`. We will soon update the template to reflect the changes.
+
 ## Express.js: Middleware (0.5 hours)
 
 - Watch: [Express.js: Middleware](https://www.youtube.com/watch?v=lY6icfhap2o) (15 min)

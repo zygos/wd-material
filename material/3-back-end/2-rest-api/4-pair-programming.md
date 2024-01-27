@@ -58,14 +58,12 @@ It has `repository.spec.ts` which **uses an in-memory database**, which tests th
 
 **Administrators should be able to:**
 
-// MUST: update this text block
 - [screening] create new viewing screenings for watching a movie that has a timestamp and a provided allocated number of tickets
 - optional requirement: delete viewing screenings while they are empty
 - optional requirement: change a screening's ticket allocation as long as it is not lower than the number of reserved tickets
 
 **Users should be able to:**
 
-// MUST: update this text block
 - [movie] get a list of movies with their title and year by providing a list of their IDs (e.g., `/movies?id=1,2,3`)
 - [screening] get a list of screenings available for booking. Screenings should timestamp, total number of tickets, number of tickets left and movie details, such as title and year.
 - [ticket] get a list of bookings (tickets) they have booked

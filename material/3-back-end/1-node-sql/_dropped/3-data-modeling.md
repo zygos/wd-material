@@ -177,8 +177,6 @@ Table part {
 
 - Resource: [Database Normalization](https://www.youtube.com/watch?v=GFQaEYEc8_8)
 
-{{ MUST: add information on normalization }}
-
 ---
 
 ## Exercise: Inserting rows in Node.js (3 hours)

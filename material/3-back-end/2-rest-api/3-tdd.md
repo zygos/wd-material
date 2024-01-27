@@ -42,7 +42,6 @@ There are several benefits to using TDD:
 
 ## Exercise: Refactoring Anagrams (3 hours)
 
-// MUST: update "a Vitest package"
 **Note on Jest/Vitest compatibility.** Jest is a long-standing testing library for JavaScript. That is the reason why quite a few tutorials online involve Jest. However, Jest requires additional setup, which we would like to avoid so we can focus on the main topic of this section - writing tests. We are using a Vitest package for this module as it has the same testing API as Jest, so **Jest and Vitest tutorials are mostly interchangeable**. On top of that, Vitest runs tests quite a bit faster than Jest, which is a nice bonus when learning the TDD workflow. So, **Vitest experience is transferable to Jest and vice versa**.
 
 We will go through a few general ideas behind testing with a simple example of a program that displays a list of [anagrams](https://en.wikipedia.org/wiki/Anagram) for a given word. We will take the long road of refactoring the initial module to make it more testable and to demonstrate some testing techniques. It compactly illustrates multiple layers that we can test.
@@ -103,7 +102,6 @@ it('should print anagrams from words.txt', async () => {
 
 **We have two problems:**
 
-// MUST: "We can not import"
 1. We can not import from '../src/index.ts' as it has no declared exports.
 2. We are unsure what to write in the test case.
 
@@ -178,7 +176,6 @@ describe('getAnagrams', () => {
 })
 ```
 
-// MUST: "**Note:** We called it `getAnagrams.spec.ts` and not `getAnagrams.test.ts`"
 **Note:** We called it `getAnagrams.spec.ts` and not `getAnagrams.test.ts`, as we will use it to specify the desired behavior up-front instead of just testing what we already have. Both suffixes are used interchangeably in practice as they have no hard distinction.
 
 **Step 3. Make your test pass.**
@@ -280,7 +277,6 @@ Our `showAnagrams` function relies on finding some data from the file system.
 
 Vitest has built-in support for various types of test doubles. You can find more information about them in [Vitest documentation](https://vitest.dev/guide/mocking.html). Mocking in Vitest works much like mocking in Jest. You can use any Jest tutorial for Vitest tests. While jest uses the `jest` global variable, Vitest uses the `vi` imported variable. For example, `jest.spyOn()` is equivalent to `vi.spyOn()`.
 
-// MUST: `showAnagrams.spec.ts`
 Add a test file `showAnagrams.spec.ts` to test our isolated function `showAnagrams` that will work with any dictionary path and word.
 
 `index.ts` will end up containing only the following:
@@ -409,7 +405,6 @@ We have used a light TDD flow for our refactoring. However, mocking every depend
 - it is fragile - if we change the implementation details, such as the used file system package, we must also change our unit tests. This is not ideal because our tests become just as coupled to implementation details as our code. Changing one usually requires changing the other. Ideally, we want to be free to change our code and not break our tests as long as our module does what it should.
 - technical limitations when mocking modules and global variables - we can not interact with imported module-level mocks easily in our tests, which makes it hard to test some scenarios
 - mocking modules and globals is a very blunt tool that often leads to lots of ugly procedural code when we want to test various scenarios with different mocks that involve sad paths, etc. Since our mocks are global, we must start involving mock resets and clears.
-// MUST: added "use"
 - we lose the ability to appropriately use mocked tools in our tests - if we mock out `console.log` and we try to use it in our tests just for debugging purposes, it would not work (if mocked), or our tests would break (if spied and we check the number of calls in our test).
 
 We can address these issues by using **dependency injection**. Dependency injection is a technique where we provide dependencies to modules instead of relying on global variables or module-level imports. This allows us to easily swap out dependencies in our tests without doing any "magic" behind the scenes where we are intercepting module imports.

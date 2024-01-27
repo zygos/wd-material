@@ -240,6 +240,8 @@ Once installed, run `aws configure` and add your access key ID, secret key, and 
 
 **Step 2.** Using `docker build`, build front-end and back-end containers, and tag them however you like, for example, `dogs/client`, `dogs/server`.
 
+**Note for Mac users.** As most servers, our server will run on a Linux server using the AMD/Intel x86-64 architecture. Docker expects that the container is built for the matching architecture. Since modern Macs use ARM-based processors, you must specify that you want to build for x86-64. You can pass a `platform` flag to your docker build command (`docker build --platform linux/amd64`). Alternatively, you could add it to your Dockerfile - `FROM --platform=linux/amd64 node:...`, or set it as the default platform by adding a [permanent environment variable](https://stackoverflow.com/questions/22502759/mac-os-x-10-9-setting-permanent-environment-variables) `DOCKER_DEFAULT_PLATFORM="linux/amd64"` in your terminal.
+
 **Step 3.** Push containers to Lightsail.
 
 To push the front-end container, you would need to run:
@@ -279,8 +281,13 @@ Create 2 new files in the root of our mini project:
     },
     "environment": {
       "NODE_ENV": "production",
+      // DB_SSL is a new environment variable that is accepted by server/config.ts
+      // and passed to TypeORM to enable encrypted connection to the database.
+      // You might not have it in your capstone, so please check the server/config.ts in
+      // the provided monorepo examples.
       "DB_SSL": "true",
       "DB_SYNC": "true",
+      // use your NEON credentials here
       "DB_HOST": "{{ ... }}",
       "DB_NAME": "{{ ... }}",
       "DB_USER": "{{ ... }}",

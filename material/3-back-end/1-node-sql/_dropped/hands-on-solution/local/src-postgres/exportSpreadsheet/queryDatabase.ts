@@ -9,7 +9,6 @@ type SpreadsheetStored = Omit<Spreadsheet, 'package_id' | 'size'> & {
 }
 
 export default async (database: Database): Promise<Spreadsheet[]> => {
-  // MUST: remove this part
   const selects = [
     // package
     'package.id AS id, package.description AS package_description, package.weight, package.length, package.width, package.height, package.size_unit',

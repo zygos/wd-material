@@ -4,7 +4,6 @@ import formParameters from './formParameters'
 type Row = Record<string, unknown>
 type TablesRows = Record<string, Row[]>
 
-// MUST: remove functions
 export default async (database: Database, tablesRows: TablesRows) => {
   await Promise.all(
     Object.entries(tablesRows).map(([table, rows]) =>

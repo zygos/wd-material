@@ -280,7 +280,6 @@ You are expected to use linting and formatting in your practical projects and, p
 
 Given that you have the Prettier VS Code plugin installed setting up Prettier is very easy:
 
-// MUST: updated `.prettier` -> `.prettierrc`
 1. Add a `.prettierrc` file in the root of your project with your preferred configuration. To get a default config, you can also run "Prettier: Create Configuration File" from the VS Code command palette.
 2. Add a `.vscode/settings.json` file with the following content (if you are not using these rules globally already):
 
