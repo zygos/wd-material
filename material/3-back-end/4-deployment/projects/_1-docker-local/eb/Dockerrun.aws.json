@@ -1,0 +1,30 @@
+{
+  "AWSEBDockerrunVersion": "3",
+  "containerDefinitions": [
+    {
+      "name": "server",
+      "image": "<ECR-repo-uri>/server:latest",
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 3000,
+          "containerPort": 3000
+        }
+      ],
+      "essential": true
+    },
+    {
+      "name": "client",
+      "image": "<ECR-repo-uri>/client:latest",
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["app-api"],
+      "essential": true
+    }
+  ]
+}

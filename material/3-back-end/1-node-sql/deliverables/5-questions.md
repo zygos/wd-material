@@ -1,0 +1,12 @@
+1. Count all movie titles that have been released between 2005 (inclusive) and 2015 (exclusive).
+2. List the names of the 10 oldest people and how many years have passed since they were born in the current year. Do not include people who do not have a birth year.
+3. List all the people who have the first name "Quentin", but they are not "Quentin Tarantino". You can assume that names start with a first name.
+4. Count all the times that Martin Scorsese directed.
+5. List star names and the number of movies they have appeared in of stars that have appeared in at least 300 movies.
+6. List all the movies directed by Frank Darabont and their release years. Order the results by the movie's release year in descending order.
+7. Write a query which lists all movie titles where Scarlett Johansson and Chris Evans starred together.
+8. List all the movies having a rating above 8.5 that feature a star born after 2005. Order the list by the movie's rating descending order. You shold return the movie title, rating and the star's name. A movie can have multiple stars, which means that a movie can appear multiple times in the result set.
+9. Write a Node.js script that reads the local `.env` file to get a `FAVORITE_DIRECTOR` variable and access the movie database. The script should return a list of all movies directed by the favorite director. The list should be ordered by movie rating in descending order. Add a local `.env` file to your project and add the `FAVORITE_DIRECTOR` variable to it.
+10. Barbenheimer. In 2023, Christopher Nolan and Greta Gerwig each released a new movie. These movies already exist in the database, but they have no ratings. Write a single query to add a rating to one of these movies. For these movies, you can assume there is only one movie with the same title and year in the database.
+11. Do starting letters correlate with the average movie rating? List movie title starting letters and an average rating associated with them. Ignore non latin uppercase letters.
+12. Write a Node.js script that takes a movie title and year as a command-line argument. Print an error message if a movie with the same title and year already exists in the database. If it does not exist, add a new row for the movie and its rating (null rating, 0 votes) to the database. If any query fails, roll back your changes. If queries succeed, print the new movie ID to the console. Use query parameters.

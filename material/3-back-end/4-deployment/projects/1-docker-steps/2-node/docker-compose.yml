@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    # Use Docker Hub PostgreSQL image.
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: dogs
+    ports:
+      - "5435:5432"
+    volumes:
+      - dogs-db:/var/lib/postgresql/data
+
+  # Some name for our Node application container.
+  server:
+    # Instead of pulling an image from Docker Hub, we are building
+    # our own image from the Dockerfile in the current directory.
+    build: .
+
+    environment:
+      # TODO: add database configuration that matches the PostgreSQL container.
+      # Do not forget that you need to pass in the right variable names that your
+      # application expects.
+
+    # We are exposing port 3000 on our machine. Why port 3000? This is the default
+    # we have set in our src/config.ts file. However, you could pass in a different
+    # PORT environment variable to override this default. How would you need to change
+    # the docker-compose.yml file to do this?
+    ports:
+      - "3000:3000"
+
+    # Recommended to add depends_on to inform Docker that our server container
+    # should start after the PostgreSQL container.
+    depends_on:
+      - postgres
+
+volumes:
+  dogs-db:
+    name: dogs-db

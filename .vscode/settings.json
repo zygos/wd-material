@@ -1,0 +1,13 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5433,
+      "driver": "PostgreSQL",
+      "name": "turing",
+      "database": "typeorm_demo",
+      "username": "turing"
+    }
+  ]
+}

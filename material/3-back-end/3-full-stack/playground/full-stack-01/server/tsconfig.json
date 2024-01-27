@@ -1,0 +1,27 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "tests/**/*.ts"],
+
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@server/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
+    }
+  },
+
+  "references": [
+    {
+      "path": "./tsconfig.test.json"
+    }
+  ]
+
+  // "ts-node": {
+  //   "require": ["tsconfig-paths/register"]
+  // }
+}

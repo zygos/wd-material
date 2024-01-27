@@ -1,0 +1,44 @@
+Given a list of quiz questions, answers and other metadata, export the quiz to a format that can be imported into a quiz tool.
+
+Quiz for 2.4.1 - TypeScript Fundamentals.
+"""
+{{ QUIZ }}
+"""
+
+Example of an internal format (spreadsheet) for quiz export/import:
+```
+Id	Module	Sprint	Part	Question	Answers	Correct	Topic	Basic	Advanced	Resource	Image
+1	1	1.1	1.1.1	Which of the following is a correct way to run a Python program using the command line?			Command line basics; Python basics	TRUE		https://cs50.harvard.edu/python/2022/shorts/visual_studio_code_for_cs50/	
+					code hello.python						
+					code hello.py						
+					python hello.py	TRUE					
+					python hello						
+					None of the other answers are correct						
+94	1	1.3	1.3.1	Which of these is a possible way to sum numbers in a file where each line is a number?			Files		TRUE	https://cs50.harvard.edu/python/2022/weeks/6/
+					Use the "file.sums()" function						
+					Use the "file.add()" function						
+					Iterate through each line, add each number to a variable that tracks the sum	TRUE					
+					All other answers are correct						
+```
+
+Another quiz export/import example:
+```
+253	2	2.3	2.3.1	What is a good reason to install a dependency globally instead of on a per-project basis?			JavaScript Packages		TRUE	https://www.youtube.com/watch?v=P3aKRdUyr0s	
+					When the dependency is required for multiple projects						
+					When the dependency provides a command-line tool that needs to be accessed globally beyond the project	TRUE					
+					I would no longer need to install the dependency in the project						
+					All other answers are correct						
+```
+
+Another example:
+```
+444	3	3.4	3.4.1	What is the primary purpose of using a CI/CD pipeline in web development?		TRUE	CI/CD Basics	TRUE		https://cs50.harvard.edu/web/2020/weeks/7/
+					To automate the process of testing and deploying an application					
+					To reduce the size of the codebase					
+					To save time during the development process					
+					To manually test each part of the code before deployment					
+```
+
+Last used ID = {{ ID }}.
+
+Return a quiz questions in a TSV spreadsheet format for quiz export/import. Do not include letters a, b, c, d, etc. in the answers. Notice that each answer option is on a newline, so each answer should be in its own row / line. Each question takes up multiple lines. Make sure to use all the necessary tabs for aligning the right columns.

@@ -1,0 +1,23 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "tests/**/*.ts"],
+
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@shared/*": ["./shared/*"],
+      "@tests/*": ["./tests/*"]
+    }
+  },
+
+  "references": [
+    {
+      "path": "./tsconfig.test.json"
+    }
+  ]
+}

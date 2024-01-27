@@ -1,0 +1,19 @@
+{
+  "name": "1-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bench": "vitest bench",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2",
+    "@types/node": "^18.19.8",
+    "tsx": "^4.7.0",
+    "vitest": "^1.2.1"
+  }
+}

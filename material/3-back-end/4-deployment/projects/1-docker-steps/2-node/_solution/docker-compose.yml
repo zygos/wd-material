@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: dogs
+    ports:
+      - "5435:5432"
+    volumes:
+      - dogs-db:/var/lib/postgresql/data
+
+  server:
+    build: .
+    environment:
+      DB_USER: turing
+      DB_PASSWORD: turing
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: dogs
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  dogs-db:
+    name: dogs-db

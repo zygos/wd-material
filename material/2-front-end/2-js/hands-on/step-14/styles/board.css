@@ -1,0 +1,55 @@
+.board {
+  --columns: 4;
+  --rows: 4;
+
+  background: var(--line-color);
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: 0.5rem;
+}
+
+.cell {
+  --cell-color: darkgray;
+  --cell-color-hover: lightgray;
+  --cell-color-winning: var(--bs-danger);
+  --cell-font-size: 1.4rem;
+
+  aspect-ratio: 1;
+  background-color: var(--cell-color);
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease-in-out;
+  font-size: var(--cell-font-size);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell:empty {
+  cursor: pointer;
+}
+
+.cell:hover {
+  background-color: var(--cell-color-hover);
+}
+
+.cell.winning {
+  background-color: var(--cell-color-winning);
+}
+
+@media screen and (min-width: 576px) {
+  .cell {
+    --cell-font-size: 2rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .board {
+    gap: 1rem;
+  }
+
+  .cell {
+    --cell-font-size: 2.4rem;
+  }
+}

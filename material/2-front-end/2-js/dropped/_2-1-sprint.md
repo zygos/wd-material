@@ -1,0 +1,1 @@
+JavaScript is kind of a big deal. Every website and many mobile and desktop applications (Visual Studio Code, Discord, Trello, Slack, Spotify) use it for their front-ends, sometimes for their back-end servers too.

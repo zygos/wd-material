@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: dogs
+    ports:
+      - "5432"
+    volumes:
+      - dogs-db:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    environment:
+      # You should not write out your environment variables
+      # like this in production.
+      DB_USER: turing
+      DB_PASSWORD: turing
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: dogs
+      PORT: 3000
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+      args:
+        VITE_API_ORIGIN: http://localhost
+        VITE_API_PATH: /api/v1/trpc
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+
+volumes:
+  dogs-db:

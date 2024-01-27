@@ -1,0 +1,20 @@
+{
+  "client": {
+    "image": ":capstone.client.$VERSION",
+    "command": [],
+    "ports": {
+      "80": "HTTP"
+    },
+    "environment": {
+      "DB_HOST": "...",
+      "DB_USER": "...",
+      "DB_PASSWORD": "..."
+    }
+  },
+  "server": {
+    "image": ":capstone.server.$VERSION",
+    "ports": {
+      "3000": "HTTP"
+    }
+  }
+}

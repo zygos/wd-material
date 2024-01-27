@@ -1,0 +1,74 @@
+/* color palette from <https://github.com/vuejs/theme> */
+:root {
+  --c-white: #fff;
+  --c-white-soft: #f8f8f8;
+  --c-white-mute: #f2f2f2;
+  --c-black: #181818;
+  --c-indigo: #2c3e50;
+  --c-divider-light-1: rgb(60 60 60 / 29%);
+  --c-divider-light-2: rgb(60 60 60 / 12%);
+  --c-text-light-1: var(--c-indigo);
+  --c-text-light-2: rgb(60 60 60 / 66%);
+  --c-green: #42b883;
+  --c-green-light: #42d392;
+  --c-green-lighter: #35eb9a;
+  --c-green-dark: #33a06f;
+  --c-green-darker: #155f3e;
+  --c-blue: #3b8eed;
+  --c-blue-light: #549ced;
+  --c-blue-lighter: #50a2ff;
+  --c-blue-dark: #3468a3;
+  --c-blue-darker: #255489;
+  --c-yellow: #ffc517;
+  --c-yellow-light: #ffe417;
+  --c-yellow-lighter: #ffff17;
+  --c-yellow-dark: #e0ad15;
+  --c-yellow-darker: #bc9112;
+  --c-red: #ed3c50;
+  --c-red-light: #f43771;
+  --c-red-lighter: #fd1d7c;
+  --c-red-dark: #cd2d3f;
+  --c-red-darker: #ab2131;
+  --c-purple: #de41e0;
+  --c-purple-light: #e936eb;
+  --c-purple-lighter: #f616f8;
+  --c-purple-dark: #823c83;
+  --c-purple-darker: #602960;
+
+  /* semantic color variables for this project */
+  --color-background: var(--c-white);
+  --color-background-soft: var(--c-white-soft);
+  --color-background-mute: var(--c-white-mute);
+  --color-border: var(--c-divider-light-2);
+  --color-border-hover: var(--c-divider-light-1);
+  --color-heading: var(--c-text-light-1);
+  --color-text: var(--c-text-light-1);
+  --color-success: var(--c-green);
+  --color-info: var(--c-blue);
+  --color-warning: var(--c-yellow);
+  --color-danger: var(--c-red);
+  --color-primary: var(--c-blue);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: color 0.5s, background-color 0.5s;
+  background: var(--color-background);
+  min-height: 100vh;
+  color: var(--color-text);
+  font-size: 15px;
+  line-height: 1.6;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  text-rendering: optimizelegibility;
+}

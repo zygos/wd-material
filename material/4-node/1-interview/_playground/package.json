@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@types/ramda": "^0.29.10",
+    "rambda": "^9.0.1",
+    "ramda": "^0.29.1"
+  }
+}

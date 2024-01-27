@@ -1,0 +1,20 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "include": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "tests/**/*.ts"
+  ],
+
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["vitest/globals"],
+
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@tests/*": ["./tests/*"],
+    }
+  }
+}

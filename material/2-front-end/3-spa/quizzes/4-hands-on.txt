@@ -1,0 +1,49 @@
+Q1: What is the purpose of the `.env.local` file in a Vue project?
+a) It stores environment variables specific to the personal development environment.
+b) It contains the configuration settings for the production build.
+c) It defines shared environment variables that are used across all environments.
+d) It specifies the build output directory for the local version of the application.
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+- Correct: a) It stores environment variables specific to the personal development environment.
+
+Q2. What is the main purpose of client-side routing in a Single Page Application (SPA)?
+a) To mimic the behavior of a server
+d) To enhance search engine optimization (SEO)
+c) To navigate between different views without refreshing the browser
+b) To split the application code into multiple bundles
+- Topic: Single Page Application
+- Difficulty: Basic
+- Resource:
+- Correct: c) To navigate between different views without refreshing the browser
+
+Q3: What is the purpose of using the `readonly` function in Vue.js?
+a) To add a read-only property to a reactive object
+b) To create a non-modifiable proxy of a reactive value
+c) To set a given reactive value as unchangeable
+d) To create a non-reactive clone of a reactive value
+- Topic: Vue
+- Difficulty: Advanced
+- Resource:
+- Correct: b) To create a non-modifiable proxy of a reactive value
+
+Q4: What is the difference between accessing a ref in script and template tags?
+a) A ref in a script tag is reactive, while a ref in template tags is not.
+b) A ref in a template refers to the inner value of the ref
+c) A ref in a template gets the most recent primitive value of the ref
+d) There are no differences between accessing a ref in script and template tags
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+- Correct: b) A ref in a template refers to the inner value of the ref
+
+Q5: What is a good practice when handling errors in a front-end application?
+a) Display errors in the console
+b) Display raw error messages to the user
+c) Decouple error handling from the UI
+d) Hide all errors from the user
+- Topic: Error Handling
+- Difficulty: Basic
+- Resource:
+- Correct: c) Decouple error handling from the UI

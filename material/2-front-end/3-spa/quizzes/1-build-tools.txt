@@ -1,0 +1,147 @@
+Q1: What is the purpose of the `package-lock.json` file?
+a) It lists all the top-level packages that the project depends on
+b) It provides a place to specify custom commands to run from the command line
+c) It ensures that the exact same package versions are installed across different machines
+d) It specifies whether to install packages locally or globally
+- Correct: c) It ensures that the exact same package versions are installed across different machines
+- Topic: JavaScript Packages
+- Difficulty: Basic
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q2: What does tree-shaking refer to in the context of JavaScript packages?
+a) The process of updating all the packages in your project
+b) The process of removing unused code from your project
+c) The process of installing packages in your project in a tree-like structure
+d) The process of checking for errors in your code
+- Correct: b) The process of removing unused code from your project
+- Topic: JavaScript Packages
+- Difficulty: Basic
+- Resource:
+
+Q3: What is one of the primary purposes of building tools in web development?
+a) To design the user interface of a website
+b) To manage the database of a website
+c) To process code and assets into a production-ready format
+d) To host a website on the internet
+- Correct: c) To process code and assets into a production-ready format
+- Topic: Build Tools
+- Difficulty: Basic
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q4: Should you commit linting configuration files to your Git repository? Select the most appropriate answer.
+a) No, because linting configuration files are specific to each developer's preferences
+b) No, because linting configuration files depend on global dependencies on the developer's machine
+c) Yes, because linting configuration should be consistent and shared across the team
+d) Yes, because linting configuration files are required for the project to run
+- Correct: c) Yes, because linting configuration should be consistent and shared across the team
+- Topic: How to Format and Lint CSS Code
+- Difficulty: Advanced
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q5: What does the `^` symbol signify before a package version number in a package.json file?
+a) The package version is locked to the specific version
+b) The package version can be updated to any newer version
+c) The package version can be updated to any newer minor or patch version, but not a major version
+d) The package version can be updated to any newer patch version, but not a minor or major version
+- Correct: c) The package version can be updated to any newer minor or patch version, but not a major version
+- Topic: Semantic Versioning
+- Difficulty: Advanced
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q6: What does the "type" field in the package.json file do when set to "module"?
+a) It specifies that the project should use CommonJS modules
+b) It specifies that the project should use TypeScript modules
+c) It specifies that the project should use AMD modules
+d) It specifies that the project should use ES modules
+- Correct: ad) It specifies that the project should use ES modules
+- Topic: JavaScript Packages
+- Difficulty: Advanced
+- Resource:
+
+Q7: What is the purpose of the `dist` folder in a JavaScript project?
+a) It contains the source code for the project
+b) It contains the configuration files for the project
+c) It contains the files that can be uploaded to a web server
+d) It contains the files for local development
+- Correct: c) It contains the files that can be uploaded to a web server
+- Topic: Build Tools
+- Difficulty: Advanced
+- Resource:
+
+Q8: Are development dependencies meant to be included in the production build of a project?
+a) Yes
+b) No
+- Correct: b) No
+- Topic: JavaScript Packages
+- Difficulty: Advanced
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q9: What is the process of automatically restructuring your code to adhere to a specific coding style called?
+a) Linting
+b) Debugging
+c) Formatting
+d) Refactoring
+- Correct: c) Formatting
+- Topic: Formatting & Linting Tools
+- Difficulty: Basic
+- Resource:
+
+Q10: Which components make up a semantic version number?
+a) Major, minor, patch
+b) Major, minor, build
+c) Primary, secondary, tertiary
+d) Primary, secondary, revision
+- Correct: a) Major, minor, patch
+- Topic: Semantic Versioning
+- Difficulty: Basic
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q11: Which semantic versioning update would absolutely require you to look up the changelog to see if there are any breaking changes?
+a) 4.3.2 -> 4.3.3
+b) 4.3.2 -> 4.4.0
+c) 4.3.2 -> 5.1.5
+d) 4.3.2 -> 4.11.9
+- Correct: c) 4.3.2 -> 5.1.5
+- Topic: Semantic Versioning
+- Difficulty: Basic
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s
+
+Q12. Why do some companies have a shared base ESLint and Prettier configuration?
+a) To enforce a consistent coding style across the organization
+b) To promote best practices and ensure code quality
+c) To customize linting and formatting rules for their own needs
+d) All other answers are correct
+- Correct: d) All other answers are correct
+- Topic: Formatting & Linting
+- Difficulty: Basic
+- Resource:
+
+Q13. If you would change a package version in `package.json` and run `npm install`, would it get updated?
+a) Yes, the package would be updated after running `npm install`
+b) No, I would need to change the version in `package-lock.json` as well
+c) No, I would also need to run `npm update to update the package
+d) Only dev dependencies get updated automatically
+- Correct: a) Yes, the package would be updated after running `npm install`
+- Topic: JavaScript Packages
+- Difficulty: Basic
+- Resource:
+
+Q14. What should you check before installing a package in a project?
+a) The package's license, documentation, and popularity
+b) For non-dev dependencies, the package's strain on the shipped bundle size
+c) The package's last update and open issues on GitHub
+d) All other answers are correct
+- Correct: d) All other answers are correct
+- Topic: JavaScript Packages
+- Difficulty: Basic
+- Resource:
+
+Q15. What is a good reason to install a dependency globally instead of on a per-project basis?
+a) When the dependency is required for multiple projects
+b) When the dependency provides a command-line tool that needs to be accessed globally beyond the project
+c) I would no longer need to install the dependency in the project
+d) All other answers are correct
+- Correct: b) When the dependency provides a command-line tool that needs to be accessed globally beyond the project
+- Topic: JavaScript Packages
+- Difficulty: Advanced
+- Resource: https://www.youtube.com/watch?v=P3aKRdUyr0s

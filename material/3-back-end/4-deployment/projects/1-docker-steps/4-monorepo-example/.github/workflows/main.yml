@@ -1,0 +1,101 @@
+name: Test
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    services:
+      # spin up a database for this job
+      postgres:
+        image: postgres:16.1-alpine
+        env:
+          POSTGRES_USER: turing
+          POSTGRES_PASSWORD: turing
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check server
+        run: npm run type-check -w=server
+
+      - name: Type check client
+        run: npm run type-check -w=client
+
+      - name: Lint server
+        run: npm run lint -w=server
+
+      - name: Lint client
+        run: npm run lint -w=client
+
+      - name: Test server
+        run: npm run test -w=server
+
+      - name: Test client (unit)
+        run: npm run test:unit -w=client
+
+      # Add more browsers here if you want to test on more/different browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      # Testing the entire application with a running API server.
+      # We must start the server first. & at the end of the command
+      # makes it run in the background. While it is starting up,
+      # we will continue with other steps.
+      - name: Start server for E2E tests
+        run: npm run dev -w=server &
+        env:
+          DB_USER: turing
+          DB_PASSWORD: turing
+          DB_NAME: testdb
+          DB_HOST: localhost
+          PORT: 3000
+
+      # Build the front end for E2E tests. We are building it
+      # instead of running it in dev mode because there is some
+      # differences between dev mode and production mode front
+      # end code.
+      - name: Build front end for E2E tests
+        run: npm run build -w=client
+        env:
+          VITE_API_ORIGIN: http://localhost:3000
+          VITE_API_PATH: /api/v1/trpc
+
+      # Just to make sure that our server is up and running before
+      # we start our E2E tests, we will use a health check action
+      # which will make a request to the server and wait for it to
+      # respond with a non-failing status code.
+      # This assumes we have a public /api/health endpoint in our
+      # Express server that returns a non-failing status code.
+      - name: Wait for server to startup
+        uses: Jtalk/url-health-check-action@v3.2
+        with:
+          max-attempts: 5
+          retry-delay: 5s
+          url: http://localhost:3000/api/health
+
+      - name: Test client E2E
+        run: npm run test:e2e -w=client
+
+      # Playwright generates a report of the E2E tests. We will
+      # upload that report as an artifact so that we can download
+      # it later from the GitHub Actions UI. This will help us
+      # debug any issues that occured in E2E tests.
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: client/playwright-report/
+          retention-days: 7

@@ -1,0 +1,57 @@
+.game.disabled .cell {
+  cursor: default;
+  pointer-events: none;
+}
+
+.game.not-ready .board {
+  display: none;
+}
+
+.game-options {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.game-options .player {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 0.5rem;
+}
+
+.game-options.hidden {
+  display: none;
+}
+
+.comment {
+  --comment-background: rgb(228, 230, 235);
+  --comment-color: black;
+
+  background: var(--comment-background);
+  border-radius: var(--border-radius);
+  color: var(--comment-color);
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.comment:empty {
+  display: none;
+}
+
+.status-message {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.status-message:empty {
+  display: none;
+}
+
+.game-error:empty {
+  display: none;
+}
+
+.player-options {
+  flex-grow: 1;
+}

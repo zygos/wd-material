@@ -1,0 +1,138 @@
+name: Build, Test, and Deploy
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.1-alpine
+        env:
+          POSTGRES_USER: turing
+          POSTGRES_PASSWORD: turing
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint server
+        run: npm run lint -w=server
+
+      - name: Lint client
+        run: npm run lint -w=client
+
+      - name: Test server
+        run: npm run test -w=server
+
+      - name: Test client unit
+        run: npm run test:unit -w=client
+
+      # Add more browsers here if you want to test on more browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      # E2E tests with a running server, so we start the server before running E2E tests
+      - name: Start server for E2E tests
+        run: npm run dev -w=server &
+        env:
+          DB_USER: turing
+          DB_PASSWORD: turing
+          DB_NAME: testdb
+          DB_HOST: localhost
+          PORT: 3000
+
+      - name: Build frontend for E2E tests
+        run: npm run build -w=client
+        env:
+          VITE_API_ORIGIN: http://localhost:3000
+          VITE_API_PATH: /api/v1/trpc
+
+      - name: Wait for server to startup
+        uses: Jtalk/url-health-check-action@v3.2
+        with:
+          max-attempts: 5
+          retry-delay: 5s
+          url: http://localhost:3000/api/health
+
+      - name: Test client E2E
+        run: npm run test:e2e -w=client
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: client/playwright-report/
+          retention-days: 7
+
+  build-deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      AWS_REGION: eu-central-1
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      EB_APPLICATION_NAME: ${{ secrets.EB_APPLICATION_NAME }}
+      EB_ENVIRONMENT: ${{ secrets.EB_ENVIRONMENT }}
+      CLIENT_IMAGE_TAG: client-${{ github.sha }}
+      SERVER_IMAGE_TAG: server-${{ github.sha }}
+      API_ORIGIN: https://your-api-domain.com
+      API_PATH: /api/v1/trpc
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: $AWS_REGION
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push the server image to ECR
+        run: |
+          docker build -t $SERVER_IMAGE_TAG -f ./server/Dockerfile .
+          docker tag $SERVER_IMAGE_TAG ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SERVER_IMAGE_TAG
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$SERVER_IMAGE_TAG
+
+      - name: Build, tag, and push the client image to ECR
+        run: |
+          docker build -t $CLIENT_IMAGE_TAG \
+            --build-arg VITE_API_ORIGIN=$API_ORIGIN \
+            --build-arg VITE_API_PATH=$API_PATH \
+            -f ./client/Dockerfile .
+          docker tag $CLIENT_IMAGE_TAG ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$CLIENT_IMAGE_TAG
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$CLIENT_IMAGE_TAG
+
+      - name: Deploy to AWS Elastic Beanstalk
+        run: |
+          echo "Deploying to Elastic Beanstalk"
+          aws elasticbeanstalk create-application-version --tags Key=branch,Value=$GITHUB_REF_NAME Key=commit,Value=$GITHUB_SHA --application-name $EB_APPLICATION_NAME --version-label "$GITHUB_REF_NAME-$GITHUB_SHA" --source-bundle S3Bucket=$EB_SOURCE_S3_BUCKET,S3Key=$EB_SOURCE_S3_KEY --region $AWS_REGION
+          aws elasticbeanstalk update-environment --environment-name $EB_ENVIRONMENT --version-label "$GITHUB_REF_NAME-$GITHUB_SHA" --region $AWS_REGION
+
+      # Delete the images from ECR after deployment.
+      # This is optional, but it's a good idea to do this to save space in ECR,
+      # otherwise you'll end up with a lot of images in ECR that are not free
+      # to store.
+      - name: Clean up ECR
+        if: always()
+        run: |
+          aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$CLIENT_IMAGE_TAG
+          aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$SERVER_IMAGE_TAG

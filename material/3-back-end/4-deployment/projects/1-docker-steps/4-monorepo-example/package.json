@@ -1,0 +1,15 @@
+{
+  "name": "mono",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "demo": "npm ci && npm run demo:env && npm run demo:launch",
+    "demo:env": "cp client/.env.example client/.env && cp server/.env.example server/.env",
+    "demo:launch": "(cd client && npm run dev) & (cd server && npm run dev:mem)"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}

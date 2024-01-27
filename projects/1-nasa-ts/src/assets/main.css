@@ -1,0 +1,21 @@
+@import url('./base.css');
+
+a,
+.green {
+  transition: 0.4s;
+  color: hsl(160deg 100% 37% / 100%);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsl(160deg 100% 37% / 20%);
+  }
+}
+
+@media (width >= 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+}

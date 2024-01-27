@@ -1,0 +1,47 @@
+Q1. What is the difference between creating reactive state in a file and inside a function?
+a) The state created outside a vue file is not reactive
+b) The state inside a function will be created every time the function is called
+c) The state created inside a function can be accessed using this keyword
+d) The state inside a function is removed after function execution
+- Correct: b) The state inside a function will be created every time the function is called
+- Topic: JavaScript
+- Difficulty: Basic
+- Resource:
+
+Q2. Does the `watch` function in Vue gets immediately called when the component is created?
+a) Yes
+b) No
+- Correct: b) No
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+
+Q3. What is the primary reason for using async component imports?
+a) Async imports directly improve code performance
+b) Async imports load components from a CDN
+c) Async imports can be used to load components only when they are needed
+d) Async imports allow to add a loading state to the route
+- Correct: c) Async imports can be used to load components only when they are needed
+- Topic: Front-End Frameworks
+- Difficulty: Advanced
+- Resource:
+
+Q4. What is generally considered a Progressive Web App?
+a) A web app with service workers
+b) A web app that can be installed on a device and preserve some functionality offline
+d) A web app that uses a front-end framework
+d) A web app with political views
+- Correct: b) A web app that can be installed on a device and preserve some functionality offline
+- Topic: Front-End Frameworks
+- Difficulty: Advanced
+- Resource:
+
+Q5. When should you consider moving a component's state and behaviour to a separate file?
+a) When it needs to be shared among multiple components that are not directly related.
+b) When you are confident that the state and behaviour will need to be reused in the future.
+c) When encapsulating a certain state and behaviour would make the component easier to understand.
+d) All other answers are correct.
+- Correct Answer: d) All other answers are correct.
+- Topic: Front-End Frameworks
+- Difficulty Level: Basic
+- Resource:

@@ -1,0 +1,22 @@
+{
+  "name": "anagrams-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src",
+    "dev": "tsx watch src",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2",
+    "@types/node": "^20.8.3",
+    "@vitest/coverage-v8": "^0.34.6",
+    "tsx": "^3.13.0",
+    "vitest": "^0.34.6"
+  }
+}

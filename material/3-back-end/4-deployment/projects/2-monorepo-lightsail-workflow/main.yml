@@ -1,0 +1,212 @@
+name: Test, Build, and Deploy
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    services:
+      # spin up a database for this job
+      postgres:
+        image: postgres:16.1-alpine
+        env:
+          POSTGRES_USER: turing
+          POSTGRES_PASSWORD: turing
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check server
+        run: npm run type-check -w=server
+
+      - name: Type check client
+        run: npm run type-check -w=client
+
+      - name: Lint server
+        run: npm run lint -w=server
+
+      - name: Lint client
+        run: npm run lint -w=client
+
+      - name: Test server
+        run: npm run test -w=server
+
+      - name: Test client (unit)
+        run: npm run test:unit -w=client
+
+      # Add more browsers here if you want to test on more/different browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      # Testing the entire application with a running API server.
+      # We must start the server first. & at the end of the command
+      # makes it run in the background. While it is starting up,
+      # we will continue with other steps.
+      - name: Start server for E2E tests
+        run: npm run dev -w=server &
+        env:
+          DB_USER: turing
+          DB_PASSWORD: turing
+          DB_NAME: testdb
+          DB_HOST: localhost
+          PORT: 3000
+
+      # Build the front end for E2E tests. We are building it
+      # instead of running it in dev mode because there is some
+      # differences between dev mode and production mode front
+      # end code.
+      - name: Build front end for E2E tests
+        run: npm run build -w=client
+        env:
+          VITE_API_ORIGIN: http://localhost:3000
+          VITE_API_PATH: /api/v1/trpc
+
+      # Just to make sure that our server is up and running before
+      # we start our E2E tests, we will use a health check action
+      # which will make a request to the server and wait for it to
+      # respond with a non-failing status code.
+      # This assumes we have a public /api/health endpoint in our
+      # Express server that returns a non-failing status code.
+      - name: Wait for server to startup
+        uses: Jtalk/url-health-check-action@v3.2
+        with:
+          max-attempts: 5
+          retry-delay: 5s
+          url: http://localhost:3000/api/health
+
+      - name: Test client E2E
+        run: npm run test:e2e -w=client
+
+      # Playwright generates a report of the E2E tests. We will
+      # upload that report as an artifact so that we can download
+      # it later from the GitHub Actions UI. This will help us
+      # debug any issues that occured in E2E tests.
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: client/playwright-report/
+          retention-days: 7
+
+  build-deploy:
+    needs: test
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/main'
+    env:
+      API_ORIGIN: ${{ vars.API_ORIGIN }}
+      API_PATH: /api/v1/trpc
+      CLIENT_IMAGE_TAG: client-${{ github.sha }}
+      SERVER_IMAGE_TAG: server-${{ github.sha }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup aws lightsail cli
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+          which aws
+          aws --version
+          sudo curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl"
+          sudo chmod +x /usr/local/bin/lightsailctl
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Build server image
+        run: >-
+          docker build
+          -t $SERVER_IMAGE_TAG
+          -f ./server/Dockerfile .
+
+      - name: Build client image
+        run: >-
+          docker build
+          -t $CLIENT_IMAGE_TAG
+          --build-arg VITE_API_ORIGIN=$API_ORIGIN
+          --build-arg VITE_API_PATH=$API_PATH
+          -f ./client/Dockerfile .
+
+      - name: Push server image
+        run: >-
+          aws lightsail push-container-image
+          --service-name ${{ vars.AWS_LIGHTSAIL_SERVICE }}
+          --label $SERVER_IMAGE_TAG
+          --image $SERVER_IMAGE_TAG
+          --output yaml
+
+      - name: Push client image
+        run: >-
+          aws lightsail push-container-image
+          --service-name ${{ vars.AWS_LIGHTSAIL_SERVICE }}
+          --label $CLIENT_IMAGE_TAG
+          --image $CLIENT_IMAGE_TAG
+          --output yaml
+
+      - name: Get Lightsail image tag
+        run: |
+          aws lightsail get-container-images --service-name ${{ vars.AWS_LIGHTSAIL_SERVICE }} | jq -r '.containerImages[] | select(.image | contains(".'$SERVER_IMAGE_TAG'")) | .image'
+          echo "LIGHTSAIL_SERVER_IMAGE=$(aws lightsail get-container-images --service-name ${{ vars.AWS_LIGHTSAIL_SERVICE }} | jq -r '.containerImages[] | select(.image | contains(".'$SERVER_IMAGE_TAG'")) | .image')" >> $GITHUB_ENV
+          echo "LIGHTSAIL_CLIENT_IMAGE=$(aws lightsail get-container-images --service-name ${{ vars.AWS_LIGHTSAIL_SERVICE }} | jq -r '.containerImages[] | select(.image | contains(".'$CLIENT_IMAGE_TAG'")) | .image')" >> $GITHUB_ENV
+
+      - name: Create containers.json
+        run: |
+          echo '{
+            "client": {
+              "image": "${{ env.LIGHTSAIL_CLIENT_IMAGE }}",
+              "command": [],
+              "ports": {
+                "80": "HTTP"
+              }
+            },
+            "server": {
+              "image": "${{ env.LIGHTSAIL_SERVER_IMAGE }}",
+              "ports": {
+                "3000": "HTTP"
+              },
+              "environment": {
+                "NODE_ENV": "production",
+                "DB_SSL": "true",
+                "DB_SYNC": "true",
+                "DB_HOST": "${{ secrets.PROD_DB_HOST }}",
+                "DB_NAME": "${{ secrets.PROD_DB_NAME }}",
+                "DB_USER": "${{ secrets.PROD_DB_USER }}",
+                "DB_PASSWORD": "${{ secrets.PROD_DB_PASSWORD }}"
+              }
+            }
+          }' > containers.json
+
+      - name: Create public-endpoint.json file
+        run: |
+          echo '{
+            "containerName": "client",
+            "containerPort": 80,
+            "healthCheck": {
+              "intervalSeconds": 10,
+              "path": "/api/health"
+            }
+          }' > public-endpoint.json
+
+      - name: Deploy to AWS Lightsail
+        run: |
+          aws lightsail create-container-service-deployment \
+          --service-name ${{ vars.AWS_LIGHTSAIL_SERVICE }} \
+          --containers file://containers.json \
+          --public-endpoint file://public-endpoint.json

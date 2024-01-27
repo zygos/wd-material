@@ -1,0 +1,25 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
+    "preserveSymlinks": true,
+    "composite": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "paths": {
+      "@server/*": ["./server/src/*"]
+    }
+  },
+
+  "references": [
+    {
+      "path": "./client/tsconfig.json",
+    },
+    {
+      "path": "./server/tsconfig.json",
+    }
+  ]
+}

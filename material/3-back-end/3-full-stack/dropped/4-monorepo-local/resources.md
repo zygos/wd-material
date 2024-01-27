@@ -1,0 +1,10 @@
+https://fullstackopen.com/en/part4/token_authentication
+https://www.reddit.com/r/node/comments/150dcr1/how_to_secure_my_express_server_api/
+https://www.digitalocean.com/community/tutorials/the-ins-and-outs-of-token-based-authentication#how-token-based-works
+https://www.reddit.com/r/node/comments/t8rx88/implementing_an_express_rest_api_authentication/
+https://www.reddit.com/r/node/comments/aih5wx/how_should_a_nodejs_newbie_tackle_userlogin/
+https://github.com/Louis3797/express-ts-auth-service/tree/main/src/validations
+https://www.reddit.com/r/node/comments/vr09sl/what_is_your_goto_way_to_implement_authentication/
+https://www.reddit.com/r/node/comments/14oa7t1/what_is_the_easiest_authentication_method_with/
+https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+https://www.reddit.com/r/node/comments/11yhkl5/i_built_a_readytouse_auth_server_with_typescript/

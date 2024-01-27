@@ -1,0 +1,20 @@
+{
+  "name": "vite-js",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "stylelint": "^15.10.2",
+    "stylelint-config-standard": "^34.0.0",
+    "vite": "^4.4.0"
+  }
+}

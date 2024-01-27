@@ -1,0 +1,107 @@
+name: Test
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    services:
+      # spin up a database for this job
+      postgres:
+        image: postgres:16.1-alpine
+        env:
+          # Postgres service allows creating a user and a database
+          # if we provide some specific environment variables to it.
+          # You can find out more about these environment variables
+          # by visiting https://hub.docker.com/_/postgres and looking
+          # at the "Environment Variables" section.
+          # No need to overthink what is going on here just yet. We
+          # will spend more time on Docker later.
+          POSTGRES_USER: turing
+          POSTGRES_PASSWORD: turing
+          POSTGRES_DB: testdb
+        ports:
+          # We will need to connect to it somehow. We will use the default
+          # Postgres port 5432.
+          - 5432:5432
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check server
+        run: npm run type-check -w=server
+
+      - name: Type check client
+        run: npm run type-check -w=client
+
+      # TODO: lint client code and server code
+      # TODO: run server tests and client unit tests here. Make sure you are not
+      #       running E2E tests here. E2E tests will be run separately.
+
+      # Add more browsers here if you want to test on more/different browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      # Testing the entire application with a running API server.
+      # We must start the server first. & at the end of the command
+      # makes it run in the background. While it is starting up,
+      # we will continue with other steps.
+      - name: Start server for E2E tests
+        run: npm run start -w=server &
+        env:
+          # Pass the same database credentials to our server environment variables,
+          # just like we would if we had an .env file.
+          # These credentials are not secret, so we can commit them to our repository.
+          DB_USER: turing
+          DB_PASSWORD: turing
+          DB_NAME: testdb
+
+          # port to start the server on
+          PORT: 3000
+
+      # Build the front end for E2E tests. We are building it
+      # instead of running it in dev mode because there are some
+      # differences between dev mode and production mode front
+      # end code.
+      - name: Build front end for E2E tests
+        run: npm run build -w=client
+        env:
+          # Similar to the .env file in your front end.
+          VITE_API_ORIGIN: http://localhost:3000
+          VITE_API_PATH: /api/v1/trpc
+
+      # Just to make sure that our API server is up and running
+      # before we start our E2E tests, we could use a health check.
+      # That means we would call some endpoint on our server and
+      # wait for it to respond with a non-failing status code.
+      # Our server has a /api/health endpoint that returns a
+      # non-failing status code (see server/src/app.ts).
+
+      # Instead of writing our own health check logic, we could use
+      # a GitHub Action that already does that for us.
+      # TODO: Use https://github.com/marketplace/actions/url-health-check
+      # to check for http://localhost:3000/api/health to repond.
+      # Make 5 attemps with 5 second delay between each attempt.
+
+      - name: Test client E2E
+        run: npm run test:e2e -w=client
+
+      # Playwright generates a report of the E2E tests. We will
+      # upload that report as an artifact so that we can download
+      # it later from the GitHub Actions UI. This will help us
+      # debug any issues that occured in E2E tests.
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: client/playwright-report/
+          retention-days: 7

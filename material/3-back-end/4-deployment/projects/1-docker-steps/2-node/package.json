@@ -1,0 +1,33 @@
+{
+  "name": "dogs",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src",
+    "dev": "tsx watch src",
+    "dev:mem": "DB_TYPE=pg-mem tsx watch src"
+  },
+  "engines": {
+    "node": ">=18.9.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2",
+    "@types/express": "^4.17.18",
+    "@types/node": "^20.8.2",
+    "tsx": "^4.7.0"
+  },
+  "dependencies": {
+    "@trpc/server": "^10.41.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "pg-mem": "^2.7.2",
+    "typeorm": "^0.3.17",
+    "typeorm-naming-strategies": "^4.1.0",
+    "zod": "^3.22.4"
+  }
+}

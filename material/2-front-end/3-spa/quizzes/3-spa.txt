@@ -1,0 +1,125 @@
+Q1. What is the difference between props and emits in Vue?
+a) props are used to pass data from a parent to a child component, while emits are used to pass data from a child to a parent component
+b) props are used to pass data from a child to a parent component, while emits are used to pass data from a parent to a child component
+- Topic:
+- Difficulty: Advanced
+- Resource
+- Correct: a) `props` are used to pass data from a parent to a child component, while `emits` are used to pass data from a child to a parent component
+
+Q2. What is the purpose of the `v-model` directive in Vue?
+a) To bind an event listener for input events
+b) To initialize a form input with a value
+c) To create a one-way binding between a form input and a piece of state
+d) To create a two-way binding between a form input and a piece of state
+- Topic:
+- Difficulty: Basic
+- Resource
+- Correct: d) To create a two-way binding between a form input and a piece of state
+
+Q3. When should you use a `watch` instead of a `computed`?
+a) When you need to run a pure value transformation
+b) When you need to interact with elements beyond the Vue reactivity system
+c) When you need to perform a synchronous operation
+d) There is no meaningful difference between the two
+- Topic:
+- Difficulty: Advanced
+- Resource
+- Correct: b) When you need to interact with elements beyond the Vue reactivity system
+
+Q4. Why is a key attribute used in v-for in Vue?
+a) It is used to identify each item in the list uniquely
+b) It is used to determine the order of the items in the list
+c) It is used to apply a specific class to each item in the list
+d) It is used to track items in the list for debugging purposes
+- Topic: Exercise: Conditionals and Loops
+- Difficulty: Basic
+- Resource:
+- Correct: a) It is used to identify each item in the list uniquely
+
+Q5. What is the difference between v-if and v-show in Vue?
+a) v-show is a more human-readable alias for v-if
+b) v-if toggles the visibility of an element, v-show conditionally renders an element based on a condition
+c) v-if conditionally renders an element, v-show forces an element to be visible
+d) v-if conditionally renders an element, v-show uses CSS to toggle the visibility of an element
+- Topic: Directions for further research
+- Difficulty: Advanced
+- Resource:
+- Correct: d) v-if conditionally renders an element, v-show uses CSS to toggle the visibility of an element
+
+Q6: What is the purpose of the `watch` family of functions in Vue?
+- a) To handle click events in Vue components
+- b) To dynamically update the CSS styles of a component
+- c) To trigger a function when a specific value changes
+- d) To observe the visibility of a component
+- Correct: c) To trigger a function when a specific value changes
+- Topic:
+- Difficulty: Basic
+- Resource: https://vuejs.org/guide/essentials/application.html
+
+Q7: When setting up a new project, what does using a "boilerplate" mean?
+a) Start from scratch without any initial code
+b) Use a prepared project setup as a starting point for other projects
+c) Copy an existing project and modify it for a different purpose
+d) Clone a project from a remote repository
+- Correct: b) Use a prepared project setup as a starting point for other projects
+- Topic: Preparing a Boilerplate
+- Difficulty: Basic
+- Resource:
+
+Q8. What happens if you add a `prevent` modifier to the event handler in Vue?
+a) It prevents the default behavior of the event
+b) It prevents the event from being triggered
+c) It prevents other event handlers from being triggered
+d) It prevents the event handler from leaking to the parent component
+- Correct: a) It prevents the default behavior of the event
+- Topic:
+- Difficulty: Basic
+- Resource: https://vuejs.org/guide/essentials/event-handling.html
+
+Q9. What does `<div :class="{ 'is-active': isActive }"></div>` do in Vue?
+a) It adds the `is-active` and `isActive` classes to the div
+b) It adds a class that is provided by the `isActive` prop
+c) It adds the `is-active` class to the div if `isActive` is true-ish
+d) It adds the styles applied by the `is-active` class to the div
+- Correct: d) It adds the `is-active` class to the div if `isActive` is true-ish
+- Topic:
+- Difficulty: Basic
+- Resource
+
+Q10. What would `<div :style="red"></div>` do in Vue?
+a) It adds the `red` class
+b) It adds the `red` color style
+c) It sets the `red` CSS variable to the value of the `red` variable value
+d) It adds the styles listed in the `red` variable value
+- Correct: d) It adds the styles listed in the `red` variable value
+- Topic:
+- Difficulty: Basic
+- Resource
+
+Q11. What is the purpose of a computed property in Vue?
+a) It binds the value of a data property to an HTML attribute
+b) It creates a reactive value which changes based on provided reactive values
+c) It computes a value based on a given variable
+d) It creates a two-way binding between a form input and a data property
+- Topic:
+- Difficulty: Basic
+- Resource: https://vuejs.org/guide/essentials/application.html
+- Correct: b) It creates a reactive value which changes based on given reactive values
+
+Q12. What happens if you have an empty array used in a v-for directive?
+a) v-for directive will not render anything
+b) v-for directive will throw an error
+- Topic:
+- Difficulty: Basic
+- Resource
+- Correct: a) v-for directive will not render anything
+
+Q13. What is the difference between a `computed` function and a regular function in Vue?
+a) A computed function can be asynchronous
+b) A computed function can be used in a vue file
+c) A computed function creates a two-way binding between a given variable and its return value
+d) A computed function is re-evaluated when one of its reactive dependencies changes
+- Topic:
+- Difficulty: Basic
+- Resource: https://vuejs.org/guide/essentials/application.html
+- Correct: d) A computed function is re-evaluated when one of its reactive dependencies changes

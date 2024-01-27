@@ -1,0 +1,106 @@
+## Part 1: Packages and Build Tools
+  - Part Description
+  - Key learning topics & resources for this part
+    - Editor upgrades (1 hour)
+      - Recommended VS Code extensions
+      - Configuring editor font for ligatures
+      - Exploring VS Code themes
+    - Introduction to JavaScript Packages (2 hours)
+      - Overview of JavaScript packages and npm
+      - Semantic versioning
+      - Local vs global package installation
+      - Versioning operators
+      - Difference between package.json and package-lock.json
+      - Custom commands in package.json
+      - Committing node_modules folder to GitHub
+      - Regular dependency vs dev dependency
+      - Command line flags for package installation
+      - Importance of using recently updated packages with documentation and TypeScript support
+    - Exercise: Install and Use a Package (1 hour)
+      - Creating a new folder and running npm init
+      - Installing lodash-es and date-fns packages
+      - Using imported functions from the packages
+      - Running code with Node.js
+      - Experimenting with installed packages using Quokka.js
+      - Importing only necessary parts of packages
+    - Build Tools (0.5 hours)
+      - Importance of build tools in web development
+      - Challenges with directly linking package files in HTML
+      - Introduction to build tools
+      - Overview of Webpack and its drawbacks
+      - Introduction to Vite as a versatile build tool
+    - Exercise: Create a JavaScript Project with Vite (1.5 hours)
+      - Watching and following Vite tutorial
+      - Setting up a new project with Vite
+      - Exploring generated files and understanding their purpose
+      - Testing the development server
+      - Building the project for production
+    - Introduction to Formatting & Linting Tools (1.5 hours)
+      - Importance of formatting and linting in code quality
+      - Overview of Prettier and ESLint
+      - Configuring Prettier and ESLint with Airbnb JavaScript Style Guide
+    - Exercise: Correcting Formatting and Linting Errors (1 hour)
+      - Observing formatting and linting errors in code
+      - Understanding error messages and fixing errors manually or using quick fix commands
+      - Setting up automatic error correction on file save
+    - How to Format and Lint CSS Code
+      - Introduction to Stylelint as a CSS linter
+      - Initializing Stylelint and configuring rules
+    - Exercise: Linting CSS Code (1 hour)
+      - Examining flagged errors in CSS code
+      - Fixing errors manually or using automatic error correction setup
+  - Directions for further research (2 hours+)
+    - Potential areas for further research
+    - Optional tasks for exploring advanced topics
+    - Setting up custom ESLint and Stylelint rules (optional)
+
+## Part 2: Front-end frameworks and introduction to Vue
+
+- Part Description
+- Key learning topics & resources for this part
+  - Colocation (1 hour)
+    - Code colocation is king article
+    - Colocation article
+  - Front-end Frameworks
+    - Vue 3 tutorial
+  - Vue 3
+    - Vue documentation
+  - Exercise: Essential Vue Concepts (3 hours)
+    - Step-by-step Vue 3 tutorial
+  - Exercise: Initialize a Vue Project Using Vite (2 hours)
+    - Create a new Vue project using Vite
+    - Compare file structures of Vue project and vanilla JavaScript project
+    - Implement counter changes in Vue project
+    - Refactor counter logic into a separate file
+    - Make counter logic reusable
+  - Exercise: Create a Vue Project with Linting and Formatting (2 hours)
+    - Set up a new Vue project with ESLint and Prettier
+    - Install stylelint ruleset
+    - Update ESLint and Prettier configurations
+    - Update project editor settings
+    - Add style linting to package scripts
+  - Directions for further research (1 hour)
+    - Identify parts of previous projects that can be split into components
+    - Apply the concept of colocation to previous JavaScript assignment
+    - Understand the "scoped" attribute in Vue styles
+
+## Part 3: Single Page Applications
+
+- Part Description
+- Key learning topics & resources for this part
+  - Single Page Applications (SPAs)
+    - Definition and importance of SPAs
+    - Comparison with traditional web applications
+    - Frameworks for building SPAs (Vue, React)
+  - Vue Documentation (2 hours)
+    - Exploring the Essentials part of the Vue documentation
+  - Preparing a Boilerplate for upcoming exercises (0.5 hour)
+  - Exercise: Handling Click Events (1 hour)
+  - Exercise: Attribute Bindings (1 hour)
+  - Exercise: Conditionals and Loops (1.5 hours)
+  - Exercise: Form Bindings (1.5 hours)
+  - Exercise: Shopping List (1 hour)
+  - Exercise: Markdown Editor (2 hours)
+  - Directions for further research (2 hours+)
+    - Potential areas for further research
+    - Optional tasks for exploring advanced topics

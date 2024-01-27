@@ -1,0 +1,19 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["vitest/globals"],
+
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "composite": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@server/*": ["./src/*"],
+      "@tests/*": ["./tests/*"],
+    }
+  }
+}

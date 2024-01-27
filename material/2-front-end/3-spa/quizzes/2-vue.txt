@@ -1,0 +1,109 @@
+Q1. What is colocation in the context of development?
+a) Organizing code by a specific feature, behavior, or component
+b) Organizing code by topical similarity
+c) Organizing code by the programming language used
+d) Organizing code by the file type
+- Topic: Code organization
+- Difficulty: Basic
+- Resource: https://kentcdodds.com/blog/colocation
+- Correct: a) Organizing code by a specific feature, behavior, or component
+
+Q2. What is a component in the context of front-end development?
+a) A group of files that implement a specific behavior
+b) A class that extends the Web Component API
+c) A reusable, relevantly self-contained piece of logic and style
+d) Any reusable piece of JavaScript code
+- Topic: Front-end frameworks
+- Difficulty: Basic
+- Resource:
+- Correct: c) A reusable, relevantly self-contained piece of logic and style
+
+Q3. What is a composable in Vue?
+a) A function that encapsulates some state and behavior
+b) A file that contains shared state
+C) An object that has a setter and a getter
+d) A class used for composing Vue components
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+- Correct: a) A function that encapsulates some state and behavior
+
+Q4. What is the purpose of front-end JS frameworks in web development?
+a) To make web pages look aesthetically pleasing
+b) To simplify the integration of HTML, CSS, and JavaScript
+c) To maximize the performance of web applications
+d) To bundle JavaScript code into a single file for the browser
+- Topic: Front-end frameworks
+- Difficulty: Basic
+- Resource:
+- Correct: b) To simplify the integration of HTML, CSS, and JavaScript
+
+Q5: Which of the following Vue APIs is used in this course?
+a) Options API
+b) Class API
+c) Composition API
+d) Functional API
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+- Correct: c) Composition API
+
+Q6. How does colocation improve code maintenance?
+a) It reduces the number of lines of code in a project
+b) It improves the performance of the application
+c) It allows to use fewer files in a project
+d) It makes it easier to modify code related to a specific feature
+- Topic: Code organization
+- Difficulty: Advanced
+- Resource:
+- Correct: d) It makes it easier to modify code related to a specific feature
+
+Q7. You see a Vue composable called `useLocalStorage`. Given Vue naming conventions, what would you expect it to do?
+a) It allows interacting with the `localStorage` object directly
+b) It imports the `localStorage` object from the browser, as it is not available in Vue files
+c) It allows creating some state that is reactive yet persistent through localStorage
+d) It returns a value from `localStorage`
+- Topic: Vue
+- Difficulty:
+- Resource:
+- Correct: c) It allows creating some state that is reactive yet persistent through localStorage
+
+Q8. What is the purpose of the `ref` function in Vue?
+a) To allow using `const` instead of `let` when declaring a variable
+b) To pass a value by reference instead of by value
+c) To be able to refer to a value by its reference
+d) To allow Vue to track a value and update our UI when it changes
+- Topic: Vue
+- Difficulty:
+- Resource:
+- Correct: d) To allow Vue to track a value and update our UI when it changes
+
+Q9. How can you share the same counter logic between multiple components in Vue?
+a) Assign shared logic to a global variable and access it from the components
+b) Export logic from one component and use it in another component
+c) Copy the same logic to every component that needs it
+d) Move the logic to a file and import it into the components that need it
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+- Correct: d) Move the logic to a file and import it in the components that need it
+
+Q10. What is the purpose of the `scoped` attribute in Vue styles?
+a) To wrap the styles in a JavaScript closure scope
+b) To share the styles between multiple components
+c) To apply styles to the component elements
+d) To prevent styles from leaking to other components
+- Topic: Vue
+- Difficulty: Basic
+- Resource:
+- Correct: d) To prevent styles from leaking to other components
+
+Q11. What does the `index.js` file in a folder usually indicate?
+a) A file that is supposed to be used in the `index.html` file
+b) A file is the entry point for the functionality implemented in the folder
+c) A file that lists out all the files in the folder
+d) A legacy file naming convention that is no longer used
+- Topic: Code organization
+- Difficulty: Basic
+- Resource:
+- Correct: b) A file is the entry point for the functionality implemented in the folder
