@@ -1,5 +1,8 @@
 node_modules
 *.zip
 *.pdf
+*.db
+*.sqlite
+*.sqlite3
 dist
 .env
