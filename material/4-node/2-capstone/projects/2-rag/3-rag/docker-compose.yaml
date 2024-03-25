@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  # spin up Postgres with vectors
+  postgres:
+    image: ankane/pgvector
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: demo
+    ports:
+      # 5432 might be in use on your machine, so
+      # we'll expose this database on 5435
+      - "5435:5432"

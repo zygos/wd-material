@@ -2,6 +2,49 @@ Ideas:
 
 - restruktūrizuoti, kad build'ina iškart nuo full-stack web app
 
+MUST: Add instructions on what to ask during live coding in 3.3.
+MUST: Have fewer approaches that are simpler to understand.
+  -> Simplify: Tic Tac Toe 2.2.2 hands-on.
+  - It's quite hard to switch to front-end in the back-end.
+  - Capstone with front-end.
+  - Capstone with back-end.
+
+  From Node to Specialisation.
+
+JavaScript:
+- https://javascript.info/
+
+Struggled a lot.
+
+- C -> JS?
+- Rip out python, replace with JS, more exercises on Hackerrank. Then TypeScript.
+
+- Remove some very specific topics. Kysely, TypeORM. It would be enough to use one of those. Other one for specialisation.
+Right now learning a very thin layer of everything.
+
+Everything is a bit deeper and there is more time to learn any specific topic.
+
+---
+
+Module 1 is so simple.
+Module 2 is drastically harder. Especially with Vue to learn the framework.
+Module 3 is even harder. A lot harder.
+
+---
+
+Exercises by other providers are pretty good. There are tests and a solution. It's the fastest way to learn.
+
+---
+
+Grid:
+- https://grid.malven.co/
+
+Then exercises by STLs are pretty good but they get a bit complex.
+There should be more steps.
+
+Step-by-step hands-on.
+
+
 What is a server?
 
 - https://www.youtube.com/watch?v=VXmvM2QtuMU
@@ -38,6 +81,9 @@ https://quickref.me/docker
 https://quickref.me/es6
 https://quickref.me/pm2
 https://quickref.me/postgres
+
+Docker:
+- https://www.youtube.com/watch?v=rIrNIzy6U_g
 
 Explain Many-to-Many relationships before TypeORM.
 
@@ -78,6 +124,37 @@ O'Reilly:
 
 Debugging in Chrome DevTools:
 - https://www.youtube.com/watch?v=Y3u2groOG-A
+
+OOP:
+- https://blog.sigma-star.io/2024/01/people-dont-understand-oop/
+
+TypeScript:
+- https://typescript-exercises.github.io/
+
+Vue: mokyti computed:
+```ts
+// const startingBalance = ref()
+// const currency = ref()
+
+// watch(
+//   () => store.settings.startingBalance,
+//   (newValue) => {
+//     startingBalance.value = newValue
+//   },
+//   { immediate: true }
+// )
+// NOTE:
+const startingBalance = computed(() => Number(store.settings.startingBalance))
+
+// watch(
+//   () => store.settings.currency,
+//   (newValue) => {
+//     currency.value = newValue
+//   },
+//   { immediate: true }
+// )
+const currency = computed(() => store.settings.currency)
+```
 
 ---
 

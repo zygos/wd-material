@@ -1,31 +1,27 @@
-import { describe, expect, it } from 'vitest'
-import { identifyFile, identifyFileBuffer, identifyFileBufferCallbacks } from '../identifyFile'
-import { setupFiles } from './setup'
+import { describe, expect, it } from 'vitest';
+import { identifyFile, identifyFileBuffer } from '../identifyFile';
+import { setupFiles } from './setup';
 
-const { jpgPath, mp4Path } = setupFiles(__dirname, 0.1)
+const { jpgPath, mp4Path } = setupFiles(__dirname, 0.1);
 
-const functions = [
-  identifyFile,
-  identifyFileBuffer,
-  identifyFileBufferCallbacks,
-]
+const functions = [identifyFile, identifyFileBuffer];
 
 describe.each(functions)('%o', (identify) => {
   it('identifies a JPEG file', async () => {
-    const type = await identify(jpgPath)
+    const type = await identify(jpgPath);
 
-    expect(type).toBe('image/jpeg')
-  })
+    expect(type).toBe('image/jpeg');
+  });
 
   it('identifies a MP4 file', async () => {
-    const type = await identify(mp4Path)
+    const type = await identify(mp4Path);
 
-    expect(type).toBe('image/mp4')
-  })
+    expect(type).toBe('image/mp4');
+  });
 
   it('returns null for unknown files', async () => {
-    const type = await identify(__filename)
+    const type = await identify(__filename);
 
-    expect(type).toBeNull()
-  })
-})
+    expect(type).toBeNull();
+  });
+});

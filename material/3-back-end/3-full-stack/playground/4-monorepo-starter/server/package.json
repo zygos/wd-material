@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsup src/index.ts",
+    "build": "tsc --rootDir src && npx tsc-alias",
+    "build:tsup": "tsup src/index.ts",
     "coverage": "vitest run --coverage",
     "dev": "tsx watch src",
     "dev:mem": "DB_TYPE=pg-mem tsx watch src",
@@ -37,6 +38,7 @@
     "pg-mem": "^2.7.1",
     "prettier": "^3.0.3",
     "supertest": "^6.3.3",
+    "tsc-alias": "^1.8.8",
     "tsup": "^7.2.0",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2",

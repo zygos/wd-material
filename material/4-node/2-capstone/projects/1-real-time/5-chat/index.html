@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+  <head>
+    <title>Turing Chat</title>
+  </head>
+
+  <body>
+    <h1>Turing Chat</h1>
+    <div id="chat"></div>
+    <form id="chat-form">
+      <input type="text" id="chat-form-message" />
+      <button type="submit">Send</button>
+    </form>
+  </body>
+
+  <script>
+    const ws = new WebSocket('ws://localhost:8080')
+
+    ws.onmessage = (event) => {
+      const { color, message, role, username } = JSON.parse(event.data)
+
+      const p = document.createElement('p')
+      p.style = role === 'bot'
+        ? `background-color: lightgrey; padding: 1rem;`
+        : `color: ${color}`
+      p.textContent = `${username}: ${message}`
+      chat.appendChild(p)
+    }
+
+    // Chat form event handler
+    document
+      .getElementById('chat-form')
+      .addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        const message = document.getElementById('chat-form-message')
+
+        if (!message.value) return
+
+        ws.send(JSON.stringify({
+          message: message.value
+        }))
+
+        message.value = ''
+      })
+  </script>
+</html>

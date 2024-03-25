@@ -71,9 +71,11 @@ Here's the learning material for a new topic:
 {{ MATERIAL }}
 """
 
-Write a 15 question quiz for the new topic with 3 - 5 rather challenging questions. These questions should be creative, relevant to real-world web developer experience. Avoid trivial questions.
+Write a 15 question quiz for the new topic with 5 rather challenging questions. These questions should be creative, relevant to real-world web developer experience. Avoid trivial questions.
 
 Append the following to the quiz questions:
+a b c d options
+- Correct: { correct answer }
 - Topic: { The topic/subtopic that the question is about }
 - Difficulty: { Basic or Advanced }
-- Resource: { URL to the resource that the question is based on. Use only URLs in the material. You can reasonably assume that given resources reasonably cover most of the topics. Most of the time, CS50 resources will be used. }
+- Resource: { URL to the resource that the question is based on. Use only URLs in the material. You can reasonably assume that given resources reasonably cover most of the topics. }

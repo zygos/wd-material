@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+  <head>
+    <title>Turing Chat</title>
+  </head>
+
+  <body>
+    <h1>Turing Chat</h1>
+    <div id="chat"></div>
+    <form id="chat-form">
+      <input type="text" id="chat-form-message" />
+      <button type="submit">Send</button>
+    </form>
+  </body>
+
+  <script>
+    const ws = new WebSocket('ws://localhost:8080')
+
+    ws.onmessage = (event) => {
+      const message = event.data
+
+      // Using innerHTML could be an option, but this is
+      // unsafe. Other visitors could pass some raw HTML containing
+      // or linking to some JavaScript code. This would be executed by
+      // all connected clients and it could be used for XSS attacks.
+      // chat.innerHTML += `<p>${message}</p>`
+
+      // Instead, we can create a new paragraph element
+      // and specify the message as its text content.
+      const p = document.createElement('p')
+      p.textContent = message
+      chat.appendChild(p)
+    }
+
+    // Chat form event handler
+    document
+      .getElementById('chat-form')
+      .addEventListener('submit', (event) => {
+        // prevent the form from submitting
+        event.preventDefault()
+
+        // message input
+        const message = document.getElementById('chat-form-message')
+
+        if (!message.value) return
+
+        // We could also display the message in the chat div immediately.
+        // This would be considered as **optimistic UI** - assuming the
+        // happy path unless we are proven otherwise.
+        // This would improve the UI responsiveness and it is a common
+        // pattern in real-time applications.
+        //
+        // However, if the message fails to be sent, we would need to remove
+        // it from the chat div.
+        //
+        // In this exercise, we can stick with a simpler **pessimistic UI** -
+        // we will assume that our message did not reach the server until
+        // the server responds and we run the onmessage event handler.
+
+        // send message
+        ws.send(message.value)
+
+        // clear message
+        message.value = ''
+      })
+  </script>
+</html>

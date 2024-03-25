@@ -50,7 +50,7 @@
 
 ---
 
-### Sprint 2: Building Scalable Node.js Applications
+### Sprint 2: WebSockets, Vectors and Agile
 
 #### Part 1: Agile Methodologies
 - Theory part:
@@ -61,12 +61,18 @@
   - [Scrum Training Series](http://scrumtrainingseries.com/)
   - [Kanban in Action](https://www.youtube.com/watch?v=CD0y-aU1sXo)
   - [Kanban and Scrum - Making the Most of Both](https://www.infoq.com/minibooks/kanban-scrum-minibook/)
-- Estimations:
-  - Create a sprint
-  - At the end of the sprint, revise, adapt - Agile
+- Estimation Capstonui:
   - What is waterfall?
-  - Algimantui!
+  - Stories, track'ini
+    - rašai kodėl gaunasi, kodėl ne
+  - Padalinti pagal sprints
+  - Retrospektyva
+  - Product owner, Scrum Master, etc.
+  - Pora pastraipų, kad reikia būti gana kritišku, visi gana skirtingai pritaiko, reikia būti su open mind
+  - At the end of the sprint, revise, adapt - Agile
+  - Algimantas?
 
+<!--
 #### Part 2: Scalable Node.js Architectures
 
 - **Clustering and Multi-threading**
@@ -78,21 +84,28 @@
 - **Message Queues and IPC**
   - [Node.js Microservices: Using Redis for Inter-process Communication](https://www.sitepoint.com/using-redis-node-js-socket-io/)
   - [Building a Node.js Microservices Architecture](https://www.toptal.com/nodejs/building-scalable-microservices-nodejs)
+-->
 
-  - MongoDB? NoSQL databases?
-
-#### Part 3: Real-time Applications with Node.js
+#### Part 2: Real-time AI Applications
 
 - **WebSockets and Socket.io**
   - [Socket.io Official Documentation](https://socket.io/docs/)
   - [Real-Time Web with Node.js](https://www.codeschool.com/courses/real-time-web-with-node-js)
+- **Retrieval Augmented Generation**
+- **Storing vectors in PostgreSQL**
 - **Building a Real-time Collaborative Application**
   - [Build a Real-time App with Socket.io](https://www.youtube.com/watch?v=tHbCkikFfDE)
   - [Real-Time Chat App with Node.js, Express.js, and Socket.io](https://www.tutorialspoint.com/socket.io/socket.io_real_time_chat_application.htm)
 
+  -- Su WebSockets Edmundo React'o dalį kopijuoti.
+
+#### Part 3: Hands-on: RAG Chatbot
+
+  - Pasitikrinti ar yra kitų AI's?
+
 #### Part 4: Capstone Project (ilgas labai projekas! - 15 dienų ar so)
 
-- +Sockets? 70% base - REST API. Išvardinti advanced topics, turi applyinti 2 advanced topics.
+- +Sockets? 70% base - REST API. Išvardinti advanced topics, turi applyinti at least 1 topics.
 - **Project Guidelines**
   - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
   - [Node.js Project Structure Tutorial](https://blog.risingstack.com/node-hero-node-js-project-structure-tutorial/)

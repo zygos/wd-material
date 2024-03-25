@@ -1,0 +1,34 @@
+[
+  {
+    "topic": "Stand-up meetings",
+    "content": "Turing College offers multiple weekly stand-up meetings for learners, inspired by popular daily scrum meetings in the IT industry. These are led by a Senior Team Lead and are designed to help learners build a community, discuss topics, practice speaking, and get study help, rather than serving as status reports. These meetings are a fundamental part of the learning experience at Turing College and are scheduled on the platform's calendar."
+  },
+  {
+    "topic": "Stand-up meetings",
+    "content": "Structure of the stand-up meeting. A stand-up usually takes 30-45 minutes and has 3 separate parts: Learners sharing, STL sharing, Questions & discussions."
+  },
+  {
+    "topic": "Open sessions",
+    "content": "Open Sessions participation. New learners must actively attend two open sessions in their first month. This means coming prepared with a question and discussing it with the JTL. Let the JTL know it's your first/second time so they can track your attendance."
+  },
+  {
+    "topic": "Open sessions",
+    "content": "Open sessions provide learners with the opportunity to drop in and ask Junior Team Leads (JTLs) questions about the program or technical topics. It's great practice for asking effective questions, which is a crucial skill for both learning at Turing College and working in the tech industry."
+  },
+  {
+    "topic": "Open sessions",
+    "content": "Tips for Open Sessions. 1. Prepare questions in advance. JTLs can help you learn to find answers independently, so share your thought process and troubleshooting steps. 2. Don't be afraid to ask for feedback on your questions. 3. It's okay if questions don't come naturally. View the process of finding good questions as an active learning exercise. 4. Use your Intra calendar to join sessions. You don't need to attend for the entire duration. 5. Be polite to others in the session. Offer insights if relevant or ask the JTL to message you when they're free. 6. Open session schedules are posted on Discord."
+  },
+  {
+    "topic": "Self-paced learning",
+    "content": "Turing College offers self-paced learning, allowing learners to progress through projects at their own pace, accommodating different backgrounds and experiences. This approach aims to teach learners to be conscious and responsible for their own learning, a crucial skill for lifelong professional development. While self-paced, a minimum of 15-30 hours per week is required to ensure success, and the college emphasizes the importance of regular attendance and effort. Struggles with motivation or procrastination are seen as challenges to overcome together, not as failures, highlighting the supportive environment Turing College aims to provide."
+  },
+  {
+    "topic": "Peer & expert reviews",
+    "content": "Turing College utilizes in-person project reviews, involving peer learners, JTLs, or STLs, as its primary assessment method, essential for progressing through projects and modules. Scheduled via their platform, these reviews serve not only as a measure of progress but also as a learning tool for enhancing both technical and soft skills. Research supports the educational benefits of assessing and guiding others. The review system operates on a point basis, where learners start with six points and earn more by reviewing peers' work, ensuring active participation from all sides. This practice is designed to mirror real-life IT job scenarios, like code reviews, providing valuable, job-relevant experience. Additional resources include an explanatory video by a Junior Team Lead."
+  },
+  {
+    "topic": "Peer & expert reviews",
+    "content": "JTL is a Junior Team Lead, a role at Turing College. JTLs are learners who have demonstrated strong technical and soft skills and are responsible for guiding other learners through the program. They are not professional teachers but rather peers who have been through the same learning process and are there to help others. JTLs are available for open sessions, project reviews, and other learning-related activities."
+  }
+]

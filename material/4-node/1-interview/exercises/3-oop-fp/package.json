@@ -1,0 +1,23 @@
+{
+  "name": "1-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bench": "vitest bench",
+    "format": "prettier --write \"**/*.ts\"",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/node18": "18.2.2",
+    "@types/node": "18.19.8",
+    "prettier": "3.2.5",
+    "vitest": "1.2.1"
+  },
+  "dependencies": {
+    "http-status-codes": "2.3.0"
+  }
+}

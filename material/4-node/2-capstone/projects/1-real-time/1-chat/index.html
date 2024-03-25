@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Turing Chat</title>
+  </head>
+
+  <body>
+    <h1>Turing Chat</h1>
+  </body>
+
+  <script>
+    // WebSocket is a global object in the browser.
+    // Note - it uses the ws:// protocol, not http://.
+    // This is a different protocol with a lower overhead
+    // than HTTP, which makes it suitable for real-time
+    // communication.
+    // However, it requires additional setup on the
+    // server side if you need to support HTTP and WebSocket.
+    // Also, in deployed applications you would want to
+    // use the secure wss protocol instead of ws, similar
+    // to how you use https instead of http.
+    const ws = new WebSocket('ws://localhost:8080')
+
+    ws.onopen = () => {
+      console.log('Hello, browser console!')
+      ws.send('Hello, server!')
+    }
+
+    ws.onmessage = (event) => {
+      console.log('Server says:', event.data)
+    }
+  </script>
+</html>

@@ -1,7 +1,7 @@
 import type { User } from '@server/entities/user'
 import type { Project } from '@server/entities/project'
 import type { Bug } from '@server/entities/bug'
-import { random } from '@tests/utils/random'
+import { random } from './random'
 
 const randomId = () => random.integer({ min: 1, max: 2147483647 })
 

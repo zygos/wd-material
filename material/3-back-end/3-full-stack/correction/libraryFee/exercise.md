@@ -12,3 +12,8 @@ The fee depends on the number of days the book was checked out.
 - After that, 50 cents per day.
 
 The function should return the total fee for all the books.
+
+Propose using Date objects or strings for date representation.
+
+- If using Date objects, days should be rounded up.
+- If using strings, the dates need to be validated.

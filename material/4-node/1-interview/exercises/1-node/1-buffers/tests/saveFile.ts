@@ -1,7 +1,11 @@
 import { createWriteStream } from 'fs';
 
 // Function to generate a massive fake JPEG image
-export function saveFile(hexSignature: string, filename: string, sizeBytes: number): Promise<void> {
+export function saveFile(
+  hexSignature: string,
+  filename: string,
+  sizeBytes: number
+): Promise<void> {
   const stream = createWriteStream(filename);
 
   // Write the header

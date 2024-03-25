@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSockets Test</title>
+  </head>
+  <body>
+    <h1>WebSockets</h1>
+    <div>
+      Your color: <div id="color" style="display: inline-block; width: 20px; height: 20px;"></div>
+    </div>
+    <div id="chat">
+    </div>
+    <div id="typing"></div>
+    <form id="chat-form">
+      <input type="text" id="message" />
+      <button type="submit">Send</button>
+    </form>
+  </body>
+  <script>
+  const WEB_SOCKET_URL = 'ws://localhost:8080'
+
+  const ws = new WebSocket(WEB_SOCKET_URL)
+
+  // WebSocket event handlers
+  ws.onopen = () => {
+    console.log('Connected!')
+  }
+
+  ws.onmessage = (event) => {
+    console.log('Message received:', event.data)
+    const chat = document.getElementById('chat')
+    const { type, ...data } = JSON.parse(event.data)
+
+    if (type === 'message') {
+      const { color, botMessageId, message } = data
+      chat.innerHTML += `<p style="color: ${color}" data-bot-message-id="${botMessageId}">${message}</p>`
+    } else if (type === 'messageChunk') {
+      const { color, botMessageId, message } = data
+      const messageElement = chat.querySelector(`[data-bot-message-id="${botMessageId}"]`)
+
+      if (messageElement) {
+        messageElement.textContent += message
+      } else {
+        chat.innerHTML += `<p style="color: ${color}" data-bot-message-id="${botMessageId}">${message}</p>`
+      }
+    } else if (type === 'color') {
+      const colorDiv = document.getElementById('color')
+      colorDiv.style.backgroundColor = data.color
+    } else if (type === 'typing') {
+      const typing = document.getElementById('typing')
+      const { botMessageId, color, isTyping } = data
+
+      // if already has indicator
+      if (typing.querySelector(`[data-color="${color}"]`)) {
+        if (!isTyping) {
+          typing.removeChild(typing.querySelector(`[data-color="${color}"]`))
+        }
+      } else {
+        if (isTyping) {
+          const indicator = document.createElement('div')
+          // general styling
+          indicator.style.color = color
+
+          // add data-color
+          indicator.dataset.color = color
+
+          const name = botMessageId ? 'Chatty' : color
+
+          // text
+          indicator.textContent = `${name} is typing...`
+
+          typing.appendChild(indicator)
+        }
+      }
+    }
+  }
+
+  ws.onerror = console.error
+
+  ws.onclose = () => {
+    console.log('Disconnected!')
+  }
+
+  // Chat form event handler
+  const chatForm = document.getElementById('chat-form')
+  chatForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+    const message = document.getElementById('message')
+    ws.send(JSON.stringify({
+      type: 'message',
+      message: message.value,
+    }));
+    message.value = ''
+  })
+
+  // Message typing event handler
+  const message = document.getElementById('message')
+  message.addEventListener('input', () => {
+    ws.send(JSON.stringify({
+      type: 'typing',
+      isTyping: message.value.length > 0,
+    }));
+  })
+  </script>
+</html>

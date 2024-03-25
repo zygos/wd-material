@@ -706,7 +706,3 @@ There are some everyday use cases for Express middleware. **Spend ~30 minutes to
 - serving static files (`express.static`)
 
 You do not need to use these packages for your project right now. However, we wanted to introduce you to some of the most common use cases for middleware for learners interested in Express ecosystem.
-
----
-
-TOTAL = 12 hours

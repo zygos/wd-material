@@ -8,8 +8,6 @@ if (!env.NODE_ENV) env.NODE_ENV = 'development'
 const isTest = env.NODE_ENV === 'test'
 const isDevTest = env.NODE_ENV === 'development' || isTest
 
-const isInMemory = env.DB_TYPE === 'pg-mem'
-
 const schema = z
   .object({
     env: z
@@ -30,20 +28,32 @@ const schema = z
       passwordCost: z.coerce.number().default(isDevTest ? 6 : 12),
     }),
 
-    database: z.object({
-      type: z
-        .enum(['postgres', 'mysql', 'mariadb', 'better-sqlite3', 'pg-mem'])
-        .default('postgres'),
-      host: z.string().default('localhost'),
-      port: z.coerce.number().default(5432),
-      database: isInMemory ? z.string().optional() : z.string(),
-      username: isInMemory ? z.string().optional() : z.string(),
-      password: isInMemory ? z.string().optional() : z.string(),
+    // we can pass in either a real database config or a in-memory database config
+    database: z.discriminatedUnion('type', [
+      // real database config
+      z.object({
+        type: z.enum(['postgres', 'mysql']).default('postgres'),
 
-      // By default, log and synchronize the database schema only for tests and development.
-      logging: z.preprocess(coerceBoolean, z.boolean().default(isDevTest)),
-      synchronize: z.preprocess(coerceBoolean, z.boolean().default(isDevTest)),
-    }),
+        host: z.string().default('localhost'),
+        port: z.coerce.number().default(5432),
+        database: z.string(),
+        username: z.string(),
+        password: z.string(),
+
+        // By default, log and synchronize the database schema only for tests and development.
+        ssl: z.preprocess(coerceBoolean, z.boolean().default(!isDevTest)),
+        logging: z.preprocess(coerceBoolean, z.boolean().default(isDevTest)),
+        synchronize: z.preprocess(
+          coerceBoolean,
+          z.boolean().default(isDevTest)
+        ),
+      }),
+
+      // in-memory database config
+      z.object({
+        type: z.literal('pg-mem'),
+      }),
+    ]),
   })
   .readonly()
 
@@ -59,7 +69,7 @@ const config = schema.parse({
   },
 
   database: {
-    type: env.DB_TYPE,
+    type: env.DB_TYPE || 'postgres',
     host: env.DB_HOST,
     port: env.DB_PORT,
     database: env.DB_NAME,

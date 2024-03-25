@@ -19,9 +19,7 @@ const schema = z
     port: z.coerce.number().default(3000),
 
     database: z.object({
-      type: z
-        .enum(['postgres', 'mysql', 'mariadb', 'pg-mem'])
-        .default('postgres'),
+      type: z.enum(['postgres', 'pg-mem']).default('postgres'),
       host: z.string().default('localhost'),
       port: z.coerce.number().default(5432),
       database: isInMemory ? z.string().optional() : z.string(),

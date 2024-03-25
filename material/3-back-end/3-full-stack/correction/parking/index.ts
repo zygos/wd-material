@@ -1,15 +1,11 @@
 export function calculateParkingCharge(arrival: Date, departure: Date): number {
+  const current = new Date(arrival.getTime());
   let charge = 0;
-  let currentTime = new Date(arrival.getTime());
 
-  while (currentTime < departure) {
-    const hour = currentTime.getHours();
-    if (hour >= 8 && hour < 18) {
-      charge += 2;
-    } else {
-      charge += 1;
-    }
-    currentTime.setHours(currentTime.getHours() + 1);
+  while (current < departure) {
+    const hour = current.getHours();
+    charge += (hour >= 8 && hour < 18) ? 2 : 1;
+    current.setHours(current.getHours() + 1);
   }
 
   return charge;
