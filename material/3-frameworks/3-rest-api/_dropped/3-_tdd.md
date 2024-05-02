@@ -6,7 +6,7 @@ We have tested individual parts of our system. We will write an integration test
 We could run it entirely in an E2E style, launching a separate process and checking the output. However, this is not necessary in our case. We can refactor our `index.ts` to make it more testable:
 
 ```ts
-import { join } from 'path'
+import { join } from 'node:path'
 import showAnagrams from './showAnagrams'
 
 // everything this module does is within this function

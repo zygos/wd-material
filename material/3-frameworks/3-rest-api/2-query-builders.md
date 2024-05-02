@@ -38,27 +38,27 @@ Here is an adapted version of our `src/database/index.ts` file that you can use 
 
 ```ts
 // reading environment variables from .env file
-import 'dotenv/config';
-import { CamelCasePlugin, Kysely, SqliteDialect } from 'kysely';
-import Database from 'better-sqlite3';
-import type { DB } from './types'; // we will handle this in the next step
+import 'dotenv/config'
+import { CamelCasePlugin, Kysely, SqliteDialect } from 'kysely'
+import Database from 'better-sqlite3'
+import type { DB } from './types' // we will handle this in the next step
 
-export * from './types'; // we will handle this in the next step
+export * from './types' // we will handle this in the next step
 
 // we are pulling DATABASE_URL from our environment variables
-const { DATABASE_URL } = process.env;
+const { DATABASE_URL } = process.env
 
 if (!DATABASE_URL) {
-  throw new Error('Provide DATABASE_URL in your environment variables.');
+  throw new Error('Provide DATABASE_URL in your environment variables.')
 }
 
 // creating the SQLite database instance
-const database = new Database(DATABASE_URL);
+const database = new Database(DATABASE_URL)
 
 // wrapping inside a shared interface, which allows Kyseley
 // to understand it. This would allow us to use a different
 // database engine in the future.
-const dialect = new SqliteDialect({ database });
+const dialect = new SqliteDialect({ database })
 
 // finally, we are creating a Kysely instance, which we will
 // use to interact with our database
@@ -71,7 +71,7 @@ export default new Kysely<DB>({
   // This is one of the many advantages of using an abstraction
   // over raw SQL - we can easily perform widespread transformations.
   plugins: [new CamelCasePlugin()],
-});
+})
 ```
 
 Also, create a `.env` file at the root of your project (so, NOT inside of the `src`). We will use this file for configuration, such as our database file path:
@@ -90,12 +90,12 @@ Add a handy script to your `package.json`:
 {
   "scripts": {
     // ...
-    "gen:types": "kysely-codegen --camel-case --dialect sqlite --out-file src/database/types.ts"
+    "gen:types": "kysely-codegen --camel-case --dialect sqlite --out-file src/database/types.ts && prettier --write src/database/types.ts",
   }
 }
 ```
 
-It will connect to our database (via `.env` file configuration) and investigate the database schema to generate the types for us.
+It will connect to our database (via `.env` file configuration) and investigate the database schema to generate the types for us. On top of that it will format the generated file with `prettier`.
 
 Run `npm run gen:types` to generate the types. You should find a new file, `src/database/types.ts`, with a list of types for all tables in our database 🤯.
 
@@ -109,55 +109,61 @@ Let's update our migration tool to use Kysely. `src/database/migrate.ts`:
 
 ```ts
 /* eslint-disable no-console */
-import 'dotenv/config';
-import * as path from 'path';
-import SQLite, { type Database } from 'better-sqlite3';
-import fs from 'fs/promises';
-import { Kysely, Migrator, SqliteDialect, FileMigrationProvider } from 'kysely';
+import 'dotenv/config'
+import * as path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import SQLite, { type Database } from 'better-sqlite3'
+import fs from 'node:fs/promises'
+import { Kysely, Migrator, SqliteDialect, FileMigrationProvider } from 'kysely'
 
-const { DATABASE_URL } = process.env;
-const MIGRATIONS_PATH = './migrations';
+const { DATABASE_URL } = process.env
+const MIGRATIONS_PATH = './migrations'
 
 async function migrateToLatest() {
   if (typeof DATABASE_URL !== 'string') {
-    throw new Error('Provide DATABASE_URL in your env variables.');
+    throw new Error('Provide DATABASE_URL in your env variables.')
   }
 
   const db = new Kysely<Database>({
     dialect: new SqliteDialect({
       database: new SQLite(DATABASE_URL),
     }),
-  });
+  })
 
+  const dirname = path.dirname(fileURLToPath(import.meta.url))
   const migrator = new Migrator({
     db,
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join(__dirname, MIGRATIONS_PATH),
+      migrationFolder: path.join(dirname, MIGRATIONS_PATH),
     }),
-  });
+  })
 
-  const { error, results } = await migrator.migrateToLatest();
+  const { error, results } = await migrator.migrateToLatest()
+
+  if (!results?.length) {
+    console.log('No migrations to run.')
+  }
 
   results?.forEach((it) => {
     if (it.status === 'Success') {
-      console.log(`migration "${it.migrationName}" was executed successfully`);
+      console.log(`Migration "${it.migrationName}" was executed successfully.`)
     } else if (it.status === 'Error') {
-      console.error(`failed to execute migration "${it.migrationName}"`);
+      console.error(`Failed to execute migration "${it.migrationName}".`)
     }
-  });
+  })
 
   if (error) {
-    console.error('failed to migrate');
-    console.error(error);
-    process.exit(1);
+    console.error('Failed to migrate.')
+    console.error(error)
+    process.exit(1)
   }
 
-  await db.destroy();
+  await db.destroy()
 }
 
-migrateToLatest();
+migrateToLatest()
 ```
 
 In the next step, we will practice using a query builder by rewriting our existing migrations to use the Kysely format. We will do that in the next step.
@@ -191,12 +197,12 @@ Since there can be a difference in what we might accept in `INSERT`, `SELECT`, a
 
 ```ts
 // articles/model.ts:
-import type { Insertable, Selectable, Updateable } from 'kysely';
+import type { Insertable, Selectable, Updateable } from 'kysely'
 // ...
 
-type ArticleInsert = Insertable<Article>;
-type ArticleUpdate = Updateable<Article>;
-type ArticleSelect = Selectable<Article>;
+type ArticleInsert = Insertable<Article>
+type ArticleUpdate = Updateable<Article>
+type ArticleSelect = Selectable<Article>
 ```
 
 **Note:** Kysely uses async functions to ensure that it works uniformly with sync/async database drivers, which means it has to use `async` in all cases. So you will need to propagate async/await through your code. This also can change your return types to be `Promise<...>`.
@@ -280,10 +286,6 @@ We can then use this schema to create some useful functions:
 const parseId = (id: unknown) =>
   schema.shape.id.parse(id)
 
-/** Parse the entire provided record. */
-const parse = (record: unknown) =>
-  schema.parse(record)
-
 /** Parse a partial record. Useful for partial updates. */
 const parsePartial = (record: unknown) =>
   schema.omit({ id: true }).partial().parse(record)
@@ -344,11 +346,12 @@ Your back-end is responsible for adding a `created_at` timestamp for the comment
 
 ## Review the provided solution (2 hours)
 
-If you are struggling with completing at least a few of the previous exercises, we recommend visiting open sessions or directly asking for help from your peers. Your goal is not to arrive at a great solution, but to learn how to use the tools and practices we have introduced.
+If you are struggling with completing at least a few of the previous exercises, we recommend **visiting open sessions** or **directly asking for help from your peers**. Your goal is not to arrive at a great solution, but to learn how to use the tools and practices we have introduced.
 
-Once you are ready to check out how you could level up your solution, you can check out the provided solution. This time, we added a few more intermediate functions and patterns to the solution that we would not expect you to come up with on your own.
+Once you are ready to check out how you could level up your solution, you can check out the provided solution. This time, we have provided two solutions:
 
-**This is not a solution that we expect you to come up with.** We assume that you managed to arrive at something, maybe not working how you would like or maybe it is ugly and relies on various hacks to get it to work. That is fine.
+- [Basic solution](https://drive.google.com/file/d/1B6g-0SyVMtJf65sqTZMfXRWNT-8udUBh/view?usp=drive_link) that should be around the level of what you could come up with after completing the exercises. It has some limitations, but it gets the job done.
+- [Advanced solution](https://drive.google.com/file/d/1cyP28PAOP0Z5Bj2wJOl7AeOIo1E81wVf/view?usp=drive_link) that is a more polished version of the basic solution. It includes additional middleware and higher order functions that simplify our controllers. **This is not a solution that we expect you to come up with.**
 
 Part of the learning process is to be able to compare your solution to a more experienced developer's solution. You can use this solution to compare your implementation and see if there is anything you could apply to your code.
 
@@ -356,7 +359,3 @@ Part of the learning process is to be able to compare your solution to a more ex
 
 - How could you call your endpoints from a front-end web app?
 - How could you get data by some condition using the `where` clause in Kysely?
-
----
-
-TOTAL: 10 hours

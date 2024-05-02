@@ -1,0 +1,24 @@
+#footer {
+  background: var(--color-theme);
+  padding: 4rem 0;
+}
+
+#footer nav {
+  color: var(--text-black);
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#footer nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+#footer nav a {
+  color: inherit;
+}
+
+#footer nav a:hover {
+  /* bootstrap link color */
+  color: var(--bs-link-hover-color);
+}

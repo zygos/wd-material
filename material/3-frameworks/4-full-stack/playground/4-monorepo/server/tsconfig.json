@@ -4,17 +4,19 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "..",
+    "outDir": "dist",
+    "sourceMap": true,
 
     "module": "ES2022",
     "target": "ES2022",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
 
     "experimentalDecorators": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "outDir": "dist",
 
     "types": ["vitest/globals"],
+
     "paths": {
       "@server/*": ["./src/*"],
       "@tests/*": ["./tests/*"]

@@ -24,4 +24,5 @@ export const {
   router,
   procedure: publicProcedure,
   mergeRouters,
+  createCallerFactory,
 } = t

@@ -24,7 +24,7 @@ npm install
 npm run dev
 ```
 
-Alright, it works; let's set up our ESLint, Prettier, and Stylelint configurations.
+Alright, it works; let's set up our ESLint, Prettier, and Stylelint configurations. Do not forget that **Stylelint is optional**, so you can skip it if you find configuration steps too complex. Nevertheless, we will include it in our setup for demonstration purposes.
 
 ## 2. Setup ESLint, Prettier and Stylelint
 
@@ -86,7 +86,7 @@ Interestingly, we get an error in the console that we have a missing API key. If
 
 If we look at the [Vite Env Variables documentation page](https://vitejs.dev/guide/env-and-mode.html) again, we can see that we need to prefix our environment variables with `VITE_` in order to access them in our code.
 
-**Note:** In any production environment, we would not expose our API key in the client-side code. Instead, we would have a server-side application that would make the API request on behalf of the client. But for a learning exercise, this is fine. We can add a `TODO: make API key secret` comment to remind us to do this in the future.
+**Note.** **Everything you add in the front-end application is public.** In any production environment, we would not expose our API key in the client-side code. Instead, we would have a server-side application that would make the API request on behalf of the client. But for a learning exercise, this is fine. We can add a `TODO: make API key secret` comment to remind us to do this in the future.
 
 Let's change the `.env.local` file to use `VITE_NASA_API_KEY` instead of `NASA_API_KEY`.
 

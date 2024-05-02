@@ -5,6 +5,10 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-22.04
+    env:
+      # variables for our front-end tests, see client/src/config.ts
+      VITE_API_ORIGIN: http://localhost:3000
+      VITE_API_PATH: /api/v1/trpc
     services:
       # spin up a database for this job
       postgres:
@@ -38,10 +42,10 @@ jobs:
         run: npm ci
 
       - name: Type check server
-        run: npm run type-check -w=server
+        run: npm run typecheck -w=server
 
       - name: Type check client
-        run: npm run type-check -w=client
+        run: npm run typecheck -w=client
 
       # TODO: lint client code and server code
       # TODO: run server tests and client unit tests here. Make sure you are not
@@ -64,6 +68,7 @@ jobs:
           DB_USER: turing
           DB_PASSWORD: turing
           DB_NAME: testdb
+          DB_HOST: localhost
 
           # port to start the server on
           PORT: 3000
@@ -74,10 +79,6 @@ jobs:
       # end code.
       - name: Build front end for E2E tests
         run: npm run build -w=client
-        env:
-          # Similar to the .env file in your front end.
-          VITE_API_ORIGIN: http://localhost:3000
-          VITE_API_PATH: /api/v1/trpc
 
       # Just to make sure that our API server is up and running
       # before we start our E2E tests, we could use a health check.
@@ -99,7 +100,7 @@ jobs:
       # upload that report as an artifact so that we can download
       # it later from the GitHub Actions UI. This will help us
       # debug any issues that occured in E2E tests.
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report

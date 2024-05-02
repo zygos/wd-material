@@ -1,22 +1,16 @@
 import type { Jwt, JwtPayload } from 'jsonwebtoken'
-import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { authUserSchema } from '@server/entities/user'
+import { parseTokenPayload } from '@server/modules/user/tokenPayload'
 import { publicProcedure } from '..'
 
 type VerifyToken = (token: string) => Jwt | JwtPayload | string
-
-// MUST: use parseTokenPayload instead
-const tokenSchema = z.object({
-  user: authUserSchema,
-})
 
 // An example with dependency injection.
 export function buildAuthenticatedProcedure(verify: VerifyToken) {
   function getUserFromToken(token: string) {
     try {
       const tokenVerified = verify(token)
-      const tokenParsed = tokenSchema.parse(tokenVerified)
+      const tokenParsed = parseTokenPayload(tokenVerified)
 
       return tokenParsed.user
     } catch (error) {

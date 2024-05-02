@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest'
 import { authenticatedProcedure } from './authenticatedProcedure'
-import { AuthUser, router } from './trpc'
+import { AuthUser, router, createCallerFactory } from './trpc'
 
 const INVALID_TOKEN = 'invalid-token'
 const VALID_TOKEN = 'valid-token'
@@ -25,7 +25,7 @@ const routes = router({
 })
 
 it('should pass if user is already authenticated', async () => {
-  const authenticated = routes.createCaller({
+  const authenticated = createCallerFactory(routes)({
     authUser: {
       id: 1,
       email: 'some@user.com',
@@ -38,7 +38,7 @@ it('should pass if user is already authenticated', async () => {
 })
 
 it('should pass if user provides a valid token', async () => {
-  const usingValidToken = routes.createCaller({
+  const usingValidToken = createCallerFactory(routes)({
     req: {
       header: () => `Bearer ${VALID_TOKEN}`,
     },
@@ -50,7 +50,7 @@ it('should pass if user provides a valid token', async () => {
 })
 
 it('should throw an error if user does not provide a token', async () => {
-  const unauthenticated = routes.createCaller({
+  const unauthenticated = createCallerFactory(routes)({
     req: {
       header: () => undefined,
     },
@@ -63,7 +63,7 @@ it('should throw an error if user does not provide a token', async () => {
 })
 
 it('should throw an error if it is run without access to headers', async () => {
-  const invalidToken = routes.createCaller(
+  const invalidToken = createCallerFactory(routes)(
     {
       req: undefined as any,
     }
@@ -73,7 +73,7 @@ it('should throw an error if it is run without access to headers', async () => {
 })
 
 it('should throw an error if user provides invalid token', async () => {
-  const invalidToken = routes.createCaller(
+  const invalidToken = createCallerFactory(routes)(
     {
       req: {
         header: () => `Bearer ${INVALID_TOKEN}`,

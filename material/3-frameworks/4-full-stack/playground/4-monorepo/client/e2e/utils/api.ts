@@ -3,7 +3,7 @@ import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 import type { AppRouter } from '@mono/server/src/shared/trpc'
 import { fakeUser } from './fakeData'
 import type { Page } from '@playwright/test'
-import { superjson } from './superjson/common'
+import superjson from 'superjson'
 
 const trpc = createTRPCProxyClient<AppRouter>({
   transformer: superjson,

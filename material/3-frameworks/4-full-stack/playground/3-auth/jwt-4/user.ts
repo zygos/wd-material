@@ -1,9 +1,9 @@
 import { TRPCError, initTRPC } from '@trpc/server'
 import bcrypt from 'bcrypt'
 import jsonwebtoken from 'jsonwebtoken'
-import z from 'zod'
+import { z } from 'zod'
 
-const { procedure: publicProcedure, router } = initTRPC.context<{
+const { procedure: publicProcedure, router, createCallerFactory } = initTRPC.context<{
   // Express req and res objects that we
   // would have in an Express.js app a
   // tiny slice of the express request
@@ -22,6 +22,8 @@ const { procedure: publicProcedure, router } = initTRPC.context<{
   // store the authenticated user
   authUser?: AuthUser,
 }>().create()
+
+export { createCallerFactory }
 
 // Our authenticatedProcedure = publicProcedure + provided authentication function.
 // We could chain these middlewares together and add even more middlewares.

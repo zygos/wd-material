@@ -115,7 +115,7 @@ As an external service:
 
 **Step 0.** Setup the project.
 
-1. [Download the project starter](https://drive.google.com/file/d/1g4INbi8dA3BmZ06ZCWhp7i1omGe_Qffj/view?usp=sharing).
+1. [Download the project starter](https://drive.google.com/file/d/1o3KWOKqs6ul1FETnRRZRlu_itpDCwAEs/view?usp=drive_link).
 2. Run `npm i` in the top-level folder to install all dependencies.
 3. This project supports 0-setup back-end. Try running the back-end with `npm run dev:mem` in the `server` folder. It should start up a development server with a PostgreSQL-like in-memory database.
 4. We recommend to work with your actual PostgreSQL database. Setup `.env` files in the `client` and `server` folders based on `.env.example` files.
@@ -218,6 +218,6 @@ Follow this approach to tackle the hands-on exercise:
 
 - Spend up to 10 hours attempting to solve the task on your own.
 - If you struggle during the first hours and find it too difficult, try seeking help from your peers or JTLs for an additional 10 hours. Spend half of this time working with someone else, whether a study buddy, a peer who has completed the exercise, or a JTL in an open session.
-- If you still need help, look at [the provided solution](https://drive.google.com/file/d/1PDZWjlj1hwvSqrHNe-v0fqArnoqJZHfS/view?usp=sharing) and walk through it step-by-step. Spend up to 10 hours on the walkthrough.
+- If you still need help, look at [the provided solution](https://drive.google.com/file/d/1VMKySTmrxedH9K5vQdKb5jQgPl_7Npkl/view?usp=drive_link) and [its walkthrough guide](https://drive.google.com/file/d/1NSyue4W5W0jtadZQ6AmWU5A_8T-s3dZ1/view?usp=drive_link). Spend up to 10 hours on the walkthrough.
 - Try to go back to your solution once the provided solution clears up any obstacles you encountered.
 - We recommend checking the final provided solution, even if you have completed the task on your own, to compare approaches and potentially learn new techniques.

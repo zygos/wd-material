@@ -1,0 +1,61 @@
+#destinations {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.destinations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+
+.destination img {
+  object-fit: cover;
+  max-height: 240px;
+  width: 100%;
+}
+
+.destination {
+  position: relative;
+}
+
+.destination .location {
+  bottom: 0;
+  position: absolute;
+
+  /* Make it take up the entire width of the parent element (.destination) */
+  width: 100%;
+
+  /* White, centered text */
+  color: white;
+  text-align: center;
+}
+
+.destination .location strong {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+}
+
+.destination .location .country {
+  /* the country seems to be using the same font as the header */
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
+}
+
+@media (width >= 768px) {
+  #destinations .description {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .destinations {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+  }
+
+  .destinations img {
+    max-height: none;
+  }
+}

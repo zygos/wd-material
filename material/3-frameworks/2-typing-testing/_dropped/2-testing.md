@@ -17,7 +17,6 @@ Make sure you take note of the following:
 
 Testing does not end with unit tests. In a sense, any expectation which you have about your application can be turned into a test. While working on your projects you might have checked:
 
-{{ MUST: rewrite this section }}
 - when running a function, does it log the value you expect? - **unit test**. The goal here is to cover various edge-cases and if the test fails, you know exactly where to look for the problem.
 - your code fulfills some sort of feature - **functional test**. The goal here is to check if the feature works according to business requirements.
 - when clicking on a button, does it open the modal you expect? Automated browser **end-to-end tests** (E2E). The goal here is to check if the application works as a whole with all the pieces connected together.
@@ -74,8 +73,6 @@ In-between each test, consider refactoring your code. You do not need to refacto
 
 Task:
 - Go through 3 exercises in the `src/green-refactor` folder.
-
-{{ MUST: Add exercise. }}
 
 ---
 

@@ -12,3 +12,23 @@ SQL Joins Explained
 https://www.youtube.com/watch?v=9yeOJ0ZMUYw&ab_channel=Socratica
 
 ?
+
+---
+
+- Is it generally better to use in memory databases for testing rather than real ones?
+- Coding interview tips? How to be more confidant to start coding? :)
+- Can you use code you developed at work, e.g. general-purpose classes, custom components etc, but which is not specific to in-house projects in other personal projects?
+
+---
+
+
+Build up
+Mini solution
+Advanced solution
+
+---
+
+- I like to learn from others people's code.
+This applies in a working environment. In a learning environment, it is very difficult to do that. Level of the learns is very different, difficult to find on eproject that; coding style; different coding styles. How to write this material so it is usable as learning material? It is quite difficult, I really liked the approach in Module 1 Tci Tac Toe. Everybody was supposed to / There is
+
+---

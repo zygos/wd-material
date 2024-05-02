@@ -1,6 +1,7 @@
+import { createCallerFactory } from '@server/trpc'
 import router from '.'
 
-const { create, findAll } = router.createCaller({
+const { create, findAll } = createCallerFactory(router)({
   db: {
     getRepository: () => ({
       save: () => ({ id: 1, name: 'Lassie' }),

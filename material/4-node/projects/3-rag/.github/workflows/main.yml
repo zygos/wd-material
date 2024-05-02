@@ -31,10 +31,10 @@ jobs:
         run: npm ci
 
       - name: Type check server
-        run: npm run type-check -w=server
+        run: npm run typecheck -w=server
 
       - name: Type check client
-        run: npm run type-check -w=client
+        run: npm run typecheck -w=client
 
       - name: Lint server
         run: npm run lint -w=server

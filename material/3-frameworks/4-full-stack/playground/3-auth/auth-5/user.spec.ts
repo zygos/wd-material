@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
-import { userRouter, userRepository } from './user'
+import { createCallerFactory, userRouter, userRepository } from './user'
 
-const { signup } = userRouter.createCaller({})
+const { signup } = createCallerFactory(userRouter)({})
 
 it('creates in a user in the database', async () => {
   await signup({

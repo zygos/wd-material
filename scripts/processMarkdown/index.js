@@ -1,8 +1,7 @@
-const { append, endsWith, filter, map, reduce, reject, startsWith } = require('rambda')
-const { intoSequentialPromise, pipeAsync } = require('./utils')
-const { readdir, readFile, writeFile } = require('fs/promises')
-const { mkdirSync } = require('fs')
-const processMarkdown = require('./processMarkdown')
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { append, endsWith, filter, map, reduce, test } from 'rambda'
+import { intoSequentialPromise, pipeAsync } from './utils.js'
+import { processMarkdown } from './processMarkdown.js'
 
 const [, , inputPath] = process.argv
 
@@ -14,21 +13,36 @@ if (!inputPath) {
 const outputPath = `${inputPath}/dist`
 
 // create output directory if it doesn't exist
-mkdirSync(outputPath, { recursive: true })
+await mkdir(outputPath, { recursive: true })
 
-pipeAsync(
+await pipeAsync(
   readdir,
   filter(endsWith('.md')),
-  reject(startsWith('_')),
+  filter(test(/^\d/)),
+  // reject(startsWith('_')),
   map(file => async () => {
-    const content = await readFile(`${inputPath}/${file}`, 'utf8')
-    const processedContent = await processMarkdown(content)
     const outputFilePath = `${outputPath}/${file}`
+
+    const [content, contentPrevious] = await Promise.all([
+      readFile(`${inputPath}/${file}`, 'utf8'),
+      readFile(outputFilePath, 'utf8').catch(() => ''),
+    ])
+
+    const contentProcessed = await processMarkdown(content)
+
+    if (contentPrevious === contentProcessed) {
+      console.log(`Unchanged ${outputFilePath}`)
+      return
+    }
 
     console.log(`Writing ${outputFilePath}`)
 
-    await writeFile(outputFilePath, processedContent)
+    await writeFile(outputFilePath, contentProcessed)
   }),
   append(() => console.log('Done!')),
   reduce(intoSequentialPromise, []),
 )(inputPath)
+
+// TODO: export quizzes
+
+// TODO: zip projects

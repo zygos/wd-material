@@ -36,6 +36,23 @@ Exercises by other providers are pretty good. There are tests and a solution. It
 
 ---
 
+- When teaching OOP, develop a new class in an existing project.
+- When teaching requests, develop a middleware in an existing project.
+- When teaching SQL, connect to the database and the next step - rework this into a Postgres connection.
+- Develop a custom component in Vue (or other SPA), like <Button>, etc.
+
+Teaching to use reuasble components.
+
+---
+
+Update CS50 course to 2024 version.
+
+Add Cybersecurity:
+  - https://cs50.harvard.edu/x/2024/weeks/10/
+
+TypeScript error handling:
+- https://byby.dev/ts-try-catch-error-type
+
 Grid:
 - https://grid.malven.co/
 

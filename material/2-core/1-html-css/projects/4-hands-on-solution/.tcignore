@@ -1,0 +1,9 @@
+.vscode
+dist
+resources
+_original.html
+.prettierignore
+.prettierrc.json
+.stylelintrc.json
+package-lock.json
+package.json

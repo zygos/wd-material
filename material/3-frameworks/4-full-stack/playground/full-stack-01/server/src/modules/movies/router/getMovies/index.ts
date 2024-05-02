@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { Movie } from '@server/database'
 import { procedure } from '@server/trpc'
 import { In } from 'typeorm'

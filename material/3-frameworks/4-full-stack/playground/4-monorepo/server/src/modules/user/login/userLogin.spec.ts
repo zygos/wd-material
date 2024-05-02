@@ -1,5 +1,7 @@
-// import { createMockDatabase } from '@tests/utils/database'
-import usersRouter from '..'
+import { createCallerFactory } from '@server/trpc'
+import userRouter from '..'
+
+const createCaller = createCallerFactory(userRouter)
 
 const userSeed = {
   id: 12345,
@@ -28,7 +30,7 @@ const db = {
 //   },
 // })
 
-const { login } = usersRouter.createCaller({ db } as any)
+const { login } = createCaller({ db } as any)
 
 const PASSWORD_CORRECT = 'password.123'
 

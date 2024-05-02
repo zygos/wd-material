@@ -18,7 +18,6 @@ Here, we will refer to all animated images as GIFs, even though they might be in
 
 - be triggered by a request
 - fetch a random GIF related to a celebration or success from an external GIF service (such as Giphy or Tenor API)
-// MUST: update next bullet point
 - retrieve a random congratulatory message template from the database. Template would contain a reusable piece of text that you can re-use: "You nailed it! 💪", "You did it! I knew you could. 🤗".
 - retrieve a sprint title from the database
 - congratulate a user on a configured Discord server with the GIF and a message in a similar manner to what you can see in the Turing College "accomplishments" channel
@@ -71,7 +70,6 @@ Throughout the project, you might find that some modules are tricky to test. How
 
 To try out your project in the wild, you must create your own Discord server and configure your server profile to have a username in an expected pattern.
 
-// MUST: add the next paragraph
 **At the end of the README file, add a link to the public GitHub repository that contains your work from Part 4 so far.** If you are ahead in your batch, we expect that you might not yet have it fully done – however, the initial repository should still be there. You should also have at least one session of peer programming done by the time you finish this sprint.
 
 ## Additional comments
@@ -85,7 +83,6 @@ To try out your project in the wild, you must create your own Discord server and
 
 - Configure the bot to post the congratulatory message in a specific channel based on the completed sprint.
 - Allow the user to specify which congratulatory message template. You can assume that the user will provide a template ID.
-// MUST: update next bullet point
 - Allow the congratulation message template to support any order of user name, sprint title, and congratulation message. Example: "Mirror mirror on the wall, who completed {sprintTitle} without a fall? It's none other than {name}!"
 - Send a direct message to the person on the server to congratulate them.
 - Configure your bot to serve multiple Discord servers.
@@ -130,5 +127,4 @@ During a task review, you may get asked:
 
 To submit the project and allow the reviewer to view your work beforehand, go to your GitHub repository by clicking on the GitHub icon above. Next, select "Add File"->"Upload Files". Choose the files you worked on to upload them, then click the green "Commit changes" button. Once you have completed all the steps of the project and uploaded your work, go to the Turing Platform and click the "Submit Project" button to complete it. The platform then allows you to see the times when reviewers are available to have a call with you and review the project. Simply book a time that suits you.
 
-// MUST: increase estimated time
-**Estimate average time to complete: 30 hours**
+**Estimate average time to complete: 35 hours**

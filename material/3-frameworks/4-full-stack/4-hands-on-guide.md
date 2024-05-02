@@ -117,10 +117,15 @@ For project endpoints, we followed a very two-step approach:
 For the first `project.create` endpoint, we could have the following test:
 
 ```ts
+import { createCallerFactory } from '@server/trpc'
+import { createTestDatabase } from '@tests/utils/database'
+
+const createCaller = createCallerFactory(projectRouter)
+
 it('should create a persisted project', async () => {
   // ARRANGE
   const db = await createTestDatabase()
-  const { create } = projectRouter.createCaller({ db })
+  const { create } = createCaller({ db })
 
   // ACT
   const projectCreated = await create({
@@ -144,7 +149,7 @@ We do not need to pollute our project tests with request-level details, especial
 We can use the fact that our authentication middleware function does not run anything auth-related if we provide the `authUser` upfront. Then, we can pass in the `authUser` to the `create` caller:
 
 ```ts
-const { create } = projectRouter.createCaller({
+const { create } = createCaller({
   authUser: {
     id: 1,
   },
@@ -279,7 +284,7 @@ Now, having this sort of setup is quite helpful because we can create a user in 
 ```ts
 const user = await db.getRepository(User).save(fakeUser())
 
-const { create } = projectRouter.createCaller({
+const { create } = createCaller({
   db,
   authUser: { id: user.id },
 })
@@ -291,7 +296,7 @@ We have added one more thing to our `projectCreate.spec` test:
 // authContext function that forms the authUser object for us
 // so if we change the authUser shape, it does not require us
 // to change lots of tests to reflect that change
-const { create } = projectRouter.createCaller(authContext({
+const { create } = createCaller(authContext({
   db,
 }, user))
 ```
@@ -318,7 +323,7 @@ Then, we can use it in our tests like this:
 ```ts
 // ARRANGE (Given)
 const { db, project, user } = await setupBugTest()
-const { report } = bugRouter.createCaller(authContext({ db }, user))
+const { report } = createCaller(authContext({ db }, user))
 
 // ACT (When)
 // create bug
@@ -408,7 +413,9 @@ export default projectIdOwnerProcedure
 For this to work, we had to extend the context in `trpc/index.ts`. Then, in tests, we provide fake repositories through a small helper function:
 
 ```ts
-const { resolve } = bugRouter.createCaller(
+const createCaller = createCallerFactory(bugRouter)
+
+const { resolve } = createCaller(
   authRepoContext(
     {
       Project: {

@@ -1,24 +1,37 @@
-require('dotenv').config({})
-const { pipeAsync } = require('./utils')
-const { replace } = require('rambda')
+import 'dotenv/config'
+import { replace } from 'rambda'
+import { pipeAsync } from './utils.js'
 
 // Add <br> tags round headlines (#, ##, ###)
 const addBrTagsHeadlines = replace(/(\n|^)(#+)/g, '$1<br>\n\n$2')
 const addBrTagsBoldLines = replace(/(\n)(\*\*|__)/g, '$1<br>\n\n$2')
 
 // Replace markdown images with <div><img /></div> tags
-const replaceImageTags = replace(/!\[[^\]]*\]\(([^\)]+)\)/g, '<div><img src="$1" /></div>')
+// const replaceImageTags = replace(/!\[[^\]]*\]\(([^\)]+)\)/g, '<div><img src="$1" /></div>')
 const removeSingleLineComments = replace(/\n<!--[^\n]*-->/g, '')
 
-const processMarkdown = pipeAsync(
+// Remove <br> tags in code blocks, except in HTML code blocks
+const removeBrTagsInCodeBlocks = replace(/```[\s\S]*?```/g, (codeBlock) => {
+  const isHtmlCodeBlock = codeBlock.startsWith('```htm')
+
+  if (isHtmlCodeBlock) return codeBlock
+
+  return codeBlock.replace(/<br>\n?/g, '')
+})
+
+export const processMarkdown = pipeAsync(
   removeSingleLineComments,
   addBrTagsHeadlines,
   addBrTagsBoldLines,
-  // hostImages,
-  replaceImageTags,
-)
 
-module.exports = processMarkdown
+  // too much of a hassle
+  // hostImages,
+
+  // no longer necessary as TC supports native markdown image links
+  // replaceImageTags,
+
+  removeBrTagsInCodeBlocks,
+)
 
 // Host images on imgur.com and replace local markdown image links with imgur links
 // const hostImages = async (markdown) => {

@@ -95,7 +95,8 @@ Additional time can be allocated for feedback and discussion at the end of the i
 
 - **Communication and Soft Skills.** Ability to clearly articulate thoughts, explain reasoning, and communicate effectively throughout the interview. Interviewer had no challenge following the candidate's thought process at all.
 - **Technical Knowledge.** Learner answered all questions correctly and demonstrated a deep understanding of the topics covered in the interview.
-- **Problem Solving.** No trouble achieving all basic problem solving signals and did so with enough time to achieve most advanced problem solving signals.
+// MUST: replace sentence below
+- **Problem Solving.** Demonstrated a structured problem-solving approach, breaking down problems into smaller steps. Exhibited the ability to identify and debug solutions within the given timeframe.
 - **Technical Competency**. Translates discussed solution into clean and straightforward implementation with minimal to no bugs. Solution has no unnecessary code and uses the right level of abstraction.
 - **Testing and Edge Cases.** Came up with various edge cases and tested their solution. Identified and self-corrected bugs in code.
 

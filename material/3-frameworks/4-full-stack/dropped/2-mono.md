@@ -192,7 +192,7 @@ export default router({
 
 ```ts
 // modules/user/signup/index.ts
-import z from 'zod'
+import { z } from 'zod'
 import { publicProcedure } from '@server/trpc'
 
 export default publicProcedure

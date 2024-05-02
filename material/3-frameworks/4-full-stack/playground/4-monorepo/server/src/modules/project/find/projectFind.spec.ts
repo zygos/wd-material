@@ -2,7 +2,10 @@ import { authContext } from '@tests/utils/context'
 import { Project, User } from '@server/entities'
 import { fakeProject, fakeUser } from '@server/entities/tests/fakes'
 import { createTestDatabase } from '@tests/utils/database'
-import router from '..'
+import { createCallerFactory } from '@server/trpc'
+import projectRouter from '..'
+
+const createCaller = createCallerFactory(projectRouter)
 
 it('should return a list of projects', async () => {
   const db = await createTestDatabase()
@@ -19,7 +22,7 @@ it('should return a list of projects', async () => {
       fakeProject({ userId: userOther.id }),
     ])
 
-  const { find } = router.createCaller(authContext({ db }, user))
+  const { find } = createCaller(authContext({ db }, user))
 
   // When (ACT)
   const userProjects = await find()

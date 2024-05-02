@@ -2,7 +2,7 @@ Part 2: Unit Testing
 
 # Part description
 
-In this part, we will dive into the world of JavaScript unit testing from the point of view of a developer. We will focus on practical aspects of testing and how to use tests to allow us to refactor our code to reach better solutions. At the same time, we will practice using TypeScript types that we just learned about.
+In this part, we will dive into the world of JavaScript unit testing from the developer's point of view. We will focus on practical aspects of testing and how to use tests to allow us to refactor our code to reach better solutions. At the same time, we will practice using the TypeScript types that we just learned about.
 
 # Key learning topics & resources for this part
 
@@ -13,18 +13,18 @@ Before introducing you to professional testing practices, we must ensure you und
 - [Unit testing in Javascript](https://www.youtube.com/watch?v=hz0_q1MJa2k). It will use CommonJS modules and server-side code as examples, but that should not hinder understanding the central concept.
 
 When is it a good time to add tests to your application? There are multiple approaches:
-- Test-first - write tests before you write the code. This implies that you convey the requirements for your application through tests that you fulfill by writing code that passes these tests.
-- Test-after - write tests after you have written the basic implementation of a desired feature, and you want to ensure that it works in various scenarios.
-- Test before refactoring - in an existing codebase that does not have tests, you might be unsure if you can safely refactor some code. In that case, you can write tests for the existing code and then refactor it. If the tests still pass, you can be more confident that you did not break anything.
-- Test before fixing a bug - this is a highly recommended approach when dealing with bugs. This is because bugs tend to be caused by unexpected scenarios you did not think about while writing the code. By writing tests for the bug, you can make sure that you understand the bug and that you can reproduce it. Then you can fix the bug and make sure that this particular bug will not be a nuisance in the future. This will give you confidence that you have fixed the bug and that it will not reappear in the future.
+- **Test-first** - write tests before you write the code. This implies that you convey the requirements for your application through tests that you fulfill by writing code that passes these tests.
+- **Test-after** - write tests after you have written the basic implementation of a desired feature, and you want to ensure that it works in various scenarios.
+- **Test before refactoring** - in an existing codebase that does not have tests, you might be unsure if you can safely refactor some code. In that case, you can write tests for the existing code and then refactor it. If the tests still pass, you can be more confident that you did not break anything.
+- **Test before fixing a bug** - this is a highly recommended approach when dealing with bugs. This is because bugs tend to be caused by unexpected scenarios you did not consider while writing the code. By writing tests for the bug, you can make sure that you understand the bug and that you can reproduce it. Then, you can fix the bug and make sure that this particular bug will not be a nuisance in the future. This will give you confidence that you have fixed the bug and that it will not reappear in the future.
 
 We will practice all scenarios in this part.
 
 ## Vitest (0.5 hours)
 
-For quite a few years, [Jest](https://jestjs.io/) has been the go-to testing package for JS applications. It is a great library, but due to its more cumbersome configuration for ES modules, we will use a more modern testing library that tries to address some of Jest's limitations - [Vitest](https://vitest.dev/).
-- Vitest is built on top of Vite
-- It is easier to configure
+For quite a few years, [Jest](https://jestjs.io/) has been the go-to testing package for JS applications. It is a great library, but due to its more cumbersome configuration for ES modules, we will use a more modern testing library that tries to address some of Jest's limitations - [Vitest](https://vitest.dev/):
+
+- Vitest is built on top of Vite, so it requires minimal configuration
 - It supports ES modules out of the box
 - It runs faster
 - It is designed to be a drop-in Jest replacement, so most Jest test code looks exactly the same in Vitest
@@ -51,7 +51,7 @@ If you are dealing with more complex test cases that need some setup before runn
 - **Act** - calling the function you are testing or performing some user-like action
 - **Assert** - asserting that the result is what you expect it to be
 
-This is also known as Given-When-Then (GWT). A classic three-part act. For example:
+This is also known as Given-When-Then (GWT). It's a classic three-part act. For example:
 
 ```ts
 import { it, expect } from 'vitest'
@@ -77,7 +77,7 @@ it('should return remaining available rooms', () => {
 })
 ```
 
-Sometimes tests are grouped in `describe` blocks. A `describe` block does not change how your tests run but allows clustering tests for more structured test reports. A `describe` block usually consists of a general scenario name and a function containing the test cases.
+Sometimes, tests are grouped in `describe` blocks. A `describe` block does not change how your tests run but allows grouping tests for more structured test reports. A `describe` block usually contains a general scenario name and a function containing the test cases.
 
 For example:
 
@@ -99,9 +99,9 @@ describe('with tasks', () => {
 })
 ```
 
-These are just functions; you can organize them as you see fit. You can use no `describe` blocks, a single `describe` block, multiple `describe` blocks, and so on. If you find your test file having more than a handful of test cases, then you might consider moving some of them to a separate file, so each of your files would be focused on a particular scenario or a family of scenarios.
+These are just functions; you can organize them as you see fit. You can use no `describe` blocks, a single `describe` block, multiple `describe` blocks, and so on. If your test file has more than a handful of test cases, you might consider moving some of them to a separate file so each file is focused on a particular scenario or a family of scenarios.
 
-In general, we recommend using `describe` blocks when you can group your test cases under some shared context. Try not to go beyond 2-levels of `describe` nesting. If a `describe` block grows to be large, move it to a separate file.
+In general, we recommend using `describe` blocks when you can group your test cases under a shared context. Try not to go beyond two levels of `describe` nesting. If a `describe` block grows too large, move it to a separate file.
 
 ## Vitest documentation (1 hour)
 
@@ -125,13 +125,13 @@ We will practice:
 - using TypeScript types
 - using higher-order functions
 
-Download the [exercise files](https://drive.google.com/file/d/1L75TkJRLdOMVR9s5q8vBWmo3OJUwtHsx/view?usp=sharing). These will be used for multiple exercises in this part.
+Download the [exercise files](https://drive.google.com/file/d/18T205lioqCLaVcDNOugU-S-09WVXXuql/view?usp=drive_link). You will use them for multiple exercises in this part.
 
 **Task:**
 1. Install dependencies - `npm install`.
 2. Open up the first exercise in the `src/1-refactor` folder - `1-calculateTotalPrice`.
 3. Read the colocated test file to understand what the code is supposed to do.
-4. Open the terminal and run the test file for this exercise - `npm run test calculateTotalPrice`. This will run the test and **watch for any source/test changes**. Unit tests directly import our source code, so they can conveniently rerun every time we save our source or test file. This speeds up our feedback loop.
+4. Open the terminal and run the test file for this exercise - `npm run test calculateTotalPrice`. This will run the test and **watch for any source/test changes**. Unit tests directly import our source code to conveniently rerun every time we save our source or test file. This speeds up our feedback loop.
 5. Open up the implementation file while your terminal has the test runner watching for changes. We recommend trying out split-screen editing in VS Code. You can do this by having your test and implementation files on different sides of the screen (split-screen). You can do this by opening both files and running the VS Code command "Move Editor into Next Group".
 6. Refactor the code to make it more readable and maintainable. Add TypeScript types. Using higher-order functions would be a good idea in many cases.
 7. Continuously save your changes and monitor the test results. If the tests fail, you know you broke something between your last save and now.
@@ -147,7 +147,7 @@ One exercise will introduce you to component testing with 2 component tests that
 - `taskManager.vtu.spec` using `@vue/test-utils` allows us to test Vue components rapidly in isolation and is excellent if you want to test the component's API.
 - `taskManager.tl.spec` using [`testing-library`](https://testing-library.com/), which does a bit more work to simulate user-like behavior and is great if you want to test the component's behavior and not its API. It makes no assumptions about the implementation of the component, and it would be possible to have a React or Angular component that would pass nearly the same tests.
 
-**Note:** We will not go into more details about component testing and integration testing as that would spread us too thin, but we still wanted to show you an example of how it could be done. If you have time after finishing the other exercises, feel free to play with the component tests.
+**Note:** We will not go into more detail about component and integration testing as trying to cover all test types would spread us too thin, but we still wanted to show you an example of how it could be done. If you have time after finishing the other exercises, feel free to play with the component tests.
 
 ## Exercise: Writing tests (1 hour)
 
@@ -160,23 +160,23 @@ In this section, you will work on writing a few unit tests in the `2-test` folde
 4. Remove the `skip` and `todo` modifiers and run the tests.
 5. If necessary, update the implementation to make the tests pass.
 
-## Exercise: Writing an implementation using tests (2.5 hour)
+## Exercise: Writing an implementation using tests (2.5 hours)
 
 Now, we will try out writing an implementation using a test-first approach. We will use the `3-test-first` folder for this exercise.
 
-A developer before you has written a few test cases for a few some functions that need to be finished up. Your task is to finish the implementation of the functions so that the tests pass.
+Another developer has written a few test cases for some functions that need to be finished. Your task is to finish implementing the functions so that the tests pass.
 
 **Task:**
 1. Go through the provided exercises in the `src/3-test-first` folder.
 2. Use the collocated test file and the provided implementation to understand what the code is supposed to do.
 3. Run the tests and make sure that they fail.
 
-The last few exercises will require you to write tests and implementation yourself. We recommend experimenting with the following flow:
+The last few exercises will require you to write and implement tests yourself. We recommend experimenting with the following flow:
 1. Write a test case.
 2. Run the tests and make sure that they fail.
 3. Implement the function to make the test pass.
 
-This would be a very soft introduction to **Test-Driven Development (TDD)**. We will cover it in more detail later in this course. For now, we will try it out to get a feeling for it.
+This would be a very soft introduction to **Test-Driven Development (TDD)**. We will cover it in more detail later, but for now, we will try it out to get a feel for it.
 
 Watch a basic example of a [TDD cycle in JS](https://www.youtube.com/watch?v=89Pl2Uok8xc).
 
@@ -184,5 +184,5 @@ Watch a basic example of a [TDD cycle in JS](https://www.youtube.com/watch?v=89P
 
 - What makes a function or a class easy to test?
 - What is a fixture in testing?
-- (Optional) Look into how you could you automatically add all Vitest functions to every test file without having to import them.
+- (Optional) Look into how to automatically import all Vitest functions to every test file without importing them manually.
 - (Optional) How could you test a Vue component?

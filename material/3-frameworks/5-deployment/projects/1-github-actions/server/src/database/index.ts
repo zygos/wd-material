@@ -1,7 +1,8 @@
-import { join } from 'path'
+import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
-import { newDb } from 'pg-mem'
+import { DataType, newDb } from 'pg-mem'
 import * as entities from '../entities'
 
 export function createDatabase(
@@ -34,6 +35,12 @@ function createMemoryDatabase(): DataSource {
     name: 'version',
     implementation: () => '1',
   })
+  pgMemory.public.registerFunction({
+    name: 'obj_description',
+    args: [DataType.text, DataType.text],
+    returns: DataType.text,
+    implementation: () => 'test',
+  })
 
   return pgMemory.adapters.createTypeormDataSource({
     type: 'postgres',
@@ -45,7 +52,8 @@ function createMemoryDatabase(): DataSource {
 }
 
 function relative(...paths: string[]) {
-  return join(import.meta.url, ...paths)
+  const directory = join(fileURLToPath(import.meta.url), '..')
+  return join(directory, ...paths)
 }
 
 export type Database = DataSource

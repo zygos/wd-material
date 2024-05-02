@@ -1,0 +1,115 @@
+#topbar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#logo {
+  display: flex;
+  justify-content: center;
+}
+
+#menu {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#menu nav a {
+  line-height: 40px;
+}
+
+#search-field {
+  background-color: transparent;
+  border: none;
+}
+
+header {
+  /* A way to use an image in a background: */
+  background-image: url('/images/header.jpg');
+  background-position: center;
+
+  /* if we Google "css fill background with image", we find this: */
+  background-size: cover;
+
+  /* make the text white */
+  color: white;
+
+  /* make the element take up the entire height of the screen */
+  height: 100vh;
+
+  /* other header styles */
+  padding-bottom: 20px;
+  font-family: Montserrat, Helvetica, Arial, sans-serif;
+}
+
+header h1 {
+  font-size: 64px;
+  font-weight: bold;
+}
+
+header > .container-md {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  /* expands our container to take up all the available space offered by the header */
+  height: 100%;
+}
+
+#book form {
+  display: grid;
+  grid-template-areas:
+    'destination destination'
+    'from to'
+    'guests guests'
+    'submit submit';
+
+  /*
+    A more advanced technique to force the columns
+    to take up the same amount of space. Fixes uneven
+    spacing on the sides.
+  */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-flow: column;
+  gap: 10px;
+}
+
+@media screen and (width >= 576px) {
+  #book form {
+    grid-template-areas:
+      'destination destination destination'
+      'from to guests'
+      'submit submit submit';
+  }
+}
+
+@media (width >= 768px) {
+  #book form {
+    grid-template-areas: 'destination from to guests submit';
+  }
+}
+
+#book form .destination-select {
+  grid-area: destination;
+}
+
+#book form .from {
+  grid-area: from;
+}
+
+#book form .to {
+  grid-area: to;
+}
+
+#book form .guests {
+  grid-area: guests;
+}
+
+#book form .submit {
+  grid-area: submit;
+}
+
+#book form .submit button {
+  width: 100%;
+}

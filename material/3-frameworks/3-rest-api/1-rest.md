@@ -2,10 +2,14 @@ Part 1: REST APIs and Express.js
 
 # Part introduction
 
+At this point, our front-end applications are quite sophisticated, but we have yet to learn how to build a back-end server on our own. In this part, we will learn how to write API servers with Express.js, a popular Node.js framework. This will be a stepping stone to building full-stack applications.
+
+# Part introduction
+
 During this sprint, we'll work on three projects:
 - Parts 1 - 2: Guided hands-on exercises on creating a minimal REST CRUD API with Express.js.
 - Parts 3: A guided hands-on exercise on writing testable code and using TDD
-- Part 4: A peer programming exercise to create a movie ticket booking Express.j API in a test-driven manner.
+- Part 4: A peer programming exercise to create a movie ticket booking Express.js API in a test-driven manner.
 - Part 5: A Discord bot with a REST API for congratulating Turing College students on their progress.
 
 Part 3 will feature some additional exercises for refactoring and testing your code.
@@ -61,98 +65,6 @@ We will slowly reveal the requirements for this API and some initial steps on ho
 
 # Key learning topics & resources for this part
 
-## Node.js servers (0.5 hours)
-
-We have already used Node.js to run JavaScript code outside of the browser. Now, we'll explore using Node.js to create a server that handles requests and sends responses.
-
-**Note:** We will no longer guide you on some minuscule details, such as differences between `require` (CommonJS) and `import` (ES Modules) syntax, or how to use `import` in Node.js, even if some tutorial presents us with the `require` syntax. We will assume that you are familiar with the basics of Node.js and JavaScript and that you can figure out these details on your own. As a last reminder:
-
-- **When running JavaScript** code in Node.js (which you can do for small exercises), by default, Node will use `require` and `module.exports` for modules. If you want to use `import` and `export`, add `type: "module"` in `package.json`.
-- **When running TypeScript**, which you will use for anything beyond a small exercise, we recommend setting up your project with `tsx`, as described in the previous sprint. However, you can also use other methods such as `ts-node`, but we will not guide you through them. For TypeScript projects, you do not need to add `type: "module"` in `package.json`, as we prefer using CommonJS modules in compiled JavaScript code due to better support for Node.js tooling.
-
-**What is an HTTP request?**
-
-Before we proceed, we will provide a brief refresher on how the web works.
-
-When you make a request to the server (by requesting a page, an image, some JSON data from an API, etc.), your machine is sending out a text message, which would look something like this:
-
-```
-GET / HTTP/1.1
-Host: www.turingcollege.com
-Accept: text/html,text/plain
-```
-
-Here, we state what we want to GET from the server and what we are willing to accept.
-
-**Note:** We are simplifying the process by ignoring DNS queries, additional headers, etc. You will not be dealing with these complications in this sprint.
-
-Given that your machine has looked up the IP address of `www.turingcollege.com`, it will send this message to the machine at that IP address. This machine will have a piece of software that listens to these requests. This software is called a **server**.
-
-**Let's create a Node.js server.**
-
-Create a new file called `index.js`. We will not perform any project setup; we will only use Node.js built-in modules. Let's add the following code:
-
-```js
-// Built-in Node.js module for handling HTTP requests
-// which we import using the CommonJS syntax, which is
-// the default syntax for Node.js.
-// We will use ES Module syntax when we use TypeScript.
-const http = require('http')
-
-// We create a server and tell it what it should do for each request.
-const server = http.createServer((request, response) => {
-  // we print out the request URL to the Node console
-  console.log('Request:', request.url)
-
-  // setting to HTTP status code 200, which means "OK"
-  response.statusCode = 200
-
-  // Indicating the type of content we're sending back.
-  // We could indicate other types, such as JSON or HTML.
-  response.setHeader('Content-Type', 'text/plain')
-
-  // We are ending our response with a message.
-  response.end('Hello, world!')
-})
-
-// Just a random port number for development purposes. Ports
-// under 1024 are privileged and reserved for certain applications,
-// so we pick a port number above 1023.
-const PORT = 3000
-
-server.listen(PORT, 'localhost', () => {
-  console.log(`Server running at http://localhost:${PORT}/`)
-})
-```
-
-If you run this file with `node index.js`, you should see the following message:
-
-```
-Server running at http://localhost:3000/
-```
-
-Unlike applications that only perform some calculations and close themselves when done, **this application will keep running and listening for requests**. This is because we have created an active handle by calling `server.listen()`. A handle refers to a long-lived resource that can perform actions outside of the Node.js process. In this case, the handle is listening for requests on port 3000.
-
-Now, the Node.js process will not exit unless it crashes due to an uncaught error or we send a signal through the terminal to interrupt it (`SIGINT`) by pressing `Ctrl+C` (or `Cmd+C` on macOS).
-
-Now, your server will respond to all requests with the following message:
-
-```
-HTTP/1.1 200 OK
-Content-Type: text/plain
-Content-Length: 13
-
-Hello, world!
-```
-
-**Note:** The `Content-Length` header is automatically added by Node.js, so you don't need to worry about it. Also, we left out some headers intentionally for brevity.
-
-Visit `http://localhost:3000` in your browser to see the response body (content) - `Hello, world!`. This should also print out a message in your Node.js console due to our `console.log` statement. Depending on your browser, you might see multiple requests being made. This is because your browser eagerly requests additional resources, such as `favicon.ico` (the tiny icon displayed in the browser tab).
-
-We recommend using a GUI REST client, such as Insomnia, Postman, or VS Code extensions (REST Client or Thunder Client). These tools provide more insight into the request and response and allow you to use different HTTP methods, such as `POST`, `PUT`, `PATCH`, `DELETE`, etc.
-
-Most of the server code can be boiled down to this general pattern. You receive a request, do something about it, and send a response back.
-
 Creating a production server in this manner would require us to make many technical decisions, such as routing, handling errors, parsing the data the client sends to the server, and many others. Instead of reinventing the wheel, **we will use Express.js**, an unopinionated and minimalist web framework for Node.js. It is the most popular Node.js framework, and many companies use it.
 
 **Pro tip:** In software development, the words "opinionated" and "unopinionated" describe how much a framework or library dictates the structure of your code. **An opinionated framework** will have a lot of structure and rules that you need to follow, but that allows you to have a "batteries included" experience, where you can get started quickly and have a lot of things already set up for you as long as you work within the confines of the framework. This is sometimes called "convention over configuration". In contrast, **an unopinionated framework** will have less structure and rules. It will allow you to structure your code however you want, but you will need to make more technical and architectural decisions yourself.
@@ -170,12 +82,14 @@ There are many ways of building an API, but nowadays, most web applications have
 **How are REST APIs different from other types of APIs?**
 
 ```
-REST components perform actions on a resource by using a representation to capture that resource's current or intended state and transferring that representation between components.
+REST components perform actions on a resource by using a representation to capture
+that resource's current or intended state and transferring that representation
+between components.
 
 -- Roy Thomas Fielding (REST author)
 ```
 
-In REST, you are either asking for a resource or declaring what you want your resource to look like, and the server will try to fulfill your request.
+In REST, you either ask for a resource or declare what you want your resource to look like, and the server will try to fulfill your request.
 
 **REST APIs vs non-REST APIs**
 
@@ -250,7 +164,7 @@ Both request comments belonging to an article. However, the first communicates a
 
 **Not all RESTs are alike**
 
-Are all self-proclaimed REST APIs fully RESTful? No. Quite a few, if not the majority, of REST APIs only partially adhere to all REST constraints. For example, most APIs do not use [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), which requires the server to provide links to related resources. However, they are still called REST APIs because they were designed with REST principles in mind, and we can similarly interact with them.
+Are all self-proclaimed REST APIs fully RESTful? No. Quite a few, if not the majority, of REST APIs only partially adhere to all REST constraints. For example, most APIs do not use [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), which requires the server to provide links to related resources. However, they are still called REST APIs because they were designed with REST principles in mind, and we can interact with them similarly.
 
 So, even though REST APIs have a rather strict definition, the term "RESTful API" is used loosely in the real world. That does not make these sorts of APIs bad; it means they might not have all the benefits of a fully RESTful API.
 
@@ -308,9 +222,7 @@ Watch: [RESTful APIs in Node](https://www.youtube.com/watch?v=-MTSQjw5DrM) (12 m
 - Follow along the video with your code editor. It will show you how to use Express to accomplish the same thing we did in the previous exercise.
 - The video uses Insomnia. You can use any GUI REST client, such as Insomnia, Postman, or VS Code extensions, such as REST Client or Thunder Client. You probably have one installed, as you had some exercises using a REST client in the front-end module. There is no need to have more than a single GUI REST client. You can try out a few, but stick with one you like.
 
-**Note:**
-
-Generally, you will find yourself using the following HTTP methods to database operations:
+**Note.** Generally, you will find yourself using the following HTTP methods and SQL commands in your REST API:
 
 - app.get - SELECT
 - app.post - INSERT
@@ -319,11 +231,11 @@ Generally, you will find yourself using the following HTTP methods to database o
 
 ## Setup: Express.js with TypeScript (0.5 hours)
 
-As you already know, there are many ways of setting up a Node.js project with TypeScript. We have heard about the pains of setting up a project with TypeScript. We have provided a minimal setup to get you started with TypeScript, which is based on the previous sprint's setup.
+There are many ways of setting up a Node.js project with TypeScript. There can be some pains of setting up a new project with TypeScript, especially when you want to add Prettier and ESLint. We have provided a minimal setup to get you started with TypeScript using `tsx` - a package for running TypeScript in development. It is a more modern alternative to `ts-node` and `ts-node-dev`, which are more popular but are a bit slower and have their own quirks.
 
 **Step 0: Download the starting template.**
 
-It is provided to you as a starting template for this part. You can download it, run `npm i` to install and `npm run dev` to run it.
+It is provided to you as a starting template for this part. You can [download it](https://drive.google.com/file/d/1Nc4Hd992DmK0en3ZuuE2Q3zuYN8f6zKd/view?usp=drive_link), run `npm i` to install and `npm run dev` to run it.
 
 It has 2 files that we care about in the `src` folder: `app.ts` and `index.ts`.
 
@@ -342,6 +254,7 @@ export default app
   - `index.ts` - a file that will run the application as a server:
 
 ```ts
+// we no longer need to specify the file extension in TypeScript
 import app from './app'
 
 const PORT = 3000
@@ -356,9 +269,7 @@ In some starter tutorials, you will see both files combined into a single file, 
 We have added `"dev": "tsx watch src"` and `"start": "tsx src"` to the `package.json` scripts, you can start your application in 2 ways:
 
 - run `npm run dev` to start a server in development mode, which will automatically restart the server when you make changes to your code. We will use this command most of the time.
-- run `npm run start` to start a server without restarting it when you make changes to your code.
-
-**Note if you can't start the project.** Since the time the material was created, `tsx` version has been updated to be compatible with Node 18.16+ and some later Node 20 versions. If you can not launch your project, try removing and reinstalling `tsx` with `npm rm tsx && npm i tsx -D`. We will soon update the template to reflect the changes.
+- run `npm run start` to start a server without restarting it when you make changes to your code. This could be used in a deployed application.
 
 ## Express.js: Middleware (0.5 hours)
 
@@ -436,7 +347,7 @@ The server should respond with the following JSON body:
 
 - Watch: [Express JS with TypeScript](https://www.youtube.com/watch?v=KgnJNJk9-to) (40 min)
 
-You can watch it from the start to familiarize yourself with an alternative setup, or **you can skip to 6:20** if you already have a project with `tsx` set up.
+You can watch it from the start to familiarize yourself with an alternative setup, or **you can skip to 6:20** since we have already set up our project with `tsx`.
 
 This video will guide you through the basics of using Express.js with TypeScript.
 
@@ -450,11 +361,11 @@ You were presented with the concept of controllers, services, and models. Let's 
 
 For now, you can think of them as:
 
-- controllers - modules that handle requests and send responses
-- services - modules that handle business logic
-- models - modules that directly define some structure and methods that models your data, typically in the database. However, we will refer to models in a broader sense as anything that deals with manipulating your data in the database. Sometimes, that involves encapsulating all the database access logic in a separate module called a repository, but we will cross that bridge when we get there.
+- **controllers** - modules that handle requests and send responses
+- **services** - modules that handle business logic
+- **models** - modules that directly define some structure and methods that model your data, typically in the database. However, we will refer to models broadly as anything that deals with manipulating your data in the database. Sometimes, that involves encapsulating all the database access logic in a separate module called a repository, but we will cross that bridge when we get there.
 
-There is nothing inherently special about these names; these are just labels we use to describe some layers of an application.
+These names are not inherently special; they are just labels we use to describe some layers of an application.
 
 Some small applications could be easily maintained only with controllers. When an application grows, just through sheer refactoring by trying to separate concerns, you would eventually arrive at a solution that separates the business logic and data access from the handling requests. Eventually, you may have additional in-between layers with more specific concerns.
 
@@ -475,7 +386,7 @@ export function findAll() {
 // ... other model functions
 ```
 
-Technically, our `model.ts` is **a repository** as it is a central point for accessing the database and our model would be a module that defines the structure and methods for our data. However, this distinction is not important for now.
+Technically, our `model.ts` is **a repository** as it is a central point for accessing the database, and our model would be a module that defines the structure and methods of our data. However, this distinction is not important for now.
 
 **Application structure**
 
@@ -531,7 +442,7 @@ users/
 
   service/ # uses the model to handle the business logic
     signUp.ts # hashes the password, creates a user, sends a verification
-    verifyEmail.ts # verifies the user, and sends a greeting email
+    verifyEmail.ts # verifies the user and sends a greeting email
     query.ts # uses the model to query the database and list users
     ...
     index.ts # exports a service module for convenience
@@ -631,13 +542,11 @@ src/
 
 Inside of the `database/migrations/migrate.ts`, you will find a variable called “migrations” (const). Inside of our migrations folder we have a single file, which contains SQL to create a table for articles.
 
-Since our setup is quite manual in this part, we need to inform our migration function about all migration files.
+Since this part's setup is quite manual, we manually import our SQL migration to our migration system.
 
-**Import the createArticleTable file in the migrate.ts file and add it to the migrations array.**
+Make sure that the **createArticleTable file is imported in the migrate.ts and it is included in the migrations array**. In a more advanced setup, we would have a way to import all migration files from a folder automatically.
 
-You can import all exports with the `import * as createArticleTable from` syntax.
-
-We can run `npm run migrate:latest` to execute all migrations that have not been run yet. If you have added it correctly, you will see the “Migrations complete!” message. Otherwise, you will see “No migrations to run!” or even an error message.
+We can run `npm run migrate:latest` to execute all migrations that have not been run yet. If you have set up everything correctly, you will see the “Migrations complete!” message. Otherwise, you will see “No migrations to run!” or even an error message.
 
 If a database does not exist, it will be created, and all migrations will be applied. If we run `npm run migrate:latest` again, nothing will happen, as the database remembers which migrations it has run before. For this particular implementation to work, we must ensure that our migration file exports a `timestamp` and an `up` function.
 
@@ -673,13 +582,15 @@ Once it is ready, run `npm run migrate:latest` to run it. If it fails, you can f
 
 ## Exercise: Use SQLite database in article model (1 hour)
 
-Now that we have set up our `article` table, let's update our model file to use the database instead of an in-memory array.
+Now that we have set up our `article` table let's update our model file to use the database instead of an in-memory array.
 
 **Step 7: Update your article model file to use the database instead of an in-memory array. This should not break any of your existing functionality.**
 
 ## Examining a provided solution (1 hour)
 
 **Step 8: Investigate the provided solution to see how various issues were addressed.**
+
+[Download the solution](https://drive.google.com/file/d/13fiy5fCYq2a3QVviCKXGLHboe1YZ2NYI/view?usp=drive_link).
 
 The provided solution is far from perfect, often deliberately so, to capture a similar work-in-progress state you might have at this point. You might have come up with a different solution, which is fine. Try to understand the provided solution and look for any parts you want to replicate in your solution. Read the comments in the code as they provide additional context.
 

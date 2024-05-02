@@ -1,6 +1,9 @@
 ## Setup
 
-`npm install`
+1. Install dependencies: `npm install`
+2. Setup `.env` based on `.env.example`.
+
+## Exercise
 
 Start with the first numbered exercise folder `typeorm-1`.
 

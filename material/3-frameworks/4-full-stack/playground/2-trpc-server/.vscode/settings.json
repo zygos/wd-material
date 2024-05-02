@@ -2,15 +2,8 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.fixAll.eslint": true
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
-  "eslint.validate": ["typescript", "typescriptreact", "vue"],
-  "vitest.exclude": [
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/e2e/**",
-    "**/cypress/**",
-    "**/.{idea,git,cache,output,temp}/**"
-  ]
+  "eslint.validate": ["typescript", "typescriptreact", "vue"]
 }

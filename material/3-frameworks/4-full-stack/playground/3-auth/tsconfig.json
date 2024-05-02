@@ -7,7 +7,7 @@
 
     "module": "ES2022",
     "target": "ES2022",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
 
     "experimentalDecorators": true,
     "strict": true,

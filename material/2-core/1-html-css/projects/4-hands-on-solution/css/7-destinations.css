@@ -1,0 +1,31 @@
+#destinations {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.destinations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+
+.destination img {
+  width: 100%;
+}
+
+.destination {
+  position: relative;
+}
+
+.destination .location {
+  bottom: 0;
+  position: absolute;
+
+  /* Make it take up the entire width of the parent element (.destination) */
+  width: 100%;
+
+  /* White, centered text */
+  color: white;
+  text-align: center;
+}

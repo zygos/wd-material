@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jsonwebtoken from 'jsonwebtoken'
-import z from 'zod'
+import { z } from 'zod'
 import { publicProcedure, router } from './trpc'
 import { TOKEN_KEY, PASSWORD_PEPPER } from './config'
 import { authenticatedProcedure } from './authenticatedProcedure'

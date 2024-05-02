@@ -1,12 +1,13 @@
 {
   "name": "client",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write src/",
-    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "test": "run-p test:unit test:e2e",
     "test:unit": "vitest",
@@ -16,28 +17,28 @@
     "test:e2e:chromium": "playwright test --project chromium"
   },
   "dependencies": {
-    "@trpc/client": "^10.44.1",
+    "@trpc/client": "^10.45.2",
     "superjson": "^2.2.1",
-    "vue": "^3.3.4"
+    "vue": "^3.4.21"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "@rushstack/eslint-patch": "^1.6.0",
-    "@tsconfig/node18": "^18.2.0",
-    "@types/node": "^18.18.13",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "@vue/eslint-config-prettier": "^8.0.0",
-    "@vue/eslint-config-typescript": "^12.0.0",
-    "@vue/tsconfig": "^0.4.0",
-    "autoprefixer": "^10.4.16",
-    "eslint": "^8.54.0",
+    "@playwright/test": "^1.42.1",
+    "@rushstack/eslint-patch": "^1.10.1",
+    "@tsconfig/node18": "^18.2.4",
+    "@types/node": "^20.12.3",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "@vue/tsconfig": "^0.5.1",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-vue": "^9.18.1",
+    "eslint-plugin-vue": "^9.24.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.31",
-    "prettier": "^3.1.1",
-    "tailwindcss": "^3.3.5",
-    "vite": "^4.4.6",
-    "vue-tsc": "^1.8.6"
+    "postcss": "^8.4.38",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3",
+    "vite": "^5.2.7",
+    "vue-tsc": "^2.0.7"
   }
 }

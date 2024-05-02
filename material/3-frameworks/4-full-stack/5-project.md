@@ -14,7 +14,7 @@ This sprint project aims to lay the groundwork for a full-stack capstone project
 
 You need to choose a unique and compelling project idea, then start building the back-end with some rudimentary functionality. The back end should represent at least 50% of your final project server code. Given that you will have two sprints to work on your capstone, spend a reasonable amount of time picking the right idea.
 
-Think of a problem you'd like to solve or a hobby you're passionate about and how a web application could enhance that experience. Try to look for an application that is personal to you and that you would use yourself. This will help you stay motivated throughout the project and understand the user's perspective better. Otherwise, you might end up with a project that makes up fake requirements and could not be used by anyone. The crucial part is to pick an idea that is not too simple and allows you to showcase your skills. We expect a more complex project than the previous capstone as you will have much more time and have learned more skills and tools.
+Think of a problem you'd like to solve or a hobby you're passionate about and how a web application could enhance that experience. Try to look for an application that is personal to you and that you would use yourself. This will help you stay motivated throughout the project and better understand the user's perspective. Otherwise, you might end up with a project that makes up fake requirements and could not be used by anyone. The crucial part is to pick an idea that is not too simple and allows you to showcase your skills.
 
 From a technical point of view, your project should require more than a simple CRUD API. Think about possible external APIs that you could use to enhance your project. If relevant to your project, you can also use technologies not covered in this module, such as WebSockets, GraphQL, Web Workers, and Blockchain.
 
@@ -80,5 +80,3 @@ Submit your files to this project's GitHub repository.
 Read an in-depth guide about corrections here: https://turingcollege.atlassian.net/wiki/spaces/DLG/pages/537395951/Peer+expert+reviews+corrections
 
 **Estimate average time to complete this part: 30 hours**
-
-=> 30 hours

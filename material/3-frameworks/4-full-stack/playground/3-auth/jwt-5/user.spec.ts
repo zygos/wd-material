@@ -1,8 +1,9 @@
-import { expect, expectTypeOf, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { userRouter, userRepository } from './user'
-import { describe } from 'node:test'
+import { createCallerFactory } from './trpc'
 
-const { login, signup } = userRouter.createCaller({})
+const createCaller = createCallerFactory(userRouter)
+const { login, signup } = createCaller({})
 
 const validToken = 'valid-token'
 
@@ -105,7 +106,7 @@ describe('login', () => {
     }
 
     // A custom login/signup that uses our res mock.
-    const { login, signup } = userRouter.createCaller({
+    const { login, signup } = createCaller({
       res,
     })
 
@@ -210,7 +211,7 @@ describe('change password', () => {
       password: 'original-password',
     })
 
-    const { changePassword } = userRouter.createCaller({
+    const { changePassword } = createCaller({
       authUser: {
         id: 1,
         email: 'fake@user.com',

@@ -26,16 +26,31 @@ npm test -w server
 npm run test:db -w server
 ```
 
-## Running the server
-
-In development mode:
+## Running the project in development
 
 ```bash
-npm run dev
+# automatically restarts the server
+npm run dev -w server
+
+# server can be started without a database
+npm run dev:mem -w server
+
+# client can be started separately
+npm run dev -w client
 ```
 
-In development mode:
+## Running the project in production
+
+Client:
 
 ```bash
-npm run dev
+npm run build -w client
+npm run preview -w client
+```
+
+Server:
+
+```bash
+npm run build -w server
+npm run start -w server
 ```

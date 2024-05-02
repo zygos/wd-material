@@ -1,8 +1,7 @@
-import { expect, it, vi } from 'vitest'
-import { userRouter, userRepository } from './user'
-import { describe } from 'node:test'
+import { describe, expect, it, vi } from 'vitest'
+import { createCallerFactory, userRouter, userRepository } from './user'
 
-const { login, signup } = userRouter.createCaller({})
+const { login, signup } = createCallerFactory(userRouter)({})
 
 // Here we are mocking verify function to accept "valid-token".
 // Alternatively, we should consider using dependency injection to

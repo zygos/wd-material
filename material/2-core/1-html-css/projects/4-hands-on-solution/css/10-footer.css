@@ -1,0 +1,26 @@
+footer {
+  background-color: #ffc107;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+footer nav a {
+  display: block;
+  color: black;
+}
+
+footer nav {
+  margin-bottom: 20px;
+}
+
+@media screen and (width >= 576px) {
+  footer > .container-md {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  footer nav {
+    margin-bottom: 0;
+  }
+}

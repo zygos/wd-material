@@ -55,7 +55,7 @@ The application right now is a simple TypeScript module containing a variable fo
 
 **Note: We will go through `anagrams-0` - `anagrams-6` in this section.**
 
-Download the provided exercises `zip` and extract it to some folder. Open up the `anagrams-0` folder in VS Code and install dependencies.
+[Download the provided exercises](https://drive.google.com/file/d/11v1cAWwaSgrUDxNCqx9BLiWuTh7Lo5Nt/view?usp=drive_link) and extract it to some folder. Open up the `anagrams-0` folder in VS Code and install dependencies.
 
 For a small playground-like script like this, we will skip setting up a larger linting/formatting toolchain and use `tsx` and `vitest` to run our code and tests.
 
@@ -282,19 +282,30 @@ Add a test file `showAnagrams.spec.ts` to test our isolated function `showAnagra
 `index.ts` will end up containing only the following:
 
 ```ts
-import { join } from 'path'
+import { join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import showAnagrams from './showAnagrams'
 
 // preserving our original configuration
 export default async function main() {
-  const DICT = join(__dirname, '../words.txt')
+  // get file URL (import.meta.url)
+  // -> convert to file system path (fileURLToPath)
+  // -> climb up one level to get the directory path (join(..., '..'))
+  const directory = join(fileURLToPath(import.meta.url), '..')
+
+  // get file path to the dictionary file
+  const DICT = join(directory, '../words.txt')
+
   const WORD = 'code'
 
   return showAnagrams(DICT, WORD)
 }
 
 // if it is run directly, run the main function
-if (require.main === module) main()
+const isRunDirectly = resolve(fileURLToPath(import.meta.url))
+  .includes(resolve(process.argv[1]))
+
+if (isRunDirectly) main()
 ```
 
 Here is the test example (`showAnagrams.spec.ts`):
@@ -347,10 +358,10 @@ We can then change our test to read from a non-existent file:
 
 ```ts
 it('should print a list of anagrams to the console found in the dictionary path', async () => {
-  await showAnagrams('./not-actual-file.txt', 'study');
+  await showAnagrams('./not-actual-file.txt', 'study')
 
-  expect(console.log).toHaveBeenCalledWith('There is 1 anagram in the dictionary:');
-  expect(console.log).toHaveBeenCalledWith('  - dusty');
+  expect(console.log).toHaveBeenCalledWith('There is 1 anagram in the dictionary:')
+  expect(console.log).toHaveBeenCalledWith('  - dusty')
 })
 ```
 
@@ -448,7 +459,7 @@ Our test currently looks something like this:
 import { expect, it, vi } from 'vitest'
 import showAnagrams from './showAnagrams'
 
-vi.spyOn(console, 'log');
+vi.spyOn(console, 'log')
 
 vi.mock('fs/promises', () => ({
   default: {
@@ -460,10 +471,10 @@ vi.mock('fs/promises', () => ({
 }))
 
 it('should print a list of anagrams to the console found in the dictionary path', async () => {
-  await showAnagrams('./not-actual-file.txt', 'study');
+  await showAnagrams('./not-actual-file.txt', 'study')
 
-  expect(console.log).toHaveBeenCalledWith('There is 1 anagram in the dictionary:');
-  expect(console.log).toHaveBeenCalledWith('  - dusty');
+  expect(console.log).toHaveBeenCalledWith('There is 1 anagram in the dictionary:')
+  expect(console.log).toHaveBeenCalledWith('  - dusty')
 })
 
 ```
@@ -490,8 +501,8 @@ const print = (message: string) => {}
 We then could functions of that type to our `showAnagrams` function, so our test looks like this:
 
 ```ts
-import { expect, it, vi } from 'vitest';
-import showAnagrams from './showAnagrams';
+import { expect, it, vi } from 'vitest'
+import showAnagrams from './showAnagrams'
 
 // no more mocking modules!
 // now our test works with any getDictionary and print functions
@@ -499,16 +510,16 @@ import showAnagrams from './showAnagrams';
 it('should print a list of anagrams to the console found in the dictionary path', async () => {
   // vi.fn creates an auto-spied mock function that does not care about
   // inputs and returns nothing, perfect for our fake print function
-  const print = vi.fn();
+  const print = vi.fn()
 
   await showAnagrams(
     () => ['dusty', 'word'],
     print,
     'study',
-  );
+  )
 
-  expect(print).toHaveBeenCalledWith('There is 1 anagram in the dictionary:\n  - dusty');
-});
+  expect(print).toHaveBeenCalledWith('There is 1 anagram in the dictionary:\n  - dusty')
+})
 ```
 
 **Update your `showAnagrams.ts` to pass the `showAnagrams` tests.** You can run `npm test showAnagrams` to run only the `showAnagrams` tests. We will go back to the integration test in the next step.
@@ -556,7 +567,7 @@ Our `showAnagrams` is very flexible now. We can easily swap out the technical de
 // showAnagrams.spec.ts, an additional test case:
 
 it('should allow printing a list of anagrams from the internet', async () => {
-  const print = vi.fn();
+  const print = vi.fn()
 
   await showAnagrams(
     async () => {
@@ -566,7 +577,7 @@ it('should allow printing a list of anagrams from the internet', async () => {
     },
     print,
     'code',
-  );
+  )
 
   // in this case, it is quite fine to have a wrong assertion first
   // and then adapt it to the actual output. Our unit tests
@@ -577,7 +588,7 @@ it('should allow printing a list of anagrams from the internet', async () => {
     '  - coed',
     '  - deco',
     '  - ecod',
-  ].join('\n'));
+  ].join('\n'))
 })
 ```
 
@@ -730,23 +741,23 @@ JavaScript allows dependency injection with classes, function factories, and fac
 ```ts
 // function factory - function that produces a function ready for use
 const displayNode = (log) => (name, value) =>
-  log(`Node Name: ${name}, Node Value: ${value}`);
+  log(`Node Name: ${name}, Node Value: ${value}`)
 
 // does not do anything yet
-const logNode = displayNode(console.log);
+const logNode = displayNode(console.log)
 
-displayNode1('Node1', 10); // Output: Node Name: Node1, Node Value: 10
+displayNode1('Node1', 10) // Output: Node Name: Node1, Node Value: 10
 
 // another example using currying
-const greet = greeting => name => `${greeting}, ${name}!`;
+const greet = greeting => name => `${greeting}, ${name}!`
 
-const greetInEnglish = greet('Hello');
-const greetInLithuanian = greet('Labas');
-const greetInSwahili = greet('Habari');
+const greetInEnglish = greet('Hello')
+const greetInLithuanian = greet('Labas')
+const greetInSwahili = greet('Habari')
 
-greetInEnglish('Mary'); // Hello, Mary!
-greetInLithuanian('Carlos'); // Labas, Carlos!
-greetInSwahili('Medina'); // Habari, Medina!
+greetInEnglish('Mary') // Hello, Mary!
+greetInLithuanian('Carlos') // Labas, Carlos!
+greetInSwahili('Medina') // Habari, Medina!
 ```
 
 ```ts
@@ -757,33 +768,33 @@ function createNode(log, name, value) { // could use => syntax
     name,
     value,
     toString() {
-      log(`Node Name: ${this.name}, Node Value: ${this.value}`);
+      log(`Node Name: ${this.name}, Node Value: ${this.value}`)
     }
-  };
+  }
 }
 
-const node = createNode(console.log, 'Node1', 10);
+const node = createNode(console.log, 'Node1', 10)
 
-node.toString(); // Output: Node Name: Node1, Node Value: 10
+node.toString() // Output: Node Name: Node1, Node Value: 10
 ```
 
 ```ts
 // class - a blueprint for creating objects
 class Node {
   constructor(log, name, value) {
-    this.name = name;
-    this.value = value;
-    this.log = log;
+    this.name = name
+    this.value = value
+    this.log = log
   }
 
   toString() {
-    this.log(`Node Name: ${this.name}, Node Value: ${this.value}`);
+    this.log(`Node Name: ${this.name}, Node Value: ${this.value}`)
   }
 }
 
-const node = new Node(console.log, 'Node1', 10);
+const node = new Node(console.log, 'Node1', 10)
 
-node.toString(); // Output: Node Name: Node1, Node Value: 10
+node.toString() // Output: Node Name: Node1, Node Value: 10
 ```
 
 Which structure should you prefer? There are no hard rules. However, some guidelines can help you make a decision:

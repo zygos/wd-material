@@ -97,7 +97,7 @@ Various services can host your database. Since you are working with SQL in your 
 
 For our example, we will use a "serverless" database provider.
 
-**Task.** Sign up for [Neon](https://neon.tech/) and create a database. Make sure you can connect to this database from your machine.
+**Task.** Sign up for [Neon](https://neon.tech/) and create a database. Neon will provide you with the environment variables that you will need to add to your project. Make sure you can connect to this database from your machine.
 
 **Note.** When creating a database, choose a server closest to your users. For example, if you are developing an application primarily for European users, we recommend `eu-central-1`. We will host our app on AWS, which also has regions, and it is best to keep our database as close to our application server as possible due to request latency.
 
@@ -272,6 +272,9 @@ Create 2 new files in the root of our mini project:
     "command": [],
     "ports": {
       "80": "HTTP"
+    },
+    "environment": {
+      "API_PROXY_PASS": "http://localhost:3000"
     }
   },
   "server": {
@@ -287,7 +290,7 @@ Create 2 new files in the root of our mini project:
       // the provided monorepo examples.
       "DB_SSL": "true",
       "DB_SYNC": "true",
-      // use your NEON credentials here
+      // add your NEON credentials here
       "DB_HOST": "{{ ... }}",
       "DB_NAME": "{{ ... }}",
       "DB_USER": "{{ ... }}",
@@ -331,11 +334,11 @@ aws lightsail create-container-service-deployment \
 
 This command will take some time to complete. You can check the status of the deployment in the AWS Lightsail UI. If you face any issues, refer to the [AWS Lightsail documentation](https://docs.aws.amazon.com/cli/latest/reference/lightsail/create-container-service-deployment.html).
 
-Remember to move them outside your repository (or even delete them). You do not want to expose your database credentials in your source code. You could keep the `public-endpoint.json` file, but it is not necessary.
+Remember to move these files outside your repository (or even delete them). You do not want to expose your database credentials in your source code. You could keep the `public-endpoint.json` file, but it is not necessary.
 
 ## Example: GitHub Actions to build and deploy a monorepo (1 hour)
 
-We have ported the same process you just went through manually to an automated GitHub Actions workflow. You [download it here](https://drive.google.com/file/d/1VxzSSl1qvFJKbX7M-f3bMeA_FJrD1k3l/view?usp=sharing). It is built for the `monorepo-example` example in the previous sprint part.
+We have ported the same process you just went through manually to an automated GitHub Actions workflow. You [download it here](https://drive.google.com/file/d/12df8nG9DpdIw2iSpUQ5yzcI90krHsSPV/view?usp=sharing). It is built for the `monorepo-example` example in the previous sprint part.
 
 For it to work, you must copy over this workflow and add the necessary variables/secrets configuration in your GitHub Actions configuration.
 

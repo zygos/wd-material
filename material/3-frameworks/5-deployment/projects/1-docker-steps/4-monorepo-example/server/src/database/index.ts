@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
-import { newDb } from 'pg-mem'
+import { DataType, newDb } from 'pg-mem'
 import * as entities from '../entities'
 
 export function createDatabase(
@@ -33,6 +33,12 @@ function createMemoryDatabase(): DataSource {
   pgMemory.public.registerFunction({
     name: 'version',
     implementation: () => '1',
+  })
+  pgMemory.public.registerFunction({
+    name: 'obj_description',
+    args: [DataType.text, DataType.text],
+    returns: DataType.text,
+    implementation: () => 'test',
   })
 
   return pgMemory.adapters.createTypeormDataSource({

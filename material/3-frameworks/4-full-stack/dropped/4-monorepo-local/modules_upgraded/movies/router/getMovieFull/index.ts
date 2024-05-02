@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { procedure } from '@server/trpc'
 import { Movie } from '@server/database'
 import { schema } from '../../schema'

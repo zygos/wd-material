@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Travel agency: Homepage</title>
+    <meta name="description" content="Travel agency: Homepage">
+    <meta name="author" content="You">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    >
+    <!--
+    <link href="./css/header.css" rel="stylesheet" type="text/css">
+    <link href="./css/destinations.css" rel="stylesheet" type="text/css">
+    <link href="./css/footer.css" rel="stylesheet" type="text/css">
+    -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dancing+Script&family=Montserrat:400,700&&display=swap"
+      rel="stylesheet"
+    >
+  </head>
+  <body>
+    <header>
+      <div>
+        <form>
+          <img src="./icons/search-white.svg" alt="">
+          <input type="text" placeholder="Search">
+        </form>
+        <img src="./icons/globe-white.svg" alt="Logo">
+        <div>
+          <img src="./icons/three-bars-white.svg" alt="Menu">
+        </div>
+      </div>
+      <div>
+        <div>Year long travel</div>
+        <h1>
+          Book your next<br>
+          destination
+        </h1>
+        <form>
+          <div>
+            <label>Destination</label>
+            <select>
+              <option value="" selected disabled>Select destination</option>
+              <option value="paris">Paris</option>
+              <option value="tokyo">Tokyo</option>
+              <option value="sydney">Sydney</option>
+              <option value="san-francisco">San Francisco</option>
+            </select>
+          </div>
+          <div>
+            <label>From</label>
+            <input type="date" >
+          </div>
+          <div>
+            <label>To</label>
+            <input type="date" >
+          </div>
+          <div>
+            <label>Guests</label>
+            <input type="number" value="2">
+          </div>
+          <div>
+            <button type="submit">
+              <img src="./icons/arrow-right.svg" alt="arrow">
+            </button>
+          </div>
+        </form>
+      </div>
+    </header>
+    <section>
+      <h2>Destinations</h2>
+      <div>
+        <p>
+          Lorem ipsum dolor sit amet, adventure travel mountains, beach
+          resorts and cultural experiences await. Pack your bags and get
+          ready to explore the world! From bustling cities to tranquil
+          countryside getaways, there's a destination for every type of
+          traveler.
+        </p>
+        <p>
+          If you're a culture lover, the historic cities of London and
+          Edinburgh should be at the top of your list. Walk the streets
+          of London's West End, marvel at the architecture of Big Ben and
+          Buckingham Palace, and take in a show at the Globe Theatre.
+          In Edinburgh, visit the Royal Mile, explore the castle, and
+          sample the local fare at the city's world-famous restaurants.
+        </p>
+        <p>
+          For those seeking a bit of relaxation, head to the spas and
+          resorts of the English countryside. Indulge in a luxurious
+          massage or take a dip in a hot spring. If you're looking for
+          something a bit more active, strap on your hiking boots and
+          tackle the rugged trails of the coastal cliffs.
+        </p>
+      </div>
+      <div class="destinations">
+        <div>
+          <img alt="Eiffel Tower, Paris" src="./images/destinations/paris.jpg">
+          <div>
+            <strong>Paris</strong>
+            <div>France</div>
+          </div>
+        </div>
+        <div>
+          <img alt="Golden Gate Bridge, San Francisco" src="./images/destinations/san-francisco.jpg">
+          <div>
+            <strong>San Francisco</strong>
+            <div>United States</div>
+          </div>
+        </div>
+        <div>
+          <img alt="Sydney Opera House, Sydney" src="./images/destinations/sydney.jpg">
+          <div>
+            <strong>Sydney</strong>
+            <div>Australia</div>
+          </div>
+        </div>
+        <div>
+          <img alt="Sensō-ji, Tokyo" src="./images/destinations/tokyo.jpg">
+          <div>
+            <strong>Tokyo</strong>
+            <div>Japan</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div>
+        <h3>Links</h3>
+        <nav>
+          <a href="">Home</a>
+          <a href="">Destinations</a>
+          <a href="">About</a>
+          <a href="">Contact</a>
+        </nav>
+      </div>
+      <div>
+        <h3>Newsletter</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
+          euismod, nisl nec tincidunt dapibus, magna libero fermentum augu.
+        </p>
+        <form>
+          <input type="email" placeholder="Email">
+          <button type="submit">
+            Subscribe
+            <img src="./icons/arrow-right-white.svg" alt="">
+          </button>
+        </form>
+      </div>
+    </footer>
+  </body>
+</html>

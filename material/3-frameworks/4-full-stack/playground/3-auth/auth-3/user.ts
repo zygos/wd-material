@@ -1,8 +1,10 @@
 import { initTRPC } from '@trpc/server'
 import { pbkdf2Sync } from 'node:crypto'
-import z from 'zod'
+import { z } from 'zod'
 
-const { procedure, router } = initTRPC.create()
+const { procedure, router, createCallerFactory } = initTRPC.create()
+
+export { createCallerFactory }
 
 export const userRouter = router({
   signup: procedure

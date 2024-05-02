@@ -28,7 +28,9 @@ defineProps({
   opacity: 0.6;
   z-index: 1;
   filter: saturate(0);
-  transition: opacity, filter 0.3s ease;
+  transition:
+    opacity,
+    filter 0.3s ease;
   cursor: pointer;
   border: none;
   background: transparent;

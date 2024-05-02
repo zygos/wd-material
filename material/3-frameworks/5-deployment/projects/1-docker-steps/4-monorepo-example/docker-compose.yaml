@@ -58,8 +58,7 @@ services:
       # To support both environments, we will use an environment
       # variable to configure the proxy pass.
       # Our development environment will use the provided value
-      # below, while our production environment will provide
-      # a different value.
+      # below.
       API_PROXY_PASS: http://server:3000
     ports:
       - "3001:80"

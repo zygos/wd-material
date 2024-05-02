@@ -9,5 +9,6 @@
       "database": "typeorm_demo",
       "username": "turing"
     }
-  ]
+  ],
+  "liveServer.settings.port": 5501
 }

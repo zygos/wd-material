@@ -2,124 +2,148 @@ Part 1: Node.js
 
 # Part introduction
 
-Welcome to the back-end module! This is where you'll learn about the other side of web development: the server side. We'll explore how to build back-end servers using Express.js, how to work with databases, and how to use best practices to ensure security. You'll learn about essential concepts such as authentication and authorization, continuous integration and continuous deployment (CI/CD), containerization, and finally, how to deploy your server. Get ready to dive deep into the world of back-end development!
+We have already explored how to run JavaScript inside the browser. It is perfect for running some logic on the client side, but what if we want some logic or private data that should not be exposed to the browser? For example, authentication, accessing data of other users, performing heavy computations, or interacting with some private APIs.
 
-In this sprint, we'll focus on back-end servers and databases. You'll learn to work with Node.js and how to interact with databases using SQL. We'll explore data modeling, and you'll get hands-on experience working with SQLite. This sprint will culminate in a peer mock interview where you'll get to demonstrate everything you've learned.
+In this sprint, we'll focus on the fundamentals of running JS outside the browser and using it in conjunction with one of the main reasons to have a back-end server at all - a database. You'll learn to work with Node.js and interact with databases using SQL. We'll explore data modeling, and you'll get hands-on experience working with SQLite. This sprint will culminate in a peer mock interview where you'll get to demonstrate everything you've learned.
 
-In the first part of our back-end development journey, we'll introduce you to the general concept of back-end servers. You'll learn what a server is and what a back-end stack consists of and familiarize yourself with some common back-end terminology. We'll also introduce you to Node.js, a runtime environment that lets you run JavaScript on your server. By the end of this part, you'll have a foundation to build upon in the following parts when we will introduce you to relational databases.
+You'll learn what a server is and what a back-end stack consists of and familiarize yourself with some common back-end terminology. We'll also introduce you to Node.js, a runtime environment that lets you run JavaScript on your server. By the end of this part, you'll have a foundation to build upon in the following parts when we introduce you to relational databases.
 
 # Key learning topics & resources for this part
 
 ## Introduction to Back-end Servers (0.5 hours)
 
-- Resource: [Introduction to back-end servers](https://www.youtube.com/watch?v=XBu54nfzxAQ)
+- Resource: [What is a Server](https://www.youtube.com/watch?v=VXmvM2QtuMU) (up to 12:00)
+- Resource: [Introduction to back-end servers](https://www.youtube.com/watch?v=XBu54nfzxAQ) (15 min)
 
-A server can be any application that listens and responds to incoming requests. For example, a web server listens for HTTP requests and responds with HTML, CSS, JavaScript, images, etc. A runtime, such as Node.js, has a built-in server that can be used to create a web server without any additional dependencies.
+A server can be any application that listens and responds to incoming requests. For example, a web server listens for HTTP requests and responds with HTML, CSS, JavaScript, images, etc.
 
-**Note:** We can have multiple servers running on the same machine, each listening on a different port. For example, we can have an optimized web server application, such as Nginx or Apache, handling our requests. It could resolve requests for static files, such as static HTML, CSS, images, and client-side JavaScript, and forward requests for dynamic content to a Node.js server. This is a typical setup for production applications called a **reverse proxy**. However, in development environments, using a single Node.js server to handle all requests is common.
-
-## Back-end stacks (0.5 hours)
-
-As we start with a project, we can use some JavaScript code running on a Node server to handle our needs. We could use `JSON` files to persist our data. If we need some caching, we could do that in memory by having a plain old JavaScript object. If we need to store user uploads, we could keep them in a folder on the server. It's nothing fancy, but it would get the job done.
-
-As our project grows, we deal with various complex problems surrounding storing and querying data, handling uploads, distributing tasks across machines, etc. Our initial on-the-fly solutions need to be revised, and we need better systems to deal with our technical problems. These problems are not trivial to solve, and instead of trying to reinvent the wheel, we can use existing solutions that have been tried and tested.
-
-A collection of these solutions is called a **stack**. A **back-end stack** is a collection of technologies that work together to create a back-end application.
-
-There are various back-end stacks, each with strengths and weaknesses.
-
-**Watch [this video](https://www.youtube.com/watch?v=Sxxw3qtb3_g)** for a quick overview of key pieces that make up a front-end and back-end stack. By the end of this module, you will have interacted with most pieces of a modern back-end stack.
+If you have used VS Code's Live Server extension, you have already run a server on your machine. This extension runs a script that listens to requests from a specific port and serves static files in the project folder based on the requested URL. But what if we want a server that executes some logic and returns a response based on that logic?
 
 ## Introduction to Node.js (2 hours)
 
 - Resource: [Node.js Tutorial](https://www.youtube.com/watch?v=TlB_eWDSMt4)
 
-You likely already have Node.js installed on your computer, so you can skip the installation section of the video tutorial. For the purpose of this module, we are assuming that you have at least version 18 of Node.js installed. You can verify your Node.js version by typing `node -v` into your terminal.
+JavaScript was designed as a language for the browser, and developers had to learn a different language for the back end. At the same time, there were some methods of running JavaScript outside the browser. Still, nothing caught on, as JavaScript was a relatively slow and non-standardized language for executing business logic on the server.
 
-While you should already have a basic understanding of Node.js from your front-end project experience, this video will serve as a helpful refresher of Node.js fundamentals.
+As the years passed, JavaScript engines became faster and more efficient, spurred on by competition between browser vendors such as Google, Mozilla, and Microsoft. Many clever developers worked on making JavaScript faster, making it a viable option for running on the server.
 
-**Note:** You will be exposed to using CommonJS modules in Node.js. This is the default way of importing and exporting modules in Node.js. However, there are ways of using ESM modules in Node.js as well. In this course, we will quickly move on to using the ECMAScript Modules (ESM), as it is slowly becoming the standard way of importing and exporting modules in Node.js.
+In 2009, developer Ryan Dahl combined Google's V8 JavaScript engine (found in Chromium browsers), an event loop for asynchronous tasks, and a few other utilities for file system access and networking to create Node.js. Node.js allows you to run JavaScript outside the browser directly in your terminal, making it a suitable choice for server-side applications.
 
-For the most part, you can think of:
+**Note on Node versions.** While even more recent Node versions are available, we will primarily use Node 18 in this module in our examples, as some older computers might be unable to run the latest versions. These versions do not have any significant differences, so you can go for Node 20 or later.
+
+**Note on CommonJS and ES Modules.** The provided video will expose you to CommonJS modules in Node.js. This is the old-school way of importing and exporting modules in Node.js. It is still prevalent in the Node.js ecosystem, and you will find it used in several code examples online. It is being slowly phased out in favor of **ES Modules (ESM)** (ES = ECMAScript, the standard modern JavaScript is based on) that use `import` and `export` statements.
+
+For the most part, you can directly map:
+
 - `module.exports = ...` as `export default ...`
 - `module.exports.something = ...` as `export const something = ...`
-- `const imported = require('./path')` as `import imported from './path'`
+- `const entireModule = require('./path')` as `import entireModule from './path'`
+- `const { someFunction } = require('./path')` as `import { someFunction } from './path'`
+
+There are some "gotchas" as the underlying mechanisms differ, but the effect of the above statements is similar enough for most practical reasons. To avoid having to deal with these differences, we will use ES Modules in the vast majority of our examples (import/export statements).
 
 ## Understanding Core Node.js Globals and Modules (1 hour)
 
 In the browser, we have various global objects that we can use to perform specific tasks. For example, we can use `window` to access the browser window, `document` to access the DOM, `fetch` to perform HTTP requests, etc.
 
-Node has its own set of global objects that we can use to perform certain tasks. These are called the Core Node.js Modules. **You can find the complete list of Core Node.js Modules [here](https://nodejs.org/api/).** Refrain from memorizing them; **here's a quick overview of the most important ones**. The ones marked with **bold** are the ones you will likely use the most.
+Node has its own set of global objects that we can use to perform certain tasks. These are called the Core Node.js Modules. **You can find the complete list of Core Node.js Modules [here](https://nodejs.org/api/).** Refrain from memorizing them all; **here's a quick overview of the most important ones**. The ones marked with **bold** are the ones you will likely use the most.
 
 Variables:
-- `__dirname` and `__filename` - the directory and file name of the current file
+- `__dirname` and `__filename` - the directory and file name of the current file. This is only supported in **CommonJS** mode. Since we will be using primarily the newer ES Modules, you should use `import.meta.url` instead to get the filename.
 - **`process.env`** - an object containing the environment variables of the current process. For example, `{ NODE_ENV: 'development',  API_KEY: 'abc123' }`.
 - `process.argv` - an array of arguments passed to the process. For example, if you run `node index.js arg1 arg2`, it will be [`node`, `index.js`, `arg1`, `arg2`].
 
 Global functions:
 - **`console.*`** - the console object contains the trusty functions such as `log`, `error` for logging information to the console.
-- **`fetch`** - performing HTTP requests, very similar to the browser's `fetch`.
-- `require` - used for importing CommonJS modules. However, you will most likely use `import` instead as the industry is moving towards using ESM modules.
-- **`setTimeout`, `setInterval`, `setImmediate`** - the usual suspects for scheduling code to run later. Do not forget their `clear` counterparts for canceling what you scheduled (especially, `clearInterval`).
+- **`fetch`** - performing HTTP requests; it is very similar to the browser's `fetch`.
+- `require` - used for importing CommonJS modules. However, we will use `import` most of the time, as the industry is moving towards using ES modules.
+- **`setTimeout`, `setInterval`, `setImmediate`** - the usual suspects for scheduling code to run later. Do not forget their `clear` counterparts for canceling what you scheduled (especially `clearInterval`).
 
 Global classes you will use regularly:
-- **`Promise`** - for creating Promises.
+- **`Promise`** - for creating Promises, used for asynchronous tasks that should be done outside of Node's main thread.
 - **`URL`** - for parsing and formatting URLs.
 
-Modules you will use regularly:
+**Imported modules** you will use regularly:
 - **`fs`** - for reading and writing files. Take note of the `fs/promises` version, which is nicer to work with than the default callback-based version.
 - **`path`** - for dealing with file paths.
+- **`http`** - for starting a web server.
 
-**Note:** Node and web standards evolved separately. This means that Node has its APIs that are unavailable in the browser and vice versa. In recent years, Node has been moving towards adopting new web standards, such as the `fetch` API. But in some cases, Node has modules that serve the same purpose as the browser-native options based on web standards. For example, Node has `crypto` and `Stream`, which have similar roles to `Crypto` and `Stream` available in the browser. In Node, these tend to be referenced as "Node APIs" and "Web APIs". For example, [Node Crypto](https://nodejs.org/api/crypto.html) and [Web Crypto in Node](https://nodejs.org/api/webcrypto.html). The good news is that 99% of the time, you do not need to rely on Node-exclusive APIs; most of the time, it will be clear which one is being used. Most tutorials and documentation will refer to the Node APIs when dealing with Node.
+**Note.** Node and web standards evolved separately. This means that Node has some global variables and modules unavailable in the browser and vice versa. In recent years, Node has been moving towards adopting new web standards, such as the `fetch` API. However, in some cases, Node has modules that serve the same purpose as the browser-native options based on web standards. For example, Node has `crypto` and `Stream`, which have similar roles to `Crypto` and `Stream` available in the browser. In Node, these tend to be referenced as "Node APIs" and "Web APIs". For example, [Node Crypto](https://nodejs.org/api/crypto.html) and [Web Crypto in Node](https://nodejs.org/api/webcrypto.html). The good news is that 99% of the time, you do not need to rely on Node-exclusive APIs; most of the time, it will be clear which one is being used. Most tutorials and documentation will refer to the Node APIs when dealing with Node.
+
+**Note.** Node allows prefixing built-in modules with `node:` when using ES modules. For example, `import { readFile } from 'node:fs/promises". While not mandatory, we recommend using this prefix when importing a built-in Node module. This helps to distinguish between built-in modules and external modules. Then, we can follow the following rule of thumb:
+
+```js
+// built-in Node module (starts with node:)
+import { join } from 'node:path'
+
+// your local file (starts with ./ or ../)
+import { myFunction } from './someFile.js'
+
+// external package from the internet (no prefix)
+import { someHandyFunction } from 'some-package'
+```
 
 ## Exercises: Using core Node.js modules (2 hours)
 
-For these exercises, we recommend creating a new folder, running `npm init -y` in  it, and adding `"type": "module"` in the `package.json` file to use ES modules in Node.js. Then, everything inside that folder (and subfolders) will expect the import/export syntax over the require/module.exports syntax.
+**How to create a new Node project**.
+
+1. Create a new folder. For example, `mkdir node-exercises`.
+2. Navigate to the folder. For example, `cd node-exercises`.
+3. Run `npm init -y' to create a `package.json` file, which will become the project's configuration file. This file will list the project's dependencies and scripts. We will discuss external dependencies in the next section.
+4. To use ES modules in Node.js, add the `"type": "module" line to the package.json file. This will allow you to use the `import` and `export` syntax instead of the more dated `require` and `module.exports` statements.
+5. Create a new JavaScript file. For example, `touch exercise-1.js`.
+6. Write some code in the file, such as `console.log('Hello, world!')`.
+7. Run the file with Node.js. For example, `node exercise-1.js`.
 
 **Exercise 1: Reading a file**
 
-Create a file named `readme.txt` and write some text in it. Then, create a Node.js script to read this file and log its content to the console.
+Write some text in a file named `readme.txt`. Then, create a Node.js script to read this file and log its content to the console.
+
+<details>
+  <summary>Hint</summary>
+
+  You can use the `fs` module to read files. The `fs` module is a built-in Node.js module that provides functions for working with the file system. Preferably, you can use the `fs/promises` version of the module, which provides Promise-based versions of file system functions. This version is a bit easier to work with than the default callback-based version.
+</details>
 
 <details>
   <summary>Solution</summary>
 
-  ```javascript
-  import { readFile } from 'fs/promises'
+```js
+// using the 'node:' prefix is not mandatory, but it makes
+// it is clear that we are using a built-in Node module
+import { readFile } from 'node:fs/promises'
 
-  const output = await readFile('readme.txt', 'utf-8')
+const output = await readFile('readme.txt')
 
-  console.log(output)
-  ```
+console.log(output)
+```
 </details>
 
 **Exercise 2: Writing to a file**
 
-Create a Node.js script to write some text to a file named `output.txt`. If the file already exists, its content should be replaced.
+Create a Node.js script to write `Hello, world!` to a file named `output.txt`.
 
 <details>
   <summary>Solution</summary>
-**Solution 2:**
 
-```javascript
-import { writeFile } from 'fs/promises'
+```js
+import { writeFile } from 'node:fs/promises'
 
-await writeFile('output.txt', 'Hello, world!', 'utf-8')
+await writeFile('output.txt', 'Hello, world!')
 ```
 </details>
 
 **Exercise 3: Adding a file to a directory**
 
-Create a Node.js script that helps to organize daily reports to folders based on the current date. It creates a local file `reports/{currentYear}/{isoDate}`. For example, if the script is run on `2023-01-01`, it should create a file named `reports/2023/2023-01-01.txt` (`reports` and `2023` are folders). The file's contents should be the first passed argument to the script. If the file already exists, an informative error should be thrown. If the `reports` or `reports/{currentYear}` folder does not exist, it should be created automatically.
+Create a Node.js script that helps organize daily reports in folders based on the current date. It creates a local file `reports/{currentYear}/{isoFormatDate}`. For example, if the script is run on `2023-01-01`, it should create a file named `reports/2023/2023-01-01.txt` (`reports` and `2023` are folders). The file's contents should be the first argument passed on to the script. If the `reports` or `reports/{currentYear}` folder does not exist, it should be created automatically.
 
 Usage example:
 
 ```bash
 node saveReport.js "It's fine."
 
-# creates reports/2021/2021-01-01.txt with "It's fine." inside.
+# creates reports/2021/2021-01-01.txt file with "It's fine." inside.
 ```
-
-**Bonus challenge:** Allow to overwrite an existing report by passing a `--force` flag as an argument to the script. You can assume that the report's content will never start with a `--` sequence.
 
 **Solution 3:**
 
@@ -127,255 +151,149 @@ node saveReport.js "It's fine."
   <summary>Solution</summary>
 
 ```js
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path' // or node:path
+import { mkdir, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
-const FORCE_FLAG = '--force'
+const today = new Date()
+const content = process.argv[2]
 
-const args = process.argv.slice(2)
-const content = args.find(arg => !arg.startsWith('--'))
-const doForce = args.includes(FORCE_FLAG)
+await createReport(today, content)
 
-async function createReport(content, doForce = false) {
-  const isoDate = new Date().toISOString().split('T')[0]
+async function createReport(date, content) {
+  const isoDate = date.toISOString().split('T')[0]
   const year = isoDate.slice(0, 4)
   const dir = join('./reports', year)
 
+  // create the directory if it does not exist
   await mkdir(dir, { recursive: true })
 
   try {
     const filePath = join(dir, `${isoDate}.txt`)
-    const flags = doForce ? 'w' : 'wx'
-    await writeFile(filePath, content, { encoding: 'utf-8', flag: flags })
+    await writeFile(filePath, content)
     console.log(`Report for ${isoDate} has been saved.`)
   } catch (error) {
-    if (error.code === 'EEXIST') {
-      console.error(`Report for ${isoDate} already exists. Use --force to overwrite.`)
-    } else {
-      console.error(`An error occurred: ${error.message}`)
-    }
+    console.error(`An error occurred: ${error.message}`)
   }
 }
-
-await createReport(content, doForce)
 ```
 </details>
 
-## Node.js with TypeScript (1 hour)
+## Introduction to JavaScript Packages (2 hours)
 
-Node runs JavaScript, but in a professional environment, you will likely want to use TypeScript instead.
-
-We recommend using TypeScript for most of your Node.js projects. You can still use JavaScript for various exercises and smaller projects, but for larger projects, TypeScript will help you catch bugs early on and make your code more readable. Even if you do not add types to your code, you will still benefit from the additional checks TypeScript provides.
-
-There are several ways of setting up TypeScript for a back-end server.
-
-- Manual: Install `typescript` as a dev dependency, and use the provided TypeScript compiler `tsc` directly. Create an entry file, such as `index.ts`, and run `npx tsc index.ts` to compile it to `index.js`. Then, to run the compiled file, run `node index.js`.
-- Automated: There are tools for automatic compilation and reloading, such as `ts-node` or `tsx`.
-- Going outside of Node: Using a different runtime, such as Deno or Bun, which allows dealing with TypeScript as if it was JavaScript.
-
-Right now, we recommend going with [tsx](https://www.npmjs.com/package/tsx) as it includes everything you need to develop with TypeScript and is faster than most other options. It uses `esbuild` under the hood, transforming TypeScript to JavaScript faster than the good old `tsc`. We have already dealt with `esbuild` behind the scenes, as it also powers Vite!
-
-**Note:** Why are we not using Vite for back-end development? Vite serves a different purpose as it is geared for front-end development using a browser with ES Module support. In the back-end development, we have a different set of requirements.
-
-To use `tsx` in a new project, run:
-
-```bash
-# if you have not yet initialized your project with a package.json file
-npm init -y
-
-# install tsx to run TypeScript
-# @types/node to get type definitions for our Node modules, such as fs, path, ...
-# @tsconfig/node18 to get a starting tsconfig.json template for Node 18
-npm i -D tsx @types/node @tsconfig/node18
-# same as "npm install --save-dev ..."
-```
-
-Create a `tsconfig.json` file in the project folder:
-
-```json
-{
-  "extends": "@tsconfig/node18/tsconfig.json"
-}
-```
-
-Now you should be able to run TypeScript files in the following ways:
-
-```bash
-# to run a JS file
-node file.js
-
-# to run a TS file
-npx tsx file.ts
-
-# to run a TS file in watch mode
-npx tsx watch file.ts
-```
-
-**A note on top-level await**
-
-It is important to note that in this case, we are running Node not as ES Module (so do NOT include `"type": "module"` in the `package.json`). Node has incompatibility issues between ES modules and CommonJS modules. The main issue is that CommonJS modules are loaded synchronously, while ES modules are loaded asynchronously. Since most Node ecosystem is still based around CommonJS modules, we will run Node in CommonJS mode. Nevertheless, we will use ES module syntax in our code and let tools such as `tsx` to deal with the module incompatibility issues. But we will need to make one sacrifice to make CommonJS and ES Modules modules work together: we will not use the top-level `await` keyword. Example of top-level await:
+**Module** in JavaScript is any file exposing some of its functionality to other files. For example:
 
 ```js
-import ... from ...
-
-// top-level await - await used outside of an async function. We will not use this.
-const result = await getSomeResult()
-console.log(result)
+// math.js - a file that exports a function to sum numbers
+export const sum = numbers => numbers.reduce((a, b) => a + b, 0)
 ```
 
-Instead, if you need to run asynchronous code at the top level (which is rarely needed) - you will need to wrap it in an async function and call it:
+Now, other files in the project can import some parts of this module.
 
 ```js
-// Recommended method. Easily done through an async function
-async function main() {
-  const result = await getSomeResult()
-  console.log(result)
-}
+import { sum } from './math.js'
 
-main()
-
-// Alternative method through the underlying Promise API.
-// Usable for one-off cases, but can get messy if we need to do multiple procedures
-// in parallel depending on other results.
-getSomeResult()
-  .then(console.log) // same as .then(result => console.log(result))
-
-// Through an IIFE (Immediately Invoked Function Expression).
-// Notice that the semicolon is necessary here if you are using a semicolon-free style.
-;(async () => {
-  const result = await getSomeResult()
-  console.log(result)
-})()
+sum([1, 2, 3]) // 6
 ```
 
-Task: **Try creating a TypeScript file and running it through `tsx` in your terminal.**
+There is a special category of modules called **packages**. A package is an external module that is not part of a project's source code but is used in the project.
 
-In a regular project setup, you might use `src` folder and `src/index.ts` as the entry file. Then, you could add the following scripts to `package.json`:
-
-```json
-{
-  "scripts": {
-    "start": "npx tsx src",
-    "dev": "npx tsx watch src"
-  }
-}
-```
-
-Now, given you have `src/index.ts`, you could run `npm run start` to run that file. For development you would use `npm run dev`, just as you did in your front-end projects.
-
-**Note:** We are using `npx` to run the locally installed `tsx` and `tsc` (provided by `typescript` package) binaries. If you have `tsx` and `tsc` installed globally, you can run them directly, though it is recommended to use the local version through `npx` to avoid unexpected behaviour due to version conflicts between your local and global versions.
-
-There are a few more methods of running TypeScript in Node.js that do not provide the same level of convenience as `tsx`. However, they are worth knowing as you might encounter them in the wild.
-
-- [Node + TypeScript with tsc](https://www.youtube.com/watch?v=H91aqUHn8sE)
-- [Node + TypeScript with tsc + ts-node + ts-node-dev + nodemon](https://www.youtube.com/watch?v=1UcLoOD1lRM)
-
-## Exercise: Setting up Linting and Formatting (1 hour)
-
-Setting up linting and formatting, in some sense, is even easier on the back end than in the front end as we do not need to deal with additional file formats that are common in the front end (`.vue`, `.jsx`, `.svelte`, ...).
-
-You are expected to use linting and formatting in your practical projects and, preferably, hands-on projects.
-
-**Setting up Prettier**
-
-Given that you have the Prettier VS Code plugin installed setting up Prettier is very easy:
-
-1. Add a `.prettierrc` file in the root of your project with your preferred configuration. To get a default config, you can also run "Prettier: Create Configuration File" from the VS Code command palette.
-2. Add a `.vscode/settings.json` file with the following content (if you are not using these rules globally already):
-
-```json
-{
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
-}
-```
-
-That should be sufficient to get you started. Adding a `format` script and installing Prettier as a dev dependency so it can be used from the command line from any machine is also a good idea, but not necessary to get us moving.
-
-**Setting up ESLint**
-
-Setting up ESLint is more involved than setting up Prettier. Here are the steps:
-
-1. Install ESLint and configs as a dev dependency, for example:
-
-```bash
-npm i -D eslint-config-airbnb eslint-config-airbnb-typescript eslint-config-prettier @typescript-eslint/eslint-plugin@^6.0.0 @typescript-eslint/parser@^6.0.0
-```
-
-2. Create your ESLint configuration file `.eslintrc.cjs`:
+Some alternative JavaScript runtimes, such as Deno, allow importing these packages by providing their URL. For example:
 
 ```js
-/* eslint-env node */
-
-module.exports = {
-  root: true,
-  extends: [
-    'eslint:recommended',
-    'airbnb', // or any other config you want to extend
-    'airbnb-typescript/base',
-    'prettier',
-  ],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    project: './tsconfig.eslint.json',
-    tsconfigRootDir: __dirname,
-  },
-  rules: {
-    // we can override some problematic import rules here
-    // that can cause issues when using import aliases.
-    'import/extensions': 'off',
-    'import/no-extraneous-dependencies': 'off',
-
-    // functions are always hoisted, so we can use them before they are defined
-    // which in various cases improves readability
-    'no-use-before-define': ['error', { functions: false }],
-    '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
-  },
-}
-
+import { VERSION } from "https://deno.land/std/version.ts"
 ```
 
-Note that this file is run as a CommonJS module, so we need to use `module.exports` instead of `export default`. Why is it run as a CommonJS module? Because this file is being directly read by the `eslint` plugin in our editor or by the `eslint` CLI tool. Since ESLint is written using CommonJS, it is run as a CommonJS module.
+Meanwhile, Node.js has a package repository called **Node Package Manager (npm)**. It has two key parts:
 
-3. (Recommended) If you want to autofix issues on file save, update the `.vscode/settings.json` file with the following settings:
+- **Package repository** - a place where developers can publish their packages. You can browse it at [npmjs.com](https://www.npmjs.com/).
+- **Command-line tool** - a tool that allows you to install, update, and remove packages from your project. This tool is installed with Node automatically. You can use it by running `npm install some-package-name` in your project's directory.
 
-```json
-{
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.fixAll.eslint": true
-  }
-}
+Once someone finds a common problem, they can write a package that solves it and publish it to NPM as a package. This way, other developers can use this package in their projects. For example, working with dates in JavaScript can be cumbersome, so a package called `date-fns` (among others) provides many helpful functions for working with dates.
+
+Anyone can publish a package on NPM, which is why there are millions of packages available. Some of these packages are published by sole developers, and some by massive companies.
+
+**Note.** You might come across other alternative package managers like `pnpm` or `yarn`, but `npm` is the most popular one as it comes bundled with Node.js.
+
+> Open your terminal and run `npm -v` to check if you have `npm` installed on your machine. This command will display your `npm` version, which should not be confused with your Node.js version.
+
+**Note:** Try to use the VS Code terminal for these commands. An external terminal interface is fine, but we prefer you learn to use the VS Code terminal as it integrates well with the VS Code editor and debugging tools. Also, if you are running Windows and have WSL installed, ensure your terminal is selected to use WSL (Ubuntu) as its default shell. This can be seen in the terminal's top right corner. You might need to change the default shell in your VS Code settings to keep this setting persistent.
+
+To get a good overview of `npm` and JS packages, watch this [npm tutorial](https://www.youtube.com/watch?v=P3aKRdUyr0s). This video is in the context of writing Sass, so the particular tools, such as Gulp and Chalk are not relevant to us right now. However, the video does a great job explaining the basics of `npm` and `package.json`.
+
+Use the video and online resources to investigate the following:
+
+- What is semantic versioning?
+- Should you primarily install packages locally or globally?
+- What does the `^` in front of the package version mean? What are other supported versioning operators?
+- What is the difference between `package.json` and `package-lock.json`?
+- How can you specify custom commands in your `package.json` file and then run them in your command line?
+- Should you commit your `node_modules` folder to your GitHub repository?
+- What is the difference between a regular dependency and a dev dependency? Why would we want to separate them?
+- What do the `--global`, `--save`, and `--save-dev` command line flags do when installing a package?
+- Is `--save` still needed in newer npm versions?
+
+## Exercise: Install and Use a Package (1 hour)
+
+We will install a package to solve a small problem.
+
+**Problem.** We need to print the current date and time in the format `yyyy.MM.dd HH:mm:ss` (for example, `2024.04.01 12:30:00`).
+
+JavaScript has a `Date` object for dealing with dates, but it is pretty limited if we need to format dates. We could write a function to format the date ourselves, but this is a relatively common problem, so we might consider looking for a package that solves it.
+
+How to look for a package? You can use:
+
+- the npm website to search for packages by keywords
+- Google search for "{problem} npm" (for example, "date formatting npm")
+- AI chatbots, such as ChatGPT, Gemini, Claude, etc.
+
+Since NPM and Google searches can result in a bit too literal suggestions, you will most often find the most appropriate packages by using AI chatbots.
+
+Let's say we asked ChatGPT "Which npm package would you recommend for formatting dates?". We might get a few suggestions, such as [moment.js](https://www.npmjs.com/package/moment), [date-fns](https://www.npmjs.com/package/date-fns), [luxon](https://www.npmjs.com/package/luxon). We briefly look through each package's documentation. We find that Moment is a legacy package, and Luxon seems powerful but a bit too complex for our needs. We decide to go with `date-fns`. It even has a handy `format` function that does exactly what we need.
+
+**Setup.** Build on the previous setup or create a new folder and run `npm init -y' to create a new project. Make sure to add `"type": "module"` to the `package.json` file!
+
+Now, let's install a package.
+
+Run `npm install date-fns`, which will install the `date-fns` package as a **dependency** in your project. Notice how the `node_modules` folder has been created and now contains the `date-fns` folder. Also, notice how the `package.json` file has been updated to list the installed package as a dependency.
+
+**Pro tip.** You can use `npm i' instead as a shorthand for `npm install`.
+
+Now, we can import the `date-fns` package in our project, provided we run it through Node.js. Node.js will figure out that importing something from `date-fns` means we need to import the code from the `date-fns` folder inside `node_modules`.
+
+Create a new JavaScript file and add the following code:
+
+```js
+import { format } from 'date-fns'
+
+const date = new Date()
+const dateFormatted = format(date, 'yyyy.MM.dd HH:mm:ss')
+
+console.log('dateFormatted', dateFormatted)
 ```
 
-4. (Recommended) ESLint might complain about `eslintrc.cjs` file not being included in your TypeScript project. To fix this, we can use a technique specified by [AirBnB TypeScript config](https://www.npmjs.com/package/eslint-config-airbnb-typescript). Add a `tsconfig.eslint.json` file with the following content:
+It should produce something like:
 
-```json
-{
-  "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts", "src/**/*.js", "./.eslintrc.cjs"]
-}
+```
+dateFormatted 2024.04.01 12:30:00
 ```
 
-5. (Recommended) Add a lint script to `package.json`:
+Try out:
 
-```json
-{
-  "scripts": {
-    // ...
-    "lint": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
-  }
-}
-```
+- [formatDistanceToNow](https://date-fns.org/v2.30.0/docs/formatDistanceToNow) from `date-fns` to find out how much time has passed between the current date and the James Webb Space Telescope launch date (2021-12-25 12:20 UTC).
+- Install a new package - `lodash`. Use the [uniq](https://lodash.com/docs/#uniq) function from `lodash-es` to get a unique list of elements between two arrays, for example, `[1, 2, 3, 5]` and `[2, 3, 4, 6]`.
 
-You might need to restart VS Code for the changes to take effect.
+Finding the right package for your needs can be daunting, and you will need some time to learn how to do it effectively. We recommend using packages that have many downloads, have been recently updated, have documentation, and have some GitHub stars. There is a fine line between installing too many packages for trivial problems and wasting time by reinventing the wheel. Remember that downloading a package from npm means trusting the package author!
+
+**Pro tip**: You can experiment with your installed packages using the Quokka.js VS Code extension mentioned in the previous sprint. It lets you import and use installed packages in your currently opened VS Code project.
 
 # Directions for further research (2 hours+)
 
-- What could be an issue if we always used sync versions of `fs` functions?
+- What are the practical implications of Semantic Versioning for you as a developer?
+- Is it possible to modify code in the `node_modules` folder? If so, why? If not, why not?
+- What are the differences between `readFile`, `readFileSync` from `fs` module and `readFile `from `fs/promises` module? Which should you generally use?
 - How do environment variables work in Node.js? How can we access them in a project?
 - Node is not the only JavaScript server runtime. There are other runtimes, such as Deno and Bun. What are the differences between Node, Deno, and Bun?
 
 ## Optional: Back-end terminology (2 hours)
 
-If Node.js in the back-end is nothing new to you, you can spend some time on familiarizing yourself with some back-end terminology that we will use in upcoming sprints. Allocate a few hours to going through the terms in [this back-end cheatsheet](https://github.com/cheatsnake/backend-cheats) to get a general idea of the terminology used in the back-end world. There is no need to remember listed commands and definitions, but try to get a general idea of what most key terms refer to. For example, there is no need to know the differences between `XML`, `JSON` or `protobuf` RPCs, but you should know that RPC is a way of calling procedures on a remote machine. Some parts, such as Deployment, Optimization can be skipped for now.
+If Node.js in the back-end is nothing new to you, you can spend some time familiarizing yourself with some back-end terminology that we will use in upcoming material. Allocate a few hours to going through the terms in [this back-end cheatsheet](https://github.com/cheatsnake/backend-cheats) to get a general idea of the terminology used in the back-end world. There is no need to remember listed commands and definitions, but try to get a general idea of what most key terms refer to. For example, there is no need to know the differences between `XML`, `JSON`, or `protobuf` RPCs, but you should know that RPC is a way of calling procedures on a remote machine. Some parts, such as Deployment, Optimization can be skipped for now.

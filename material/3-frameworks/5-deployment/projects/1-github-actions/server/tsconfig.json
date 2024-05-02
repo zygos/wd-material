@@ -17,6 +17,7 @@
     "outDir": "dist",
 
     "types": ["vitest/globals"],
+
     "paths": {
       "@server/*": ["./src/*"],
       "@tests/*": ["./tests/*"]

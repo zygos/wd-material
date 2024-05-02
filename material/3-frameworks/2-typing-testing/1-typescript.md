@@ -2,23 +2,21 @@ Part 1: TypeScript Fundamentals
 
 # Sprint Description
 
-Welcome to the final sprint in your front-end module journey! As you've worked through the content so far, you've acquired an understanding of the core essentials of front-end development: HTML, CSS, JavaScript, and a front-end framework that helped you to integrate all three into a modular application. This sprint aims to deepen and refine your skill set by introducing you to the last few pieces of the puzzle that will elevate your Capstone Project to the next level and prepare you for a solid foundation if you choose a front-end specialization.
+As you've worked through the material so far, you've acquired an understanding of the core essentials of front-end development: HTML, CSS, JavaScript, and a front-end framework that helped you to integrate all three into a modular application. This sprint aims to deepen and refine your front-end skill set by introducing you to the last few pieces of the puzzle in the front end.
 
-In the first part of this sprint, you'll be introduced to TypeScript, a typed superset of JavaScript that adds static types. TypeScript promotes self-documenting code and catching errors before they occur - a powerful tool in any developer's toolkit. TypeScript can be adopted incrementally, and you will be free to decide how strictly you will use TypeScript in your front-end project.
+In the first part of this sprint, you'll be introduced to TypeScript, a typed superset of JavaScript that adds compile-time type-checking. TypeScript promotes self-documenting code and catching errors before they occur - a powerful tool in any developer's toolkit. You can adopt TypeScript incrementally - you do not have to jump into the strictest configuration.
 
-Next, we turn our attention to the world of testing. You'll first explore unit testing, which involves breaking the application down into isolated pieces and verifying that each works as expected. This will allow us to practice higher-order functions, async/await, and types. Then, you'll learn about end-to-end (E2E) testing, which tests your application from the user's perspective. This should come in handy for your Capstone.
+Next, we turn our attention to the world of testing. You'll first explore unit testing, which involves breaking down the application into isolated pieces and verifying that each works as expected. This will allow us to practice higher-order functions, async/await, and types. Then, you'll learn about end-to-end (E2E) testing, which tests your application from the user's perspective.
 
-In part 4, you'll touch on the basics of GitHub Actions for automating tasks and Single Page Application (SPA) deployment. Though testing is crucial, the magic moment comes when you deploy your application for the world to use.
+In the final part, you will build on your previous habit-tracking application by adding tests and TypeScript and improving your project based on the feedback you received during reviews.
 
-For the Capstone Project, the final part, and the culmination of this sprint, you will be required to put together all that you've learned so far. This project is the ultimate test of your newly acquired skills. Remember, the tools introduced in this sprint are at your disposal for the Capstone Project, but how extensively you leverage them is up to you.
-
-This sprint provides a well-rounded package of front-end development tools and principles, helping you build, test, and deploy applications. We're excited to see what you'll accomplish by the end of it!
+We're excited to see what you'll accomplish by the end of this sprint!
 
 # Part Description
 
-In this part, we will introduce static typing using **TypeScript**. We will start by understanding the motivations behind using TypeScript, diving into its syntax and core concepts, setting it up in our code editor and, finally, how we could upgrade a JavaScript project to TypeScript.
+In this part, we will introduce static typing using **TypeScript**. We will start by understanding the motivations behind using TypeScript, diving into its syntax and core concepts, setting it up in our code editor, and, finally, learning how to upgrade a JavaScript project to TypeScript.
 
-This part will introduce you to TypeScript and provide a few exercises, but this will not be your last chance to use TypeScript in this course or even in this sprint. We will continue using TypeScript in various small exercises in the upcoming sprint parts.
+This part will introduce you to TypeScript and provide a few exercises, but this will not be your last chance to use TypeScript in this course or even in this sprint. We will continue using TypeScript in various small exercises in the upcoming sprint.
 
 # Key learning topics & resources for this part
 
@@ -39,7 +37,7 @@ function getDaysLeft(date, deadline) {
 getDaysLeft('2023-08-16', '2023-08-21');
 ```
 
-If we run this code, we would get an error that `deadline.getDate` is not a function. The `deadline` parameter is a `string`, not a `Date` object. We could help the developer who uses this function to avoid this issue.
+If we run this code, we will get an error that says `deadline.getDate` is not a function. The `deadline` parameter is a `string`, not a `Date` object. We could help the developer who uses this function to avoid this issue.
 
 One way to do that is to add **JSDoc** comments. Here is an example:
 
@@ -64,7 +62,7 @@ Using JSDoc, we have specified:
 
 Try out this piece of code in a new JavaScript file or Quokka.js. Try hovering on the function name and see what information is revealed.
 
-We do not need to jump to the function and read the code to access this information. We can hover over the function name and see the necessary data type documentation. This is especially useful when working with large codebases where we import many functions or have concrete expectations about the function's input and output.
+To access this information, we do not need to jump to the function and read the code. We can hover over the function name and see the necessary data type documentation. This is especially useful when working with large codebases where we import many functions or have concrete expectations about the function's input and output.
 
 **Type checking**
 
@@ -150,7 +148,7 @@ By this point, you should be well-prepared for your first TypeScript exercise.
 **Hints:** You might need to look up a few additional type definitions, such as:
 - [Tuples](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types)
 - `void` is a type for functions that return without a return value or where the return value should be ignored
-- `never` is a type for values that never occur (e.g. used in a function that always throws an error)
+- `never` is a type for values that never occur (e.g., used in a function that always throws an error)
 
 Finally, you can use a literal `0x`, `0o` or `0b` prefix to specify a number in hexadecimal, octal or binary format, or use `parseInt(string value, number radix)` to convert a string to a number. The precise semantics of these number formats are not crucial for this exercise. The Hex, Binary and Octal parts are not important for us to remember, but it is nice to know that they exist.
 
@@ -198,11 +196,11 @@ Some more difficult exercises:
 - [Detect Pangram](https://www.codewars.com/kata/545cedaa9943f7fe7b000048/train/typescript)
 - [Mexican Wave](https://www.codewars.com/kata/58f5c63f1e26ecda7e000029/train/typescript)
 
-**Note:** These competitive environments often elevate various clever or overly terse solutions that try to squeeze as much as possible into a single line of code. While this is a fun exercise, there are better practices for real-world code. In real-world code, you should strive for readability and maintainability, not for the shortest possible solution to impress your peers. So use a grain of salt when evaluating the practicality of some observed patterns.
+**Note:** These competitive environments often elevate various clever or overly terse solutions that try to squeeze as much as possible into a single line of code. While this is a fun exercise, there are better practices for real-world code. In real-world code, you should strive for readability and maintainability, not for the shortest possible solution to impress your peers. So, use a grain of salt when evaluating the practicality of some observed patterns.
 
 ## Introduction to Generics (0.5 hours)
 
-In TypeScript, types can be defined in a way where they accept other types as arguments. This is called **generics**. There are some commonly used generics in TypeScript, such as `Array<T>` and `Promise<T>`. You can read them as:
+In TypeScript, types can be defined to allow them to accept other types as arguments. This is called **generics**. There are some commonly used generics in TypeScript, such as `Array<T>` and `Promise<T>`. You can read them as:
 
 ```ts
 // an array of T, whatever T is
@@ -224,11 +222,11 @@ Promise<Todo> // a Promise, which will resolve into a Todo
 Promise<Array<Todo>> (same as Promise<Todo[]>)
 ```
 
-You will not need to know how to create new generics at this point, but you should be able to read them and use the few commonly used ones such as `Promise`. You will also get to use generics in Vue applications.
+At this point, you do not need to understand how to create new generics, but you should be able to read them and use the few commonly used ones, such as `Promise`. You will also get to use generics in Vue applications.
 
 ## Typing a Vue Application (1 hour)
 
-Go through the [Vue TypeScript Composition API guide](https://vuejs.org/guide/typescript/composition-api.html). You will need to rely on it to type a Vue project in the upcoming exercise. You can **skip the few final sections** - Typing Provide / Inject, Typing Template Refs and Typing Component Template Refs as these are not necessary for our projects at the moment.
+Go through the [Vue TypeScript Composition API guide](https://vuejs.org/guide/typescript/composition-api.html). You will need to rely on it to type a Vue project in the upcoming exercise. You can **skip the few final sections** - Typing Provide / Inject, Typing Template Refs, and Typing Component Template Refs as these are not necessary for our projects at the moment.
 
 ## Exercise: Rewriting Vue NASA APOD Hands-on Solution to TypeScript (3 hours)
 
@@ -244,31 +242,30 @@ Another developer has done the first few initial steps for configuring TypeScrip
 - to make the types more strict, added `strict: true` to the TypeScript configuration
 - configured a path alias for `@` to `src`, so that we can use `@/components` instead of `../../components` in our imports
 
-Most of these steps would be done for you automatically if you were to create a new Vue project using the `npm init vite` or `npm init vue` commands.
+If you were to create a new Vue project using the `npm init vite` or `npm init vue` commands, most of these steps would be done automatically.
 
 **Task:**
 Ensure that the project has no TypeScript errors, it works in dev mode and it can be built using `npm run build` without errors.
 
 **Steps**:
 
-1. Download the provided [TypeScript NASA APOD Hands-on](https://drive.google.com/file/d/1pcAQ_4UvEzbNvWjtfX1qH56WMmDO1-46/view?usp=sharing).
+1. Download the provided [TypeScript NASA APOD Hands-on](https://drive.google.com/file/d/1Q5_yi9yPtPveVvJMTOBz5Ww_Ay34dMIr/view?usp=drive_link).
 2. `npm install`
 3. Add your own `VITE_NASA_API_KEY` key to `.env.local`, just as in your previous hands-on project.
-4. Follow the [Volar Takeover Mode](https://vuejs.org/guide/typescript/overview.html#volar-takeover-mode) section in the Vue TypeScript guide. This will ensure Volar is used for all Vue TypeScript-related features instead of the built-in TypeScript language server.
-5. `npm run type-check`
-6. Fix the TypeScript errors according to the listed error messages. Try to add types at the point where a value is declared, not where it is used. This will help you avoid having to add types in multiple places.
-7. `npm run dev`
-8. Verify that the application still works as expected.
-9. Make sure that `npm run build` the application successfully.
-10. Once you are done, look through the provided [Typed TypeScript NASA APOD Hands-on Solution](https://drive.google.com/file/d/1xJPZsPHP6NAe_vLQdTwUO7fanqmdOOZB/view?usp=sharing) to see how one could add types to this application.
+4. `npm run type-check`
+5. Fix the TypeScript errors according to the listed error messages. Try to add types at the point where a value is declared, not where it is used. This will help you avoid having to add types in multiple places.
+6. `npm run dev`
+7. Verify that the application still works as expected.
+8. Make sure that the `npm run build` runs successfully.
+9. Once you are done, look through the provided [Typed TypeScript NASA APOD Hands-on Solution](https://drive.google.com/file/d/1Oln62DkBGsUOupauuj3kNfW5qJOLxxkr/view?usp=drive_link) to see how one could add types to this application.
 
-If you get stuck on typing a particular part of the application, you can look at the provided [Typed TypeScript NASA APOD Hands-on Solution](https://drive.google.com/file/d/1xJPZsPHP6NAe_vLQdTwUO7fanqmdOOZB/view?usp=sharing) early. Try to avoid going through other files than the one that is currently causing you issues.
+If you get stuck on typing a particular part of the application, you can look at the provided [Typed TypeScript NASA APOD Hands-on Solution](https://drive.google.com/file/d/1Oln62DkBGsUOupauuj3kNfW5qJOLxxkr/view?usp=drive_link) early. Try to avoid going through files other than the one that is currently causing you issues.
 
-**Note:** If you find TypeScript typing overwhelmingly difficult, you can turn off the `strict` option in `tsconfig.json` and use `any` type for types you are unsure about. While at some point you will be expected to use strict typing, for now, we want you to focus on the basics of TypeScript and keep going even if some type errors are too much to handle.
+**Note:** If you find TypeScript typing overwhelmingly difficult, turn off the `strict` option in `tsconfig.json` and use `any` type for types you are unsure about. While at some point you will be expected to use strict typing, for now, we want you to focus on the basics of TypeScript and keep going even if some type errors are too much to handle.
 
 **Hint:** You can use `import type { Type1, Type2, ... } from '...'` if you want to import types from other files.
 
-**Hint:** Where should you put your types? By default, follow the principle of **colocation** and put them in the same file as the code that uses them. Once you must share a type between multiple files, decide which file should be the "owner" of the type and keep it there. Then import the type from other files that need it. Usually, the owner should be the file which is the most "central" to the modelling of that particular entity and, usually, most detached from the UI. So you might have it inside the `stores` or `models` folder.
+**Hint:** Where should you put your types? By default, follow the principle of **colocation** and put them in the same file as the code that uses them. Once you must share a type between multiple files, decide which file should be the "owner" of the type and keep it there. Then, import the type from other files that need it. Usually, the owner should be the file that is the most "central" to the modeling of that particular entity and, usually, most detached from the UI. So you might have it inside the `stores` or `models` folder.
 
 # Directions for further research (1 hour+)
 

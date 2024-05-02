@@ -1,9 +1,11 @@
 import { TRPCError, initTRPC } from '@trpc/server'
 import bcrypt from 'bcrypt'
 import jsonwebtoken from 'jsonwebtoken'
-import z from 'zod'
+import { z } from 'zod'
 
-const { procedure, router } = initTRPC.context<{ res: any }>().create()
+const { procedure, router, createCallerFactory } = initTRPC.context<{ res: any }>().create()
+
+export { createCallerFactory }
 
 const TOKEN_KEY = 'abc123'
 const PASSWORD_PEPPER = '3#rqqZQvTPscm&gW'

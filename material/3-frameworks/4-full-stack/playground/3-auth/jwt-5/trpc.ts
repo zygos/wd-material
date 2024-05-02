@@ -30,4 +30,5 @@ const trpcInstance = initTRPC.context<Context>().create()
 export const {
   procedure: publicProcedure,
   router,
+  createCallerFactory,
 } = trpcInstance

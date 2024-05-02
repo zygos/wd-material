@@ -52,13 +52,13 @@ Imagine you are presenting your project to a tech company's product owner. The P
 
 ## Project Evaluation Criteria
 
-- Functionality and Purpose. The project fulfills its intended purpose and solves a problem that could be useful in a real-world scenario.
-- Testing. The project has a comprehensive test suite covering key backend functionality and easy-to-spot edge cases. The learner can explain why they have chosen to use (or not use) specific types of tests.
-- Code Readability. Clean, formatted code with a consistent code style that follows best practices and uses intermediate OOP, FP, and TypeScript concepts when appropriate.
-- Concept Integration. The learner has applied and pointed out at least 1 concept/tool introduced in Module 4 from the provided list in the project description. Projects building on top of previous capstones must integrate at least two new concepts.
-- Presentation. The learner explained the project's purpose and technical choices and clearly, concisely, and engagingly demonstrated its functionality. The learner has prepared sufficient instructions in the README file. The learner has prepared some presentation materials (frontend, slides, graphs, illustrations, etc.) to present the project.
-- General Knowledge. The learner has no issues answering questions about their project, technologies, and potential solutions for proposed problems.
-- Documented use of Agile tools. When prompted, the learner can explain how they have applied Agile principles in their project beyond project management tools. There is clear evidence of using Scrum or Kanban tools, task estimations, progress tracking, and a well-written project retrospective.
+- **Functionality and Purpose.** The project fulfills its intended purpose and solves a problem that could be useful in a real-world scenario.
+- **Testing.** The project has a comprehensive test suite covering key backend functionality and easy-to-spot edge cases. The learner can explain why they have chosen to use (or not use) specific types of tests.
+- **Code Readability.** Clean, formatted code with a consistent code style that follows best practices and uses intermediate OOP, FP, and TypeScript concepts when appropriate.
+- **Concept Integration.** The learner has applied and pointed out at least 1 concept/tool introduced in Module 4 from the provided list in the project description. Projects building on top of previous capstones must integrate at least two new concepts.
+- **Presentation.** The learner explained the project's purpose and technical choices and clearly, concisely, and engagingly demonstrated its functionality. The learner has prepared sufficient instructions in the README file. The learner has prepared some presentation materials (frontend, slides, graphs, illustrations, etc.) to present the project.
+- **General Knowledge.** The learner has no issues answering questions about their project, technologies, and potential solutions for proposed problems.
+- **Documented use of Agile tools.** When prompted, the learner can explain how they have applied Agile principles in their project beyond project management tools. There is clear evidence of using Scrum or Kanban tools, task estimations, progress tracking, and a well-written project retrospective.
 
 Immediate Fail Criteria:
 

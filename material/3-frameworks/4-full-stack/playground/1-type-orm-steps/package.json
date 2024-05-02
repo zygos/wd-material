@@ -12,23 +12,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.2",
-    "@types/node": "^20.8.2",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
+    "@tsconfig/node18": "^18.2.4",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^17.1.0",
-    "eslint-config-prettier": "^9.0.0",
-    "prettier": "^3.0.3",
-    "tsx": "^3.13.0",
-    "vitest": "^0.34.6"
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.3",
+    "vitest": "^1.5.2"
   },
   "dependencies": {
-    "better-sqlite3": "^8.7.0",
-    "dotenv": "^16.3.1",
-    "pg": "^8.11.3",
-    "typeorm": "^0.3.17",
+    "better-sqlite3": "^9.5.0",
+    "dotenv": "^16.4.5",
+    "pg": "^8.11.5",
+    "typeorm": "^0.3.20",
     "typeorm-naming-strategies": "^4.1.0",
-    "zod": "^3.22.4"
+    "zod": "^3.23.4"
   }
 }

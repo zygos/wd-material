@@ -4,6 +4,12 @@ A simple web app that displays the NASA Astronomy Picture of the Day illustratin
 
 ## Project Setup
 
+Create `.env.local` file and add your NASA Open API key:
+
+```env
+VITE_NASA_API_KEY=your-api-key-here
+```
+
 ```sh
 npm install
 ```

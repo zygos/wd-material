@@ -239,8 +239,6 @@
 ## Exercise: Containerize Your Capstone Project (1.5 hours)
 ## Directions for Further Research (1 hour+)
 ## Optional Exercise: Building and Bundling Back-End Code (2 hours)
-**CommonJS builds**
-**ES Module builds**
 
 2-Deploying Containers with Cloud Services:
 # Part introduction

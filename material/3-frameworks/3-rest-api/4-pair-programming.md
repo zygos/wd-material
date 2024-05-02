@@ -28,7 +28,7 @@ We advise against using loops inside of tests. Tests can have utility functions 
 
 ## Example: Testing Express app with unit tests, integration tests and using DI (3 hours)
 
-We will revisit our Express.js blog application as a familiar example. Download and review the provided `server-3` blog application code. It has some significant differences from the previous versions:
+We will revisit our Express.js blog application as a familiar example. [Download](https://drive.google.com/file/d/16p1KGNZ2Q2AOsL-Jf4RuUZUAJHKDmxaW/view?usp=drive_link) and review the provided `server-3` blog application code. It has some significant differences from the previous versions:
 
 - it has tests, not complete coverage, but enough to see most of the patterns. Tests are located close to the modules they are testing (i.e. `modules/articles/tests`). **Spend time going through the test examples.**;
 - it has additional test utilities for creating test database instances and running migrations;
@@ -37,8 +37,8 @@ We will revisit our Express.js blog application as a familiar example. Download 
 - it has the Vitest setup and is ready to go, including globally available it, expect, ... imports in tests, so **there is no need to import Vitest functions (it, expect, vi…) in test files**;
 
 Advanced optional utility functions:
-- tests have `*Factory` utilities that produces a basic cookie-cutter object that can be used to create a new object in the database. This allows us to create isolated tests that are easy to fix when our database evolves;
-- tests have `*Matcher` utilities, which has the same purpose as `*Factory` but is used for testing the shape of the server response.
+- tests have `fake*` utilities that produces a basic cookie-cutter object that can be used to create a new object in the database. This allows us to create isolated tests that are easy to fix when our database evolves;
+- tests have `*Matcher` utilities, which has the same purpose as `fake*` but is used for testing the shape of the server response.
 
 For this project, a database is provided through DI to controllers and controllers provide it to other modules. This means all modules needing a database instance will receive it as a parameter. A project with stricter DI would provide controllers with services, services with repositories, etc. However, this would be an overkill for our simple application.
 
@@ -47,6 +47,8 @@ For this project, a database is provided through DI to controllers and controlle
 To save time on data exploration and focus on the process, we will use the database you already know well - `movies.db`. We will use it to build a movie ticket booking system. The system will allow users to book tickets for movies and administrators to perform a few basic management tasks.
 
 **Make sure to review the template code before starting the exercise.**
+
+[Download the starting template](https://drive.google.com/file/d/1CIOnbDKHkKNauINshur0-wEkScAMKTqL/view?usp=drive_link).
 
 The provided `server-template` is a starting point and it already has set up migrations, testing and DI. It should not surprise you if you have familiarized yourself with the provided example in the previous section. It also allows testing the application with a production database to allow writing tests without any data seeding.
 
@@ -58,16 +60,16 @@ It has `repository.spec.ts` which **uses an in-memory database**, which tests th
 
 **Administrators should be able to:**
 
-- [screening] create new viewing screenings for watching a movie that has a timestamp and a provided allocated number of tickets
+- **Screening.** create new viewing screenings for watching a movie that has a timestamp and a provided allocated number of tickets
 - optional requirement: delete viewing screenings while they are empty
 - optional requirement: change a screening's ticket allocation as long as it is not lower than the number of reserved tickets
 
 **Users should be able to:**
 
-- [movie] get a list of movies with their title and year by providing a list of their IDs (e.g., `/movies?id=1,2,3`)
-- [screening] get a list of screenings available for booking. Screenings should timestamp, total number of tickets, number of tickets left and movie details, such as title and year.
-- [ticket] get a list of bookings (tickets) they have booked
-- [ticket] create a booking (ticket) for movie screening that has some tickets left
+- **Movie.** get a list of movies with their title and year by providing a list of their IDs (e.g., `/movies?id=1,2,3`)
+- **Screening**. get a list of screenings available for booking. Screenings should include session information (timestamp, number of tickets, number of tickets left) and movie: (title and year).
+- **Ticket**. get a list of bookings (tickets) they have booked
+- **Ticket**. create a booking (ticket) for movie screening that has some tickets left
 
 **Technical requirements:**
 

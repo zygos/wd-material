@@ -1,63 +1,147 @@
-Part 4: Dynamic queries in Node.js
+Part 4: Node.js Server with a SQL Database
 
 # Task Description
 
-Your client is a small shipping company that wants to migrate from spreadsheets to a database for managing deliveries. This exercise will depend on your TypeScript and SQL knowledge, focusing on performing basic queries in an automated manner.
+In this hands-on exercise, we will practice building a straightforward server that interacts with an SQL database for a Todo application. This application will call the Node server to save its data on the SQLite database.
 
-In this project, you will work on an unfinished solution developed using Node.js and SQLite. Your task is to finish the given solution to pass the tests and fulfill the requirements.
+## Node.js servers (0.5 hours)
 
-It is important to note that tests are not exhaustive and are only used to guide you in the right direction. Most of your tests will run against an in-memory database, so you can run them as many times as you want without affecting the database.
+We will explore using Node.js to create a server that handles requests and sends responses. This would be called the back-end server - an application (or an entire computer) running to respond to user requests. While there are many reasons to have a back-end server, the most common reasons to have a back-end server are:
+
+- **Data storage**: The server can store data in a database, such as user information, posts, comments, etc. The server then acts as a gatekeeper to this data, allowing users to read, write, and delete data.
+- **Private APIs**: Any API keys we add to the front-end code are exposed to the public. Anyone can inspect the code and find everything we added to the front end. We can use a back-end server as a middleman between the front-end and private APIs.
+- **Business logic**: The server can perform complex or private calculations, such as determining the price of an item based on the user's location, the time of day, and the user's purchase history.
+
+The front-end application (the user interface) will make requests to the back-end server, which will then respond with the requested data. The front-end application can be a website, a mobile app, or any other application that interacts with the user. We use HTTP requests on the web to communicate between the front end and back end.
+
+**What is an HTTP request?**
+
+When you make a request to the server (by requesting a page, an image, some JSON data from an API, etc.), your machine is sending out a text message, which would look something like this:
+
+```
+GET / HTTP/1.1
+Host: www.turingcollege.com
+Accept: text/html,text/plain
+```
+
+Here, we state what we want to GET from the server and what we are willing to accept.
+
+**Note.** We simplify the process by ignoring DNS queries, additional headers, etc. You will not be dealing with these complications in this exercise.
+
+Given that your machine has looked up the IP address of `www.turingcollege.com`, it will send this message to the machine at that IP address. This machine will have a piece of software that listens to these requests. This software is called a **server**.
+
+**Let's create a Node.js server.**
+
+Create a new file called `server.mjs`. Note that we are using `mjs` file extension for this example. This tells Node that this is an ES Module so that we can use the `import`/`export` syntax. For projects with multiple files, we would create `packages.json` with `"type": "module"`, which informs Node that the entire folder uses ES Modules. But for a one-off file, having a `.mjs` file extension is easier than adding a `package.json` file.
+
+We will not perform any project setup; we will only use Node.js built-in modules.
+
+Let's add the following code:
+
+```js
+// Built-in Node.js module for handling HTTP requests
+import http from 'node:http'
+
+// We create a server and tell it what it should do for each request.
+const server = http.createServer((request, response) => {
+  // we print out the request URL to the Node console
+  console.log('Request:', request.method, request.url)
+
+  // setting to HTTP status code 200, which means "OK"
+  response.statusCode = 200
+
+  // Indicating the type of content we're sending back.
+  // We could indicate other types, such as JSON or HTML.
+  response.setHeader('Content-Type', 'text/plain')
+
+  // We are ending our response with a message.
+  response.end('Hello, world!')
+})
+
+// Just a random port number for development purposes. Ports
+// under 0 - 1023 are privileged and reserved for certain
+// applications, so we pick a port number above 1023.
+const PORT = 3000
+
+server.listen(PORT, 'localhost', () => {
+  console.log(`Server running at http://localhost:${PORT}/`)
+})
+```
+
+Run this file with `node server.mjs`. You should see the following message:
+
+```
+Server running at http://localhost:3000/
+```
+
+Unlike applications that only perform some calculations and close themselves when done, **this application will keep running and listening for requests**. This is because we have created an active handle by calling `server.listen()`. A handle refers to a long-lived resource that can perform actions outside of the Node.js process. In this case, the handle is listening for requests on port 3000.
+
+Now, the Node.js process will not exit unless it crashes due to an uncaught error or we send a signal through the terminal to interrupt it (`SIGINT`) by pressing `Ctrl+C` (or `Cmd+C` on macOS).
+
+Now, your server will respond to all requests with the following message:
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Content-Length: 13
+
+Hello, world!
+```
+
+**Note:** The `Content-Length` header is automatically added by Node.js, so you don't need to worry about it. Also, we left out some headers intentionally for brevity.
+
+Visit `http://localhost:3000` in your browser to see the response body (content) - `Hello, world!`. Due to our `console.log` statement, this should also print out a message in your Node.js console. Depending on your browser, you might see multiple requests as some browsers eagerly request additional resources, such as `favicon.ico` (the tiny icon displayed in the browser tab).
+
+Whenever you visit a website, your browser makes the `GET` request to the URL in the address bar. If you need to perform a request with a different HTTP method, such as `POST`, `PUT`, `PATCH`, `DELETE`, etc., you can use a REST client, such as Insomnia, Postman, or VS Code extensions (REST Client or Thunder Client).
+
+Most of the server code can be boiled down to this general pattern. You receive a request, do something about it, and send a response back.
 
 ## Requirements
 
-1. "importSpreadsheet" module.
-  - It accepts a path to a SQLite database and a path to a local CSV file.
-  - The missing tables are created if the database does not contain some expected tables.
-  - It inserts the data from the CSV file into the database.
-  - If the rows with the same ID already exist in the database, they are updated with the new data.
-  - Passing the same CSV file multiple times should not result in duplicate data.
-  - Usage example: `importSpreadsheet(path.join(__dirname, './database.db'), path.join(__dirname, './data.csv'))`
-2. "exportSpreadsheet" module.
-  - It accepts a path to a SQLite database and a path to a local CSV file.
-  - It exports all the data from the database into the provided CSV file. If the CSV file already exists, it is overwritten. If the CSV file does not exist, it is created.
-  - The exported CSV file should match the format of the input CSV file provided in this exercise.
-  - Usage example: `exportSpreadsheet(path.join(__dirname, './database.db'), path.join(__dirname, './data.csv'))`
-3. Each package in the database should have references to the customer, driver, invoice and addresses (pickup and delivery).
-4. Client wants to store delivery and pickup addresses in the same table.
-5. Driver license number, invoice serial_number and table primary keys should be unique.
-6. Client wants to use `length`, `width`, `height` columns instead of `size` for the package dimensions. Nevertheless, exporting the data should use the `size` column so that the exported CSV file matches the format of the input CSV file.
-7. Fields that do not have a value in the CSV file should be set to `NULL` in the database, and these fields should be nullable in the database schema.
-8. You should not delete any data from the database; CSV files are only used to perform new inserts/updates.
-9. It can be assumed that:
-  - each row will have a product_id, which will not be repeated in the same CSV file;
-  - the CSV file can overwrite existing data in the database. For example, if one CSV import inserts the package with ID 1 and the second CSV import updates the package with ID 1, the final result should be that the package with ID 1 has the data from the second CSV import. It should not be assumed that the new CSV file will contain all the rows from the previous CSV files;
-  - currency is always presented as ISO 4217 3-letter code;
-  - package size is always presented as a string in the format of `length x width x height` without spaces (e.g., `10x20x30`);
+The application needs to have four features:
 
-## Bonus Challenges
+- It shows all todos on the home page.
+- It allows creating a new todo.
+- It allows marking a todo as done.
+- It allows deleting a todo.
 
-1. Use transactions to ensure the data is not corrupted if the application crashes during import.
-2. Add foreign keys to the database schema.
-3. Design the database interface in a generalized way so that it can operate with various databases like SQLite, PostgreSQL, and MySQL.
+It uses a SQL database to store todos.
+
+Another developer on your team hoped to finish the application but had to leave for more urgent matters. They have already set up the project structure, the entire front end, and some of the back end. You have been asked to finish the backend part of the application, given that you are familiar with Node.js and SQL.
+
+The application is designed around four endpoints:
+
+- GET `/todos` - returns all todos
+- POST `/todos` - creates a new todo
+- PATCH `/todos/:id/done` (e.g., `/todos/1/done`) - marks a todo as done
+- DELETE `/todos/:id` (e.g., `/todos/2`) - deletes a todo
+
+An endpoint is a URL to which the server responds. The server will perform different actions based on the HTTP method (GET, POST, PATCH, DELETE) and the URL path.
+
+You aim to finish implementing these endpoints and connect them to the SQLite database. You will know that you have completed the task when you can interact with the front-end application by creating, marking as done, and deleting todos. Refreshing the page should show the same todos in the same state (done or not done).
+
+Read the `README.md` file in the starter project for more information on how to start the project.
+
+To reach a sufficient solution, you will need to edit only the `server/index.js` and `server/todos.js` files. You do not have to touch the front-end code.
 
 ## Recommended Step-by-Step Approach
 
-1. Familiarize yourself with the problem and database schema.
-2. Run tests.
-3. Allow inserting data into the database from a CSV file.
-4. Allow updating existing data in the database.
-5. Allow exporting data to a CSV format.
-6. Run all tests to make sure we are not breaking anything.
-7. Refactor your code to make it more readable and independent from implementation details.
+1. Read the `README.md` and start the front-end and back-end servers.
+2. Open the front-end application in your browser and try to interact with it. It should only work partially.
+3. Familiarize yourself with the existing back-end code and the provided database schema.
+4. Write the SQL required for the `GET /todos` endpoint. It should return all todos from the database.
+5. Write the `POST /todos` endpoint. It should insert a new todo into the database.
+6. Write the `PATCH /todos/:id/done` endpoint. It should set a todo's `is_done` field to `true` (or `1` in SQLite).
+7. Write the `DELETE /todos/:id` endpoint. It should delete a todo with a given ID.
+8. Look for areas that could be improved or refactored.
 
 ## Approach to Solving the Task
 
 Follow this approach to tackle the hands-on exercise:
 
 - Download the provided unfinished solution and use it as your starting point.
-- Try to implement what is needed to pass the tests one by one. Do not try to implement everything at once. Start with the smaller tests deeper in the project and work up to the top-level tests.
-- Spend up to 10 hours attempting to solve the task on your own.
+- Spend up to 10 hours attempting to solve the task independently.
 - If you struggle during the first hours and find it too difficult, try seeking help from your peers or JTLs for an additional 10 hours. Spend half of this time working with someone else, whether a study buddy, a peer who has completed the exercise, or a JTL in an open session.
-- When you are no longer making any progress on your own, take a look at the suggested solution and walk through it step-by-step. Spend up to 10 more hours on the walkthrough while experimenting and learning from the provided solution.
-- Try to go back to your own solution once the suggested solution clears up any obstacles you encountered.
-- We recommend checking the final suggested solution, even if you have completed the task on your own, to compare approaches and potentially learn new techniques.
+- When you are no longer progressing, look at the suggested solution and walk through it step-by-step. Spend up to 10 more hours on the walkthrough while experimenting and learning from the provided solution.
+- Try to return to your solution once the suggested solution clears up any obstacles you encountered.
+- We recommend checking the final suggested solution, even if you have completed the task on your own, to compare approaches and learn new techniques.

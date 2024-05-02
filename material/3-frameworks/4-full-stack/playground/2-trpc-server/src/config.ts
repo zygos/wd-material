@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import z from 'zod'
+import { z } from 'zod'
 
 const { env } = process
 const isDevTest = env.NODE_ENV === 'development' || env.NODE_ENV === 'test'
@@ -27,7 +27,7 @@ const schema = z
 
       // By default, log and synchronize the database schema only for tests and development.
       logging: z.preprocess(coerceBoolean, z.boolean().default(isDevTest)),
-      synchronize: z.preprocess(coerceBoolean, z.boolean().default(isDevTest)),
+      synchronize: z.preprocess(coerceBoolean, z.boolean().default(true)),
     }),
 
     // auth (soon)

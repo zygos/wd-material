@@ -4,7 +4,7 @@ Part 5: Peer Mock Interview
 
 The task revolves around the [CS50 Movies Problem Set](https://cs50.harvard.edu/x/2023/psets/7/movies/) but with a twist. Instead of just solving the problem set, you will be preparing for a live SQL coding interview on both sides of the table.
 
-You will work with `movies.db`, an SQLite database containing IMDb data about movies, the directors and stars in them, and their ratings. As learners, your goal is to prepare for an SQL live interview and also for the role of an interviewer.
+You will work with `movies.db`, an SQLite database containing IMDb data about movies, their directors and stars, and their ratings. As learners, your goal is to prepare for an SQL live interview and also for the role of an interviewer.
 
 ## Preparation
 
@@ -12,10 +12,10 @@ To prepare for the role of an interviewee, follow the steps below:
 
 1. **Investigation:** Follow the general instructions provided in the [CS50 Problem Set](https://cs50.harvard.edu/x/2023/psets/7/movies/) to get a general understanding of the database.
 2. **CS50 Questions:** Go through the 13 provided CS50 questions and prepare answers for all questions. Use a locally installed `check50` package to check your queries. You can [install check50](https://cs50.readthedocs.io/projects/check50/en/latest/index.html) on your machine.
-3. **Node.js Setup:** Prepare a Node.js environment allowing you to interact with the SQLite database - a minimal setup without any high-level SQL abstractions. Use the `better-sqlite3` package. Use of TypeScript, linters, and other tools is not necessary but is allowed. Make sure you can write and execute queries. This environment can be used for Node.js-related questions and live coding tasks.
+3. **SQL and Node.js Setup:** Prepare some environment where you can run SQL queries comfortably. That can be a GUI tool of your choice, sqlite3 in the command line, or some VS Code extension. For a possible Node.js question, prepare a Node.js environment that allows you to interact with the SQLite database—a minimal setup without any high-level SQL abstractions. Use the `better-sqlite3` package. Make sure you can write and execute queries.
 4. **Take-home questions:** Prepare answers for the provided Take-home questions.
 5. **Prepare as much as you need for your interview:** You should also be able to write queries in a live environment and explain your thought process. Spend as much time as is necessary to feel confident answering the questions and writing queries.
-6. **Self-Prepared Questions:** Prepare 12 questions (3 questions for each of the 4 difficulty levels) that mostly (or exclusively) rely on the provided movie database. Questions should resemble questions supplied in the list of additional questions. **Prepare and commit answers to these questions**. If you expect other learners to answer these questions, you should be able to answer each of these questions yourself.
+6. **Self-Prepared Questions:** Prepare 12 questions (3 questions for each of the 4 difficulty levels) that mostly (or exclusively) rely on the provided movie database. The questions should resemble those supplied in the list of additional questions. **Prepare and commit answers to these questions**. If you expect other learners to answer these questions, you should be able to answer each of these questions yourself.
 
 Your repository should contain all parts of your work.
 
@@ -23,7 +23,7 @@ Your repository should contain all parts of your work.
 
 In the context of this project, "questions" include coding tasks, such as writing a query to retrieve a specific result, as well as general questions about SQL and databases.
 
-Questions and live coding tasks should be ordered to be increasingly challenging, with 3 questions for each level of difficulty. Here's the outline of the different difficulty levels and the associated skills and concepts:
+Questions and live coding tasks should be ordered to be increasingly challenging, with three questions for each level of difficulty. Here's the outline of the different difficulty levels and the associated skills and concepts:
 
 1. **1st Level (Lowest Difficulty Level)**
   - Proficiency in executing simple SELECT queries (WHERE, ORDER BY, LIMIT, OFFSET)
@@ -55,7 +55,6 @@ Questions and live coding tasks should be ordered to be increasingly challenging
 Use separate files or folders to store your answers to the following questions. Name each file/folder based on its number.
 
 ### 1st Level (Lowest Difficulty Level)
-MUST: updated #1
 1. Count all movie titles that have been released between 2005 (inclusive) and 2015 (exclusive).
 2. Letters from a stoic. List the names of the 10 oldest people and how many years have passed since they were born in the current year. Do not include people who do not have a birth year.
 3. List all the people with the first name "Quentin", but who are not "Quentin Tarantino". You can assume that names start with a first name.
@@ -79,12 +78,19 @@ MUST: updated #1
 
 ### As an interviewer, you will need to:
 
-1. **Make sure that the learner has solutions to CS50:** The learner should be able to demonstrate that their solutions pass the `check50`. You can use the `check50` yourself to verify the solutions and investigate the queries.
-2. **Check the answers to the take-home questions.** Ask the learner to show 3 - 6 queries and their results. If the query is correct, ask the learner to explain the query. If the query is incorrect, ask the learner to fix the query.
-3. **Ask questions from the list of self-prepared questions.** This is the main part of the interview. Ask the learner to answer 5 - 12 questions (live coding tasks) using SQLite and Node.js. If the learner cannot proceed, ask them to explain their thought process and provide hints if necessary.
-4. Check the learner's prepared list of questions and answers for their interview and that these questions and tasks roughly match the same challenge level as the provided questions. If the learner's questions are too easy or difficult, ask them to adjust them.
+Before the interview:
 
-The interviewer's goal is to ensure the learner can answer questions and write queries in a live environment. **Depending on the learner's level and time constraints, you can choose the number and order of questions and tasks.** For example, you could ask a single question in the 1st level, then the 2nd level, and if a learner is struggling, you can return to the 1st level. You can quickly move to the 3rd and 4th levels if a learner is doing well.
+- Make sure that the learner has solutions to CS50.
+- Check the answers to the take-home questions.
+- Check that the learner's prepared list of questions and answers for their interview roughly match the same challenge level as the provided questions.
+
+During the interview:
+
+- ~ 5 minutes. If you have comments on learner's take-home solutions, **ask them to show 1 - 3 solutions**. If any answers are incorrect, comment on the issues. Ask the learner for possible improvements/alternative solutions if the queries are correct.
+- 30 - 40 minutes. **Ask questions from the list of self-prepared questions.** This is the central part of the interview. Ask the learner to answer 4 - 5 questions (4 coding questions + 1 theoretical question) using SQLite and Node.js. If the learner cannot proceed, ask them to explain their thought process and provide necessary hints.
+- 0 - 5 minutes. **Present your comments** (if any) on the learner's prepared questions/answers. If the learner's questions are too easy or difficult, ask the learner to adjust them. Incorrect answers or out-of-order question difficulty results in penalties.
+
+The interviewer's goal is to ensure the learner can answer questions and write queries in a live environment. **Depending on the learner's level, you can choose the number and order of questions and tasks.** For example, you could ask a single question in the 1st level, then the 2nd level, and if a learner struggles, you can have a different 2nd-level question to give a second chance. However, that most likely means that the student will not reach the final question and thus will not receive full points.
 
 STLs must review [an additional document](https://docs.google.com/document/d/1ThNlcm5DnnQke9Y0g_xFxTLiPA0uP21ZvpkJdirozZA/edit?usp=sharing) on suggested questions and answers.
 
@@ -110,16 +116,16 @@ Interviewees can use Google, Bing, DuckDuckGo, Stack Overflow, and other non-AI 
 
 # Submission
 
-This project will require 1 STL and 1 Peer correction.
+This project will require 1 STL and 1 Peer review.
 
-To perform a peer correction, **you need to have received a peer review from an STL or another learner first**. If a learner has already led a peer review, they should prioritize letting other learners lead a peer review.
+To perform a peer review, **you need to have received a peer review from an STL or another learner first**. If a learner has already led a peer review, they should prioritize letting other learners lead a peer review.
 
-**Do not perform a peer correction for the same person that led a peer review for you.** This leads to a conflict of interest where learners are incentivized to reciprocate a good grade.
+**Do not perform a peer review for the same person that led a peer review for you.** This leads to a conflict of interest where learners are incentivized to reciprocate a good grade.
 
-If a learner needs to carry out multiple corrections due to the limited availability of other learners, they should slightly adapt their questions so they are different between sessions.
+If a learner needs to carry out multiple reviews due to the limited availability of other learners, they should slightly adapt their questions so they are different between sessions.
 
 To practice Git, you are advised to use the command line to submit the project to the Turing GitHub repository.
 
-Read an in-depth guide about corrections here: https://turingcollege.atlassian.net/wiki/spaces/DLG/pages/537395951/Peer+expert+reviews+corrections
+Read an in-depth guide about reviews here: https://turingcollege.atlassian.net/wiki/spaces/DLG/pages/537395951/Peer+expert+reviews+corrections
 
 **Estimate average time to complete: 25 hours**

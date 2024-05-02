@@ -12,9 +12,6 @@ export default mergeConfig(
       globals: true,
       passWithNoTests: true,
       root: fileURLToPath(new URL('./', import.meta.url)),
-      transformMode: {
-        web: [/\.[jt]sx$/],
-      },
     },
   })
 )

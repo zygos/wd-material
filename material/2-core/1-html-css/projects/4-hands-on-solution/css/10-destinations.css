@@ -1,0 +1,84 @@
+#destinations {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.destinations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.destination {
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.destination img {
+  object-fit: cover;
+  max-height: 240px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.destination .location {
+  bottom: 0;
+  position: absolute;
+
+  /* Make it take up the entire width of the parent element (.destination) */
+  width: 100%;
+
+  /* White, centered text */
+  color: white;
+  text-align: center;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0%), rgb(0 0 0 / 90%));
+  padding: 20px 0;
+}
+
+.destination .location strong {
+  font-family: 'Dancing Script', cursive;
+  font-size: 24px;
+}
+
+.destination .location .country {
+  /* the country seems to be using the same font as the header */
+  font-family: Montserrat, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+@media screen and (width >= 768px) {
+  #destinations .description {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .destinations {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+  }
+
+  .destination {
+    border-radius: 0;
+  }
+
+  .destination:first-of-type {
+    border-radius: 1rem 0 0 1rem;
+  }
+
+  .destination:last-of-type {
+    border-radius: 0 1rem 1rem 0;
+  }
+
+  .destination img {
+    max-height: none;
+  }
+
+  .destination .location strong {
+    font-size: 32px;
+  }
+}

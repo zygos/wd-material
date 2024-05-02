@@ -13,21 +13,21 @@ module.exports = {
     project: './tsconfig.eslint.json',
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['**/*.js'],
+  ignorePatterns: ['**/*.js', '**/*.cjs'],
   rules: {
     // we can override some problematic import rules here
     // that can cause issues when using import aliases.
     'import/extensions': 'off',
     'import/no-extraneous-dependencies': 'off',
-    "import/order": ["error", {
-      "pathGroups": [
+    'import/order': ['error', {
+      'pathGroups': [
         {
-          "pattern": "@server/**",
-          "group": "internal"
+          'pattern': '@server/**',
+          'group': 'internal'
         },
         {
-          "pattern": "@tests/**",
-          "group": "internal"
+          'pattern': '@tests/**',
+          'group': 'internal'
         },
       ],
     }],

@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server'
-import z from 'zod'
+import { z } from 'zod'
 import { Project } from '@server/entities'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import provideRepos from '../provideRepos'

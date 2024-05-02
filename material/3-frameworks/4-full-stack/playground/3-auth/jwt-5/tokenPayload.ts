@@ -1,5 +1,5 @@
-import z from 'zod'
-import { AuthUser } from './trpc'
+import { z } from 'zod'
+import type { AuthUser } from './trpc'
 
 // We have move out the token payload logic into a separate file.
 // As we would like to keep both sides of token handling in one place.

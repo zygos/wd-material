@@ -1,6 +1,7 @@
+import { createCallerFactory } from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
 import { User } from '@server/entities'
-import usersRouter from '..'
+import userRouter from '..'
 
 // Here we are testing our endpoint as a whole. This would be closer
 // to an integration test than to a unit test.
@@ -22,6 +23,8 @@ import usersRouter from '..'
 // of abstraction. Even passing in the entire database to the procedure
 // is already an improvement over importing the repository directly.
 
+const createCaller = createCallerFactory(userRouter)
+
 it('should save a user', async () => {
   // ARRANGE (Given)
   // A temporary empty test database just for this test.
@@ -33,7 +36,7 @@ it('should save a user', async () => {
 
   // We provide db to the caller, which will be available in the
   // procedure as ctx.db. This is dependency injection in action.
-  const { signup } = usersRouter.createCaller({ db })
+  const { signup } = createCaller({ db })
 
   // ACT (When)
   const response = await signup({

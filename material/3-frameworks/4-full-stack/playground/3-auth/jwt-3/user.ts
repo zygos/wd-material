@@ -1,9 +1,9 @@
 import { TRPCError, initTRPC } from '@trpc/server'
 import bcrypt from 'bcrypt'
 import jsonwebtoken from 'jsonwebtoken'
-import z from 'zod'
+import { z } from 'zod'
 
-const { procedure, router } = initTRPC.context<{
+const { procedure, router, createCallerFactory } = initTRPC.context<{
   // Express req and res objects that we
   // would have in an Express.js app a
   // tiny slice of the express request
@@ -17,6 +17,8 @@ const { procedure, router } = initTRPC.context<{
     cookie: any,
   }
 }>().create()
+
+export { createCallerFactory }
 
 const TOKEN_KEY = 'abc123'
 const PASSWORD_PEPPER = '3#rqqZQvTPscm&gW'

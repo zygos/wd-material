@@ -1,0 +1,9 @@
+footer {
+  background-color: #ffc107;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+footer nav a {
+  display: block;
+}

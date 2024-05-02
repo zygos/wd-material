@@ -1,8 +1,7 @@
-import { expect, it, vi } from 'vitest'
-import { userRouter, userRepository } from './user'
-import { describe } from 'node:test'
+import { describe, expect, it, vi } from 'vitest'
+import { createCallerFactory, userRouter, userRepository } from './user'
 
-const { login, signup } = userRouter.createCaller({
+const { login, signup } = createCallerFactory(userRouter)({
   // We have to add a mock here since we are not using it in our source
   // code.
   res: {

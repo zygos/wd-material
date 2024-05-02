@@ -1,0 +1,8 @@
+{
+  "sprint": "wd-2-1",
+  "paths": {
+    "dist": "./dist",
+    "projects": "./projects",
+    "quizzes": "./quizzes"
+  }
+}

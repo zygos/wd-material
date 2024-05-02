@@ -1,21 +1,20 @@
-Part 3: Single Page Applications
+Part 3: Single-Page Applications
 
 # Part Description
 
-In this section, we will delve into the world of Single Page Applications (SPA) using Vue 3. We will explore the component-based architecture, the reactivity model, and Vue directives, all while building a basic application.
+In this section, we will delve into the world of Single-Page Applications (SPA) using Vue 3. We will explore the component-based architecture, the reactivity model, and Vue directives while building a basic application.
 
 # Key learning topics & resources for this part
 
-## Single Page Applications (SPAs)
+## Single-Page Applications (SPAs)
 
-A **Single Page Application** (SPA) is a web application that loads a single HTML page and dynamically updates that page based on the user's interaction with the application. SPAs depend on JavaScript to render the page content and manage user interactions.
+A **Single-Page Application** (SPA) is a web application that loads a single HTML page and dynamically updates that page based on the user's interaction with the application. SPAs depend on JavaScript to render the page content and manage user interactions.
 
-// MUST: updated sentence:
-For frameworks like Vue and React, SPAs are one of the main methods for building applications. It is primarily used for highly interactive applications that require frequent UI updates.
+For frameworks like Vue and React, SPAs are one of the primary methods for building applications. It is primarily used for highly interactive applications that require frequent UI updates.
 
 ## Vue Documentation (2 hours)
 
-Begin by opening the following link and spend some time exploring the **Essentials part** of the [Vue documentation](https://vuejs.org/guide/essentials/application.html). In particular:
+Begin by opening the following link and exploring the **Essentials part** of the [Vue documentation](https://vuejs.org/guide/essentials/application.html). In particular:
 
 - Template Syntax
 - Reactivity Fundamentals. We would also recommend watching this short [ref and reactive comparison](https://www.youtube.com/watch?v=OaUpEyz4zxs)
@@ -26,18 +25,18 @@ Begin by opening the following link and spend some time exploring the **Essentia
 - Event Handling
 - Form Input Bindings
 - Lifecycle Hooks - the onMounted hook, no need to memorize the lifecycle diagram
-- Watchers - the `watch` function, deep watchers and eager watchers. `watchEffect`, callback flush timing and stopping the watcher is entirely optional.
+- Watchers - the `watch` function, deep watchers and eager watchers. `watchEffect`, callback flush timing, and stopping the watcher are optional.
 - Components Basics
 
-Try to notice how some of these new concepts are used in your previously created Vue project.
+Notice how some new concepts are used in your previously created Vue project.
 
-At this stage, your focus should be on gaining a broad yet shallow understanding of the Vue framework and its core concepts. This will enable you to look up necessary information and examples when needed. You will have plenty of opportunities to revisit and practice these ideas in the upcoming exercises.
+At this stage, you should focus on gaining a broad yet shallow understanding of the Vue framework and its core concepts. This will enable you to look up necessary information and examples when needed. You will have plenty of opportunities to revisit and practice these ideas in the upcoming exercises.
 
-Allocate your time wisely to ensure you cover all the core topics even if that means not understanding a particular concept completely. For instance, you should be aware that Vue has a `watch` family of functions that are triggered when specified variables change. However, it's not necessary at this point to understand the differences between `watch`, `watchEffect`, or `watchPostEffect`.
+Allocate your time wisely to ensure you cover all the core topics, even if that means not understanding a particular concept completely. For instance, you should know that Vue has a `watch` family of functions triggered when specified variables change. However, it's unnecessary to understand the differences between `watch`, `watchEffect`, or `watchPostEffect`.
 
 ## Preparing a Boilerplate (0.5 hour)
 
-We're going to create a few simple Vue applications for our hands-on exercise.
+We will create a few simple Vue applications for our hands-on exercise.
 
 To save time on project setup, we suggest you clean up the project from the previous part and use it as a **boilerplate** for the upcoming exercises. In this context, a boilerplate refers to a standard project setup that can be used as a starting point for other projects.
 
@@ -133,7 +132,7 @@ button {
 
 **[Solution](https://vuejs.org/examples/#handling-input)**
 
-We will include more exercises from the Vue examples page. We recommend that you try to solve the exercises on your own before looking at the solutions.
+We will include more exercises from the Vue examples page. Before looking at the solutions, we recommend that you try to solve the exercises on your own.
 
 The provided solution also includes a link with a click handler. By default, this link will redirect you to a new page. However, this redirection is prevented with a `prevent` modifier. You can learn more about modifiers [here](https://v3.vuejs.org/guide/events.html#event-modifiers).
 
@@ -156,7 +155,7 @@ The provided solution also includes a link with a click handler. By default, thi
 - Above the list, display four buttons labeled "Toggle List", "Push Number", "Pop Number", and "Reverse List".
 - The "Toggle List" button should either show or hide the list when clicked.
 - The "Push Number" button should add the next sequential number to the end of the list when clicked. You can simply assume that the next number is always `list.length + 1`.
-- The "Pop Number" button should remove the last number from the list when clicked.
+- When clicked, the "Pop Number" button should remove the last number from the list.
 - The "Reverse List" button should reverse the order of the numbers in the list when clicked.
 - If the list is hidden and not empty, display the text "List is not empty, but hidden."
 - If the list is empty, display the text "List is empty."
@@ -186,7 +185,7 @@ The provided solution also includes a link with a click handler. By default, thi
 
 - Create an array of groceries that includes objects with `id` and `text` properties
 - Display the groceries in an ordered list (`<ol>`)
-- Each grocery item should have its own component that accepts the individual `grocery` object as a prop
+- Each grocery item should have its component that accepts the individual `grocery` object as a prop
 - The grocery item component should use the `<li>` tag
 
 [Video on Vue key attribute](https://www.youtube.com/watch?v=yg0n19SdKzs).

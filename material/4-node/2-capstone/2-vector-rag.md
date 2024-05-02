@@ -162,6 +162,7 @@ Alternatively, if a learner asks, "Alan, do you have some tips for an open sessi
 
 ## Retrieval Augmented Generation (RAG) (30 min)
 
+// MUST: change resource as it is 404!
 - Read: [Exploring Chat with Retrieval-Augmented Generation (RAG)](https://txt.cohere.com/exploring-chat-rag/) (30 min)
 
 While the article focuses on using Cohere, the same principles apply to other models.

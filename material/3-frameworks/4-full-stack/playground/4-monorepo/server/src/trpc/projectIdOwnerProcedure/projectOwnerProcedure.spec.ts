@@ -2,7 +2,7 @@ import { authContext } from '@tests/utils/context'
 import { createTestDatabase } from '@tests/utils/database'
 import { fakeProject, fakeUser } from '@server/entities/tests/fakes'
 import { User } from '@server/entities'
-import { router } from '..'
+import { createCallerFactory, router } from '..'
 import { projectIdOwnerProcedure } from '.'
 
 const routes = router({
@@ -28,7 +28,8 @@ const [
   }),
 ])
 
-const authenticated = routes.createCaller(authContext({ db }, userOne))
+const createCaller = createCallerFactory(routes)
+const authenticated = createCaller(authContext({ db }, userOne))
 
 it('should pass if project belongs to the user', async () => {
   const response = await authenticated.testCall({ projectId: projectOne.id })

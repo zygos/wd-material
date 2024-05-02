@@ -138,7 +138,6 @@ You can find more information on a few [data type recommendations on the Postgre
 While you might not need to use a GUI client for many day-to-day development tasks, it is helpful for exploring the database. We recommend choosing one of the following GUI tools:
 
 - [dbBeaver](https://dbeaver.io/) - a free and open-source tool that supports many databases, including PostgreSQL. Recommended option.
-// MUST: added HeidiSQL
 - [HeidiSQL](https://www.heidisql.com/) - another solid free and open-source tool that supports multiple database servers.
 - [pgAdmin](https://www.pgadmin.org/) is PostgreSQL's de facto GUI tool. However, setting up can be more challenging, especially when using WSL.
 - VS Code extension [SQLTools](https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools). It is less feature-rich than other options but is easy to install and offers enough functionality for our use cases. You will also need to install the [SQLTools PostgreSQL Driver](https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools-driver-pg) extension to connect to PostgreSQL.
@@ -212,11 +211,9 @@ They all have their own spin on dealing with the database. We will be using Type
 We recommend following along up until **1:01:30**. From then on, the video primarily focuses on the Active Record pattern, which we will not use. We will use the Data Mapper pattern with repositories instead, which you are already familiar with from the previous sprint. However, watching the entire video is still recommended as it will give you a good overview of TypeORM.
 
 **Notes on the video:**
-// MUST: clarified statement
 - **11:20** - The project installs a TypeScript setup with `ts-node`, `typescript`, and `nodemon`. Our module exercises primarily use a setup with `tsx`, which does not require these dependencies. However, for this video crash course, you should follow the same setup in the video.
 - **12:12** - The video installs TypeORM version 0.2.34, which is slightly older than the current version. We will be relying on **0.3.x** versions of TypeORM. In TypeORM, all 0.x versions can introduce breaking changes, which means not everything written for **0.2** is compatible with **0.3** versions.
 - **13:20** - We do not recommend installing any packages globally. Instead, you should install them locally into your project and use `npx` to run them. Whenever you use a global dependency, you are introducing the "it works on my machine" problem. The main idea behind `package.json` is to have a declared list of dependencies required to run your project. Global dependencies exist outside of that list.
-// MUST: added a line
 - **15:20** - Instead of using `createConnection(options)`, use `new DataSource(options)`. `DataSource` can be imported from `typeorm`. This is a breaking change between 0.2 and 0.3 versions of TypeORM.
 - **24:50** - `BaseEntity` is used for the Active Record pattern. In Active Record, the model is responsible for data access and business logic. There is a different pattern - Data Mapper where the model is only responsible for business logic, while the data access is handled by a separate class - a repository. You can read more about the differences between the two patterns in [TypeORM documentation](https://typeorm.io/active-record-data-mapper). We will use the Data Mapper pattern in our exercises as it is easier to test.
 - **26:05** - In our boilerplates, we use `esbuild` (through `tsx` and `vitest`) to compile TypeScript. However, `esbuild` does not support [emitting decorator metadata](https://esbuild.github.io/content-types/#no-type-system). Thus, we have three options - use a slower `ts-node` + `nodemon` setup, use an alternative TypeScript compiler (`swc`), or do not rely on decorator metadata. All of these options have their drawbacks. We will use the last option for now as we prioritize having a simple setup with fewer dependencies. That requires always specifying the database types for our columns, which is a good practice. For example, instead of `@Column()`, we would use `@Column('text')`.
@@ -257,7 +254,7 @@ A few notes before we start:
 - We have included a function that creates in-memory SQLite databases for testing. These are easy and fast to set up. We could run the same tests against an actual PostgreSQL database, but that would require more work with test setup.
 - We have added TypeORM's Snake Naming Strategy, which lets us write our entity classes in camelCase while the database tables and columns will be in snake_case. This is a standard convention.
 
-[Download the TypeORM exercises](https://drive.google.com/file/d/1TZ1c16LZORcxL3F4tRwrfnxB2R2BQ-od/view?usp=sharing).
+[Download the TypeORM exercises](https://drive.google.com/file/d/130P252GA55Ii__8I4GdljDx90ThKURhc/view?usp=drive_link).
 
 Start with the `README.md` file, which contains a few notes on getting started.
 

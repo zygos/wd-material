@@ -1,8 +1,7 @@
-import { expect, it } from 'vitest'
-import { userRouter, userRepository } from './user'
-import { describe } from 'node:test'
+import { describe, expect, it } from 'vitest'
+import { createCallerFactory, userRouter, userRepository } from './user'
 
-const { login, signup } = userRouter.createCaller({})
+const { login, signup } = createCallerFactory(userRouter)({})
 
 describe('signup', () => {
   it('creates in a user in the database', async () => {

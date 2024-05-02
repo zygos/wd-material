@@ -21,5 +21,7 @@ RUN npm run build
 
 EXPOSE 3000
 
-# Default command
-CMD ["npm", "run", "start"]
+# Command Docker runs when it starts the container.
+# In our case, this command is specified in server/package.json
+# which does migrations and then starts the server.
+CMD ["npm", "run", "prod"]

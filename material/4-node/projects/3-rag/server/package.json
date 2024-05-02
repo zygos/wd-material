@@ -13,7 +13,7 @@
     "test": "npm run test:mem",
     "test:db": "vitest",
     "test:mem": "DB_TYPE=pg-mem vitest",
-    "type-check": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

@@ -1,23 +1,22 @@
 {
   "extends": "@tsconfig/node18/tsconfig.json",
-  "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/tests/**"],
 
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": "..",
+    "outDir": "dist",
+    "sourceMap": true,
 
-    "module": "ESNext",
-    "target": "ESNext",
+    "module": "ES2022",
+    "target": "ES2022",
     "moduleResolution": "Node",
 
     "experimentalDecorators": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "sourceMap": true,
-    "outDir": "dist",
 
     "types": ["vitest/globals"],
+
     "paths": {
       "@server/*": ["./src/*"],
       "@tests/*": ["./tests/*"]

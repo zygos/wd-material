@@ -23,7 +23,6 @@ While AWS Lightsail handles HTTP, SSL, and TLS before directing the traffic to o
 
 ## Logging (1.5 hours)
 
-// MUST: updated the line below with a proper link
 - Read: [Node.JS Best practices](https://betterstack.com/community/guides/logging/nodejs-logging-best-practices/) (1.5 hours)
 
 Once something goes wrong, you can go wrong on your development machine; you can see the issues immediately in your console. If something is not working right, you can hook up a debugger in VS Code or add a few console statements to figure out what is happening.

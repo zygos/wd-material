@@ -51,7 +51,7 @@ Resources:
   - Resource: [RESTful APIs and CRUD](https://www.youtube.com/watch?v=lsMQRaeKNDk)
 - Express.js
   - Resource: [RESTful APIs in Node](https://www.youtube.com/watch?v=-MTSQjw5DrM)
-    - Explains everything through using JavaScript and CommonJS modules, so there is no need to add any configuration or compiling TypeScript
+    - Explains everything JavaScript, so there is no need to add any configuration or compiling TypeScript
     - For the second part of the video, which discusses how to use Express in Node, follow along the video with your code editor
     - Video uses Insomnia. You can use any GUI REST client, such as Insomnia, Postman, Thunder Client (VS Code extension). You probably have one installed, as you had some exercises using a REST client in the front-end module. Please do not try to download the exact same REST client for every guide you find online. Some tutorials will use Insomnia, some will use Postman, some will use a client inside your editor, such as Thunder Client.
     - Notes on versions

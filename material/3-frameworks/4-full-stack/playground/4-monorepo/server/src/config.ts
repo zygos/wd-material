@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import z from 'zod'
+import { z } from 'zod'
 
 const { env } = process
 
@@ -13,7 +13,7 @@ const schema = z
     env: z
       .enum(['development', 'production', 'staging', 'test'])
       .default('development'),
-    isCi: z.boolean().default(false),
+    isCi: z.preprocess(coerceBoolean, z.boolean().default(false)),
     port: z.coerce.number().default(3000),
 
     auth: z.object({
@@ -43,10 +43,7 @@ const schema = z
         // By default, log and synchronize the database schema only for tests and development.
         ssl: z.preprocess(coerceBoolean, z.boolean().default(!isDevTest)),
         logging: z.preprocess(coerceBoolean, z.boolean().default(isDevTest)),
-        synchronize: z.preprocess(
-          coerceBoolean,
-          z.boolean().default(isDevTest)
-        ),
+        synchronize: z.preprocess(coerceBoolean, z.boolean().default(true)),
       }),
 
       // in-memory database config

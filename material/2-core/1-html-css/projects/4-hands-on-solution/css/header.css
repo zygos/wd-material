@@ -1,0 +1,170 @@
+#header {
+  background-image: url('/images/header.jpg');
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-headline);
+  background-size: cover;
+  background-position: center;
+  color: var(--text-white);
+  padding-bottom: 2rem;
+  height: 100vh;
+}
+
+#header::before {
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 20%, rgb(0 0 0 / 70%));
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+#header a {
+  color: var(--text-white);
+}
+
+#topbar {
+  background: linear-gradient(to bottom, rgb(0 0 0 / 60%), rgb(0 0 0 / 0%));
+  padding: 1.5rem 0;
+}
+
+#topbar .wrap {
+  border-bottom: 1px solid rgb(255 255 255 / 50%);
+  padding-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+#logo {
+  display: flex;
+  justify-content: center;
+}
+
+#logo img {
+  height: 40px;
+  width: 40px;
+}
+
+#topbar .navigation {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#topbar nav {
+  display: none;
+}
+
+#topbar nav a {
+  border-bottom: 1px solid transparent;
+  line-height: 3rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  vertical-align: middle;
+}
+
+#topbar a:hover {
+  border-color: var(--text-white);
+  color: var(--text-white);
+}
+
+#topbar a.button {
+  background: var(--text-white);
+  border: 0;
+  color: var(--text-black);
+  border-radius: var(--round);
+  padding: 0 1.5rem;
+}
+
+#topbar a.button:hover {
+  background: var(--color-theme);
+  color: var(--text-white);
+}
+
+#topbar .menu-bars img {
+  height: 2.2rem;
+}
+
+#search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#search .input-group {
+  flex-wrap: nowrap;
+}
+
+#search input {
+  background: transparent;
+  border: none;
+  color: var(--text-white);
+  width: inherit;
+}
+
+#search input::placeholder {
+  color: var(--text-white);
+}
+
+#search img {
+  margin-right: 1rem;
+}
+
+#book {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+#book .badge {
+  text-transform: uppercase;
+  text-align: initial;
+}
+
+#book h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 1px 2px rgb(0 0 0 / 30%);
+}
+
+#book button[type='submit'] {
+  background: var(--color-theme);
+  border-radius: var(--round);
+  border: 0;
+  outline: none;
+  text-align: center;
+  vertical-align: bottom;
+  margin-top: 1.5rem;
+  height: calc(100% - 1.5rem);
+  width: 100%;
+}
+
+#book button[type='submit'] > img {
+  margin: auto;
+}
+
+@media screen and (width >= 576px) {
+  #topbar .menu-bars {
+    display: none;
+  }
+
+  #topbar nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  #book h1 {
+    font-size: 4rem;
+  }
+
+  #header::before {
+    background: linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 0%) 60%,
+      rgb(0 0 0 / 70%)
+    );
+  }
+}

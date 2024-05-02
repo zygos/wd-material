@@ -6,6 +6,7 @@ import useOptions from './options/index.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   // allows us to play multiple games on the same page
+  // if we wanted to
   const gameElements = document.querySelectorAll('.game')
 
   gameElements.forEach(tikTacToe)

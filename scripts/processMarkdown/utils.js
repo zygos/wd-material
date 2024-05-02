@@ -1,21 +1,20 @@
-/* eslint-disable promise/prefer-await-to-then */
-const { curry } = require('rambda')
+import { curry } from 'rambda'
 
-const isPromise = promise =>
+const isThenable = promise =>
   typeof promise === 'object' &&
   promise &&
   typeof promise.then === 'function'
 
-const andThen = curry((method, promise) => isPromise(promise)
+const andThen = curry((method, promise) => isThenable(promise)
   ? promise.then(method)
   : Promise.resolve(promise).then(method))
 
-module.exports.intoSequentialPromise = async (previous, current) => [
+export const intoSequentialPromise = async (previous, current) => [
   ...await (previous || []),
   await current(),
 ]
 
-module.exports.pipeAsync = (() => {
+export const pipeAsync = (() => {
   const pipeWith = piper => (methodFirst, ...methodsRemaining) => (...methodArguments) =>
     methodsRemaining
       .reduce((result, method) => piper(method, result), methodFirst(...methodArguments))

@@ -174,9 +174,7 @@ ORDER BY average_rating DESC;
 
 12. Write a Node.js script that takes a movie title and year as a command-line argument. Print an error message if a movie with the same title and year already exists in the database. If it does not exist, add it to the database. Assert that a year is numeric. Use query parameters. If any query fails, roll back your changes. If all queries succeed, commit your changes and print the new movie ID to the console.
 
-{{ MUST: ištestuoti }}
-
-```javascript
+```js
 import { Database } from 'better-sqlite3';
 
 const db = new Database('movies.db');

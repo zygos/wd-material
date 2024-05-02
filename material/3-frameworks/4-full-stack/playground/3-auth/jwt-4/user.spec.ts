@@ -1,8 +1,7 @@
-import { expect, it, vi } from 'vitest'
-import { userRouter, userRepository } from './user'
-import { describe } from 'node:test'
+import { describe, expect, it, vi } from 'vitest'
+import { createCallerFactory, userRouter, userRepository } from './user'
 
-const { login, signup } = userRouter.createCaller({})
+const { login, signup } = createCallerFactory(userRouter)({})
 
 const validToken = 'valid-token'
 

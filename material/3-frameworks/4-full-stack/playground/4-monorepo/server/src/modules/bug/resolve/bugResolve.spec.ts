@@ -1,7 +1,10 @@
 import { authContext, authRepoContext } from '@tests/utils/context'
 import { fakeBug, fakeUser } from '@server/entities/tests/fakes'
+import { createCallerFactory } from '@server/trpc'
 import bugRouter from '..'
 import setupBugTest from '../tests/setup'
+
+const createCaller = createCallerFactory(bugRouter)
 
 // Example with a mocked database
 it('should set a bug as resolved', async () => {
@@ -12,7 +15,7 @@ it('should set a bug as resolved', async () => {
   })
 
   // Example with a mocked database
-  const { resolve } = bugRouter.createCaller(
+  const { resolve } = createCaller(
     authRepoContext(
       {
         Project: {
@@ -50,7 +53,7 @@ it('should throw an error if bug is not found', async () => {
     bugs: [bug],
     user,
   } = await setupBugTest()
-  const { resolve } = bugRouter.createCaller(authContext({ db }, user))
+  const { resolve } = createCaller(authContext({ db }, user))
 
   // ACT (When) & ASSERT (Then)
   await expect(

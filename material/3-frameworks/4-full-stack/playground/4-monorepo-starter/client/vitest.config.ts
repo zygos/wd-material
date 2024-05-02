@@ -11,9 +11,6 @@ export default mergeConfig(
       exclude: [...configDefaults.exclude, 'e2e/*'],
       globals: true,
       root: fileURLToPath(new URL('./', import.meta.url)),
-      transformMode: {
-        web: [/\.[jt]sx$/],
-      },
     },
   })
 )

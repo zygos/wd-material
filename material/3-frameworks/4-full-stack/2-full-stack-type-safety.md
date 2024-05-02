@@ -134,7 +134,7 @@ Try out these actions in your mini tRPC project.
 
 This exercise will focus on the tRPC server part and how it differs from a regular Express.js server. We will use tRPC inside of Express, which means that we are not losing any of the flexibility of Express.js. We are only adding some type-safe functionality on top of it. It is even possible to have some endpoints in an application using regular Express.js `res` and `req` objects and some endpoints using tRPC. We could also use `req` and `res` in tRPC endpoints.
 
-**Step 0.** [Download](https://drive.google.com/file/d/1do9ZIwJqcIT0bUUNgLrYSyAG6_Zoq-05/view?usp=sharing) and setup `2-trpc-server` project:
+**Step 0.** [Download](https://drive.google.com/file/d/1003-iIXqCA4v9lfhAcv3402hefEXk-qH/view?usp=drive_link) and setup `2-trpc-server` project:
 
 1. Run `npm install` in the root directory to install dependencies.
 2. If you still need to create a database for our bug-tracking project in the TypeORM exercise part, create a new PostgreSQL database now.
@@ -183,20 +183,18 @@ Let's add the most naive signup procedure possible. It should:
 
 - accept an email and a password
 - create a new user in the database (`User` entity). No password hashing, no nothing. We will work on this later.
-// MUST: update the following line
 - return an object containing just the `{ id, email }`.
 
 **Start with a test**. We have already added a `signup.spec.ts` to show how to test a signup procedure. You will generally need to lean more on automated tests than on manual tests through a REST GUI client because RPC is slightly more tricky to test manually. However, you can still use a REST GUI client to [call the endpoints by hand](https://trpc.io/docs/rpc).
 
-Then, add the `signup` procedure to the `user/signup/index.ts` file.
+Then, add the `signup` procedure to the `modules/user/signup/index.ts` file.
 
 Besides our validated input, every procedure receives the context - `ctx`:
 
 - if we run our entire application through `app.ts`, it would pass in our real database connection
 - if we run our procedures in isolation in tests, we can pass in context ourselves. We can create a temporary in-memory SQLite test database and then pass it to our procedures through the `createCaller(ctx)` method. Then, this ctx will be available in our procedures.
 
-MUST: update enumeration
-**Step 3.** Use an already existing user schema for signup.
+**Step 4.** Use an already existing user schema for signup.
 
 In the final TypeORM exercises, we have created Zod schemas for our entity validation. Right now, we are using a custom schema for our signup function. That is not a problem in itself, and we do not need to rush to reuse existing validation functions to minimize code repetition. However, there is a more pesky problem - we will need to add a login procedure in the future, and if it has its schema, it might get out of sync with the signup schema. One possible issue is that the user signs up with `Myemail@domain.com` and then tries to log in with `myemail@domain.com`. This would fail as the email is case-sensitive. We would then need to update the user's email in the database to lowercase, ensure that the signup procedure saves all emails in lowercase and that the login procedure converts the email to lowercase. We could have avoided this issue if we had a single thought-out schema that would be used for both signup and login.
 
@@ -204,11 +202,11 @@ Use an already existing `userSchema` (or `userInsertSchema`). Consider what woul
 
 **Hint.** Look into Zod's `pick` method.
 
-**Step 4.** Add a schema validation that the password is between 8 and 64 characters long.
+**Step 5.** Add a schema validation that the password is between 8 and 64 characters long.
 
 Also, add an easy-to-understand error message if the password is too short or too long. How could you add them to the existing schema? How could you add a friendly error message to each of these errors?
 
-**Step 5.** Add the following procedures to your project:
+**Step 6.** Add the following procedures to your project:
 
 - User can create a project (`project.create`).
 - User can see a list of projects (`project.find`).
@@ -226,5 +224,5 @@ Right now, you can assume that every endpoint is reached by an authenticated use
 
 - How would you call a tRPC endpoint from a GUI REST client?
 - What are the trade-offs between REST APIs and RPC APIs?
-- How could you have a Express.js endpoints and tRPC endpoints in the same application?
+- How could you have Express.js endpoints and tRPC endpoints in the same application?
 - How could you deliver readable errors to the front end from your tRPC endpoints?
