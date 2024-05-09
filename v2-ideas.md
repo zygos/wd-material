@@ -36,6 +36,68 @@ Exercises by other providers are pretty good. There are tests and a solution. It
 
 ---
 
+2024-05-02:
+
+Eli:
+- It's quite interesting. I like that programming part is accentuated.
+- Replacing Module 1 with JS is a good idea, but including HTML and CSS is a good idea.
+- Starting with HTML and CSS is a nice idea to pick up some momentum.
+- HTML, CSS, JS. Focus on nailing the JS knowledge. If I was an engineering manager, what I would like to see is a good understanding of JS.
+- Most companies segregate front-end and back-end. Full-stack is usually for Next, Gatsby, etc.
+- Restructuring the whole course is not ideal.
+- Replacing CS50 videos with basic YouTube videos is not great as we can't control the content. Looking for a sustainable program that isolates the core programming concepts - freeCodeCamp, The Odin Project, etc.
+- Issue is that we have a time schedule to keep.
+- We should still rely on free open-source content. freeCodeCamp, CS50, The Odin Project, Exorcism, etc. Look for good open source material. It is dry, we can film videos on top of that.
+
+Z:
+- I agree with proposed structural changes.
+- I think we all can agree on the general ideas. Livestreamed coding hands-on exercises.
+  - I love exploring best possible solutions. I had various ideas on course structure, exercises, interactivity etc. It is limited by real-world constraints. What are the constraints?
+  - I would like to see more concrete proposals how to move forward.
+
+Ed:
+- I would like to have content on the platform that we can figure things out in a sandbox directly in the page.
+- I liked Total TypeScript course.
+
+--- --- ---
+
+- Updated Module 3 Sprint 4 & 5 for V2 and V1. No structural changes, streamlined some exercises, simplified some material parts, hands on guides and provided templates to address common pitfalls when building and deploying the project.
+
+- We had some ideas for system design interviews.
+- No mock interviews scheduled this week yet. There was one at an unfortunate time last week.
+  Though, maybe for the best as the learner did not pass, so it might have been not the best example of a mock interview.
+
+- Issues with moving TypeORM to Node specialisation:
+  - It is not worth a sprint on its own.
+  - Attaching it to any existing part seems a bit out of place.
+- Possibly, even moving to a different framework, maybe Nest.js?
+
+- First learner finished the course - Luca.
+
+- 13th day panel chat:
+  - Web development learners.
+  - Temper salary expectations.
+
+- Turing learners: Above the market's junior position level. Somewhere between junior and entry mid-level.
+
+- Current learners: Through standups I heard through the great vine, that a 4 - 5 already got accepted to junior positions, at least Vinted academies, paid internships. Vinted, Danske, Swedbank...
+
+Market conditions:
+  - A large part of the hiring drought is caused due to the market correction to the post-COVID tech boom. So you have steeper competition for the same positions. Which is fine.
+  - The market salary growth has simply slowed down, maybe stagnated for the past year. It is still by a few standard deviation or two above the average salary for most other profession, especially in Lithuania.
+
+  - If you compare everything to the previous boom, it might seem like a bust. But if a bust is just a few years of stagnation, then it's not that bad.
+
+AI:
+  - Another of the floated topics was AI and its role. I noticed some learners fear AI, even in the short-term. Especially for the junior level. Which, at least for the next few years, should be an accelerator for the learning.
+  - Developers with AI will replace developers without AI.
+  - With AI, you have to start moving early to the mid-level positions.
+  - Solution designers. Blacksmiths used to come up with the design and then implementing it. Now, the technology has eliminated the need to do many things by hand. The paradigm of "artisan developer" might be replaced by "solution designer".
+
+Need of software in the world, I think, is still growing. The local correction should not be mistaken for a global trend. Just like the dot-com bubble. The bubble burst, but the internet did not go away.
+
+---
+
 - When teaching OOP, develop a new class in an existing project.
 - When teaching requests, develop a middleware in an existing project.
 - When teaching SQL, connect to the database and the next step - rework this into a Postgres connection.
@@ -48,7 +110,7 @@ Teaching to use reuasble components.
 Update CS50 course to 2024 version.
 
 Add Cybersecurity:
-  - https://cs50.harvard.edu/x/2024/weeks/10/
+- https://cs50.harvard.edu/x/2024/weeks/10/
 
 TypeScript error handling:
 - https://byby.dev/ts-try-catch-error-type
