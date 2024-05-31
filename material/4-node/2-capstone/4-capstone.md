@@ -71,7 +71,7 @@ Since this is a back-end project, the frontend is optional. However, if you do n
 
 ## Submission
 
-Submit your files to the GitHub repository.
+Submit your files to the your personal GitHub account as a public repository and link this repository in your Turing College submission repository.
 
 Include a comprehensive README explaining the project, setup instructions, key technologies, and how to interact with the application.
 

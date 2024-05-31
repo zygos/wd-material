@@ -68,7 +68,7 @@ We will do all our tests in `user.spec.ts` and all our code in `user.ts`. This w
 
 **Step 2.** Write a user implementation satisfying the test.
 
-We will not be using a real database. So there is no need to use TypeORM, Kysely, or anything else. We will use a simple JavaScript array to store our users. You should not need additional libraries beyond `@trpc/server` and `zod`.
+We will not be using a real database. We will use a simple JavaScript array to store our users. You should not need additional libraries beyond `@trpc/server` and `zod`.
 
 Write a `user.ts` file that satisfies the test. Write a straightforward implementation that stores users in an array: no databases or hashing.
 

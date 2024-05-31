@@ -50,7 +50,7 @@ export function isTerminatedCrossOriginRequest(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
   if (req.method === 'OPTIONS') {
-    res.writeHead(200)
+    res.statusCode = 200
     res.end()
     return true
   }

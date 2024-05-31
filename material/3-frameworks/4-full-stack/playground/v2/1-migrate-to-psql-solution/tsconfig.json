@@ -1,0 +1,25 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "include": ["**/*.ts"],
+
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist",
+
+    // "allowSyntheticDefaultImports": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+
+    "strict": true,
+    "sourceMap": true,
+
+    "types": ["vitest/globals"],
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
+    }
+  }
+}

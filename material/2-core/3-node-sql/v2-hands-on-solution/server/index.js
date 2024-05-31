@@ -9,9 +9,8 @@ await createTables()
 const server = http.createServer(async (req, res) => {
   if (isTerminatedCrossOriginRequest(req, res)) return
 
-  // set HTTP status code to 200 (OK) and inform the client
-  // that we will be returning JSON data
-  res.writeHead(200, { 'Content-Type': 'application/json' })
+  // Start the response by specifying that the content is JSON.
+  res.setHeader('Content-Type', 'application/json')
 
   const { method, url } = req
 
@@ -19,6 +18,9 @@ const server = http.createServer(async (req, res) => {
     const todos = getAllTodos()
     const jsonString = JSON.stringify(todos)
 
+    // status code 200 ("OK") is the default status code, so we don't need to set it,
+    // but we will do it anyway to make it clear that we are returning a successful response.
+    res.statusCode = 200
     res.end(jsonString)
     return
   }
@@ -35,6 +37,7 @@ const server = http.createServer(async (req, res) => {
     const todo = createTodo(todoBody.title)
     const jsonString = JSON.stringify(todo)
 
+    res.statusCode = 201 // Created
     res.end(jsonString)
     return
   }
@@ -52,6 +55,7 @@ const server = http.createServer(async (req, res) => {
 
     const jsonString = JSON.stringify(todoUpdated)
 
+    res.statusCode = 200
     res.end(jsonString)
     return
   }
@@ -68,6 +72,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     const jsonString = JSON.stringify(todoDeleted)
+    res.statusCode = 200
     res.end(jsonString)
     return
   }

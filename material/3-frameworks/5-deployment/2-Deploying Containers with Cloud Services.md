@@ -93,7 +93,7 @@ While our database could live on the same machine as our application code, it is
 - You can provide access to your database without providing access to your running application.
 - You reduce the risk of losing data if your application machine crashes.
 
-Various services can host your database. Since you are working with SQL in your capstone, you could use AWS RDS. However, it is a bit more tricky to set up and maintain. If your app will not perform queries 24/7, then a "serverless" user-friendly service, such as [Neon](https://neon.tech/) for PostgreSQL or [Planetscale](https://planetscale.com/) for MySQL would be your best bet. These services provide "set it and forget it" cloud databases, and they have a sufficient free tier for most capstone projects.
+Various services can host your database. Since you are working with SQL in your capstone, you could use AWS RDS. However, it is a bit more tricky to set up and maintain. If your app will not perform queries 24/7, then a "serverless" user-friendly service, such as [Neon](https://neon.tech/) would be your best bet. These services provide "set it and forget it" cloud databases, and they have a sufficient free tier for most capstone projects.
 
 For our example, we will use a "serverless" database provider.
 

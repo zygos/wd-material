@@ -10,7 +10,7 @@ To bridge the gap between client and server, we'll introduce you to the concept 
 
 ## Full-stack type safety (1.5 hours)
 
-In the back end, we specify our types via explicit types, ORM models, or validation schema. If you remember how we developed our **front end**, we manually added types to our API calls. For example:
+In the back end, we specify our types via explicit types, or validation schema. If you remember how we developed our **front end**, we manually added types to our API calls. For example:
 
 ```ts
 export async function fetchPhotoByDate(dateIso: string) {
@@ -134,11 +134,12 @@ Try out these actions in your mini tRPC project.
 
 This exercise will focus on the tRPC server part and how it differs from a regular Express.js server. We will use tRPC inside of Express, which means that we are not losing any of the flexibility of Express.js. We are only adding some type-safe functionality on top of it. It is even possible to have some endpoints in an application using regular Express.js `res` and `req` objects and some endpoints using tRPC. We could also use `req` and `res` in tRPC endpoints.
 
+{{ MUST: migrate away from TypeORM back to Kysely }}
 **Step 0.** [Download](https://drive.google.com/file/d/1003-iIXqCA4v9lfhAcv3402hefEXk-qH/view?usp=drive_link) and setup `2-trpc-server` project:
 
 1. Run `npm install` in the root directory to install dependencies.
-2. If you still need to create a database for our bug-tracking project in the TypeORM exercise part, create a new PostgreSQL database now.
-3. Add the connection details to a new `.env` file, which you can base on the `.env.example`
+2. If you still need to create a database for our bug-tracking project from the previous exercise, create a new PostgreSQL database now.
+3. Add the connection details to a new `.env` file, which you can base on the `.env.example`.
 4. You might need to reload your VS Code if it does not pick up the new TypeScript types.
 
 **Note.** In the next sprint part, we will discuss password handling, authentication, and authorization. For this part, we will not use any proper authentication or authorization. We will assume that every request is authorized to perform any action.
@@ -149,20 +150,20 @@ While we are introducing a lot of new files, you should be already familiar with
 
 - Express.js server
 - tRPC wrapper for type-safe API calls
-- TypeORM entities
+- models
 
 Here is a quick overview of the folders:
 
 ```
 /database - connects to the database
-/entities - TypeORM entities
+/models - abstraction over database tables
 /modules - our endpoints
 /shared - a folder that we will expose to our front-end
 /trpc - tRPC wrapper
 /utils - a single function for validation
 app.ts - our Express.js server definition
 config.ts - zod-validated server configuration
-index.ts - binds our Express server to a port
+index.ts - starts our entire Express application
 ```
 
 Everything from a few test utilities should be understandable under a few minutes of investigation.
@@ -182,7 +183,7 @@ Let's say our requirements have changed, and now we must use an exclamation mark
 Let's add the most naive signup procedure possible. It should:
 
 - accept an email and a password
-- create a new user in the database (`User` entity). No password hashing, no nothing. We will work on this later.
+- create a new user in the database. No password hashing, no nothing. We will work on this later.
 - return an object containing just the `{ id, email }`.
 
 **Start with a test**. We have already added a `signup.spec.ts` to show how to test a signup procedure. You will generally need to lean more on automated tests than on manual tests through a REST GUI client because RPC is slightly more tricky to test manually. However, you can still use a REST GUI client to [call the endpoints by hand](https://trpc.io/docs/rpc).
@@ -196,9 +197,9 @@ Besides our validated input, every procedure receives the context - `ctx`:
 
 **Step 4.** Use an already existing user schema for signup.
 
-In the final TypeORM exercises, we have created Zod schemas for our entity validation. Right now, we are using a custom schema for our signup function. That is not a problem in itself, and we do not need to rush to reuse existing validation functions to minimize code repetition. However, there is a more pesky problem - we will need to add a login procedure in the future, and if it has its schema, it might get out of sync with the signup schema. One possible issue is that the user signs up with `Myemail@domain.com` and then tries to log in with `myemail@domain.com`. This would fail as the email is case-sensitive. We would then need to update the user's email in the database to lowercase, ensure that the signup procedure saves all emails in lowercase and that the login procedure converts the email to lowercase. We could have avoided this issue if we had a single thought-out schema that would be used for both signup and login.
+We are using a custom schema for our signup function. That is not a problem in itself, and we do not need to rush to reuse existing validation functions to minimize code repetition. However, there is a more pesky problem - we will need to add a login procedure in the future, and if it has its schema, it might get out of sync with the signup schema. One possible issue is that the user signs up with `Myemail@domain.com` and then tries to log in with `myemail@domain.com`. This would fail as the email is case-sensitive. We would then need to update the user's email in the database to lowercase, ensure that the signup procedure saves all emails in lowercase and that the login procedure converts the email to lowercase. We could have avoided this issue if we had a single thought-out schema that would be used for both signup and login.
 
-Use an already existing `userSchema` (or `userInsertSchema`). Consider what would happen if you added more properties to the user entity in the future, such as `firstName`, `lastName`. Would your signup schema still work correctly? How could you derive a signup schema from the user schema that performs correctly, no matter what additional properties are added to the user entity?
+Use an already existing `userSchema` (or `userInsertSchema`). Consider what would happen if you added more properties to the user table in the future, such as `first_name`, `last_name`. Would your signup schema still work correctly? How could you derive a signup schema from the user schema that performs correctly, no matter what additional properties are added to the user table?
 
 **Hint.** Look into Zod's `pick` method.
 
@@ -214,7 +215,7 @@ Also, add an easy-to-understand error message if the password is too short or to
 
 You can also call these procedures more descriptively, such as `project.findProjectBugs({ ... })`.
 
-Implement these 3 requirements as tRPC procedures. Try to start with a test for each procedure. Then, implement the procedure and make sure that the test passes. Use the already existing TypeORM entities.
+Implement these 3 requirements as tRPC procedures. Try to start with a test for each procedure. Then, implement the procedure and make sure that the test passes. Use the already existing database tables.
 
 Right now, you can assume that every endpoint is reached by an authenticated user with appropriate permissions. We will build upon these procedures in upcoming sprint parts.
 

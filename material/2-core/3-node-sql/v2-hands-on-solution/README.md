@@ -48,7 +48,7 @@ Now, if you refresh the front end homepage in the browser, you should no longer 
 - `server/index.js` - back-end server file that starts the server and responds to requests to manage TODOs
 - `server/requests.js` - some utility functions covering some tricky areas that go beyond what is necessary at this point
 - `server/todos.js` - the file containing functions to manage TODOs in the database
-- `database` - folder containing the database setup and table schema (`tables.sql`)
+- `server/database` - folder containing the database setup and table schema (`tables.sql`)
 
 ## Task
 
