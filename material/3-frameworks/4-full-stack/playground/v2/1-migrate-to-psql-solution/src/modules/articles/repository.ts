@@ -17,8 +17,6 @@ type RowInsert = Insertable<RowWithoutId>
 type RowUpdate = Updateable<RowWithoutId>
 type RowSelect = Selectable<Row>
 
-// in tests, we provide an in-memory SQLite database
-// generic code that could be generalized further
 export default (db: Database) => ({
   findAll(): Promise<RowSelect[]> {
     return db.selectFrom(TABLE).select(keys).execute()

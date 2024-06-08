@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    # Use Docker Hub PostgreSQL image.
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: bugs
+    ports:
+      - "5435:5432"
+    volumes:
+      - bugs-db:/var/lib/postgresql/data
+
+  # Some name for our Node application container.
+  server:
+    # Instead of pulling an image from Docker Hub, we are building
+    # our own image from the Dockerfile in the current directory.
+    build: .
+
+    environment:
+      # TODO: add database connection string env variable (DATABASE_URL) that would
+      # connect to the PostgreSQL database we have set up in the postgres service above.
+
+    # We are exposing port 3000 on our machine. Why port 3000? This is the default
+    # we have set in our src/config.ts file.
+    ports:
+      - "3000:3000"
+
+    # Recommended to add depends_on to inform Docker that our server container
+    # should start after the PostgreSQL container.
+    depends_on:
+      - postgres
+
+volumes:
+  bugs-db:
+    name: bugs-db

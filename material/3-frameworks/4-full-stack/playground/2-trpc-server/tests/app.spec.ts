@@ -6,5 +6,5 @@ const database = await createTestDatabase()
 const app = createApp(database)
 
 it('can launch the app', async () => {
-  await supertest(app).get('/health').expect(200, 'OK')
+  await supertest(app).get('/api/health').expect(200, 'OK')
 })

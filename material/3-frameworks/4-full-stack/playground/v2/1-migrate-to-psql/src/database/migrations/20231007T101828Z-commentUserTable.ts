@@ -1,7 +1,6 @@
-import { Kysely, sql } from 'kysely'
+import { type Kysely, sql } from 'kysely'
 
 export async function up(db: Kysely<any>) {
-  // postgres
   await db.schema
     .createTable('user')
     .addColumn('id', 'integer', (c) => c.primaryKey().autoIncrement())

@@ -1,6 +1,6 @@
 import { CamelCasePlugin, Kysely, SqliteDialect } from 'kysely'
 import SQLite from 'better-sqlite3'
-import { type DB } from './types'
+import type { DB } from './types'
 
 type DatabaseOptions = {
   connectionString: string

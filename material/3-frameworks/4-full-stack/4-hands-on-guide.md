@@ -117,15 +117,13 @@ For project endpoints, we followed a very two-step approach:
 For the first `project.create` endpoint, we could have the following test:
 
 ```ts
-import { createCallerFactory } from '@server/trpc'
-import { createTestDatabase } from '@tests/utils/database'
-
 const createCaller = createCallerFactory(projectRouter)
+const db = await wrapInRollbacks(createTestDatabase())
+const { create } = createCaller({ db })
 
 it('should create a persisted project', async () => {
   // ARRANGE
-  const db = await createTestDatabase()
-  const { create } = createCaller({ db })
+  // nothing to arrange
 
   // ACT
   const projectCreated = await create({
@@ -134,7 +132,7 @@ it('should create a persisted project', async () => {
 
   // ASSERT
   expect(projectCreated).toMatchObject({
-    id: 1,
+    id: expect.any(Number),
     name: 'My Special Project',
   })
 })
@@ -142,17 +140,20 @@ it('should create a persisted project', async () => {
 
 This is a very similar test setup to our signup/login tests.
 
-Apart from the fact that this test would fail, we have one major issue - how can we pass in the user ID? After all, it is provided by the token, and we don't have a way to pass in the token. Should we pass it as an Express header?
+Apart from the fact that this test would fail, we have one major issue - how can we pass in the user ID? After all, it is provided by the token. Should we pass it as an additional field in the procedure? Or should we set it as an Express header?
 
-We do not need to pollute our project tests with request-level details, especially since (presumably) we have tested our authentication middleware separately.
+We do not need to pollute our project tests with request-level details, especially since we have tested our authentication middleware separately.
 
 We can use the fact that our authentication middleware function does not run anything auth-related if we provide the `authUser` upfront. Then, we can pass in the `authUser` to the `create` caller:
 
 ```ts
 const { create } = createCaller({
+  // pretend to be logged in as user with ID 1
   authUser: {
     id: 1,
   },
+
+  // pass in the database connection
   db,
 })
 ```
@@ -160,281 +161,195 @@ const { create } = createCaller({
 That should get us through the authentication middleware and the main procedure function. If we start implementing the procedure function by using the provided `ctx.authUser.id` to set `userId` before we insert the project, we will stumble upon one issue:
 
 ```
-INSERT INTO "project"("user_id", "name") VALUES ($1, $2) RETURNING "id"
-...
-Error: insert or update ... violates the foreign key constraint.
+insert or update on table "project" violates foreign key constraint "project_user_id_fkey"
 ```
 
 Our project provides a user ID, but that user does not exist in the database.
 
 This raises a question - should we create a user in the test? This is one of the drawbacks of testing with a database that enforces foreign key constraints. We could either:
 
-A. Disable foreign key constraints in the test database. It simplifies the test setup, but we lose some of the safety guarantees we would expect from running tests against a database.
+A. Disable foreign key constraints in the test database. It simplifies the test setup, but we lose some of the safety guarantees we would expect from running tests with a database.
 B. Create a user in the test. This is more work, but it is safer. We then simulate this endpoint much closer to how it would work in production.
-C. Mock the database with some fake JavaScript object. This is quite easy, but it exposes various implementation details of the repository. Also, if we do not have a good idea of what we would need out of the repository up front, we might have issues writing a test before writing the actual code.
+C. Mock the project repository with some fake JavaScript object. This is quite easy, but it exposes various implementation details of the repository. Also, if we do not have a good idea of what we would need out of the repository up front, we might have issues writing a test before writing the actual code.
 
 A is a hack that is well-suited for seeding the database with some initial fake data. However, we would like to preserve foreign key constraints if we test the API endpoints.
 
-B requires more work, but setting up additional fake data is quite a hassle. This is an excellent approach to maximize confidence in our tests. However, these tests tend to be slower and can require more work to maintain.
+B requires more work since setting up additional fake data is quite a hassle. At the same time, since we are dealing with real database-level constraints, we can be quite confident that our tests are quite close to how the application would work in production.
 
-C is a good approach if we want to test the API endpoints in isolation; however, if we are learning a new library, such as TypeORM, and we rely on its repositories, we will start leaking implementation details into our tests where our tests will start reflecting the methods used in the repository. This can be alleviated with more specific repository methods or an intermediate service layer. We will stick with the provided TypeORM repository for a small project like this.
+C is a good approach if we want to test the API endpoints in isolation from anything database-related.
 
-We will go with the B approach for this endpoint - we will create a user in the test.
+For now, we will demonstrate the B approach for this endpoint - we will create a user in the test.
 
 ```ts
-const user = await db.getRepository(User).save({
-  id: 1,
-  email: 'a@b.com',
-  password: '123', // not a hash, but project tests do not touch this
-})
+const [authUser] = await insertAll(db, 'user', { email: 'test@mail.com', password: 'Password.123!' })
 ```
 
-This should be sufficient to get us through the first test. However, if we need to create a user in every test, we might want to extract this into a helper function:
+This should be sufficient to get us through the first test. However, if we need to create a user in every test, we might want to extract this into a helper function that can be used to create multiple users with random emails.
 
 ```ts
-export const fakeUser = <T extends Partial<User>>(overrides: T = {} as T) => ({
-  email: 'some@email.com',
-  password: 'Password.123!',
-  ...overrides,
-})
-```
+import { random } from '@tests/utils/random'
 
-It is not only for convenience but also to minimize the number of places we would need to change if we decide to change the user entity. If we added a new mandatory field, `firstName`, our previous implementation would break, and it would require us to change all these breaking tests one by one:
-
-```ts
-// Every test that manually sets up user data would break
-const user = await db.getRepository(User).save({
-  id: 1,
-  email: 'a@b.com',
-  password: '123',
-})
-```
-
-However, we might think about the straightforward case of creating multiple users in the same test. It does not seem so far-fetched, right? We should check if one user can see another user's projects. In that case, we must create two users in the same test. Now our hard-coded `email` of `some@email.com` would fail. How could we address this?
-
-We should have a random email for each user. While we could build a function for that ourselves, this is a common problem someone else might have already solved. And indeed, quite a few packages do this for us. If we wanted an extensive library that does this and much more, we could use `faker.js`. However, it is heavyweight, and from personal experience, it slows down the tests by a decent 10 - 20% overhead (depending on other factors). For this reason, we will use a much smaller package called `chance` ([docs](https://chancejs.com/)). It is a tiny package with fewer features than `faker.js`, but it is also much faster to import.
-
-We can then use it like this:
-
-```ts
-```
-
-We have added `fakeUser` as a helper function in `entities/tests/fakes.ts`. You could choose a different location for this function. Still, we wanted to be relatively close to the modules that will change hand-in-hand with these fake entity-generating functions. Also, to separate it from the actual entities, we added it to a `tests` folder. Separating modules from the actual source code just for tests is strongly encouraged. Most of the time, having these modules in `tests`, `__tests__` folders, or `.spec` and `.test` files is enough.
-
-Now, we can create a user in our test like this:
-
-```ts
-const random = new Chance()
-
-// ...
-{
+export const fakeUser = <T extends Partial<Insertable<User>>>(overrides: T = {} as T) => ({
   email: random.email(),
   password: 'Password.123!',
   ...overrides,
-}
+})
 ```
 
-**Pro tip.** Once in a blue moon, you might encounter a situation where your tests fail due to some conditions arising from the random nature of the test. To mitigate it, share a single Chance/Faker instance across all your tests and provide an initial seed for your tests. This way, your tests would be deterministic, and you could reproduce the same test failures locally and on CI.
+While we could build a function for generating random emails ourselves, this is a common problem someone else might have already solved. And indeed, quite a few packages do this for us. If we wanted an extensive library that does this and much more, we could use `faker.js`. However, it is heavyweight, and it slows down the tests by a decent 10 - 20% overhead (depending on other factors). For this reason, we will use a much smaller package called `chance` ([docs](https://chancejs.com/)). It is a tiny package with fewer features than `faker.js`, but it is also much faster to import.
 
-
-```ts
-// random.ts
-export const random = config.isCi ? Chance(1) : Chance()
-
-// config.isCi is a parsed process.env.CI variable that we import from config.ts
-```
-
-Why would we not run all of our tests with the same seed? If we generate random fake data that is different run-to-run, we can test on top of an existing database. Then, without changing our tests, we could even run our tests on an in-memory fake database and a real PostgreSQL database!
-
-That is precisely what we did - we have adapted `createTestDatabase` from our previous exercises to allow us to do just that:
-
-```ts
-// a simplified version of the createTestDatabase function in the solution
-export async function createTestDatabase() {
-  const db = process.env.TESTS_USE_IN_MEMORY_DB === 'false'
-
-    // real PostgreSQL that we configured in .env
-    ? createDatabase(config.database)
-
-    // in-memory db version of PostgreSQL
-    : createMemoryDatabase()
-
-  await db.initialize()
-
-  return db
-}
-```
-
-Then, with a few config options, we can run our tests in both modes:
-
-```json
-// package.json
-"scripts": {
-  "test": "vitest",
-  "test:db": "TESTS_USE_IN_MEMORY_DB=false vitest",
-}
-```
-
-**Note.** If you are running Windows, you might need to install [cross-env](https://www.npmjs.com/package/cross-env) and add it to the script command to run it successfully.
-
-Finally, we recommend adding `id` to the `fakeUser` function so that we can create a fake user for other purposes, such as creating a fake token, which needs an ID but it does not need to make any database calls so that it can be a fake id number. The database will not care about the actual value of the ID.
+We have added `fakeUser` as a helper function in `entities/tests/fakes.ts`. You could choose a different location for this function. Still, we wanted to be relatively close to the modules that will change hand-in-hand with these fake entity-generating functions. Also, to separate it from the actual entities, we added it to a `tests` folder.
 
 Now, having this sort of setup is quite helpful because we can create a user in our test like this:
 
 ```ts
-const user = await db.getRepository(User).save(fakeUser())
+const authUser = await insertAll(db, 'user', fakeUser())
 
 const { create } = createCaller({
+  authUser,
   db,
-  authUser: { id: user.id },
 })
 ```
 
-We have added one more thing to our `projectCreate.spec` test:
+We have added one more thing to our `projectCreate` test:
 
 ```ts
 // authContext function that forms the authUser object for us
 // so if we change the authUser shape, it does not require us
 // to change lots of tests to reflect that change
-const { create } = createCaller(authContext({
-  db,
-}, user))
+const { create } = createCaller(authContext({ db }, user))
 ```
 
 That was a good amount of setup, but we will not need to do it again for the next test.
 
 You can review the server `project/create/index` procedure in the solution. It includes a few things that are best covered in code comments.
 
-### Step 5. Add endpoint for finding user's projects
+### Step 5. Add an endpoint for finding user's projects
 
 Finding user projects is very similar to creating a project. You can review the `project/find/index` procedure and its test. We have kept it close to the previous endpoint, so it should be easy to follow.
 
-### Step 6. Add endpoints for reporting and finding bugs
+### Step 6. Add an endpoint for reporting bugs
 
-We can use the same approach as we did for projects to report and find bugs. The one difference is that now we are seeing how adding a bug requires us to have a project, which requires having a user. There are three methods to address this:
+We can use the same approach as we did for projects to report (create) bugs. The one difference is that now we are seeing how adding a bug requires us to have a project, which requires having a user. There are three methods to address this:
 
-A. Share the same seed data across multiple tests.
-B. Do not test with a database; test with a mock.
+A. Set up some user and project database rows in the test. We will demonstrate this in the `bugResolve.spec.ts`.
+B. Do not test with a database; test with a mock. We will demonstrate this in the `bugFind.spec.ts` and `bugReport.spec.ts`.
 
-For reporting and finding bugs, we will use the first approach. We will create a function `setupBugTest` to create the necessary database rows to reuse across multiple tests. You can find it in `modules/bug/tests/setup.ts`.
+If we are testing with real database rows, we will need to create all the surrounding database rows in the test. In our case, dealing with a bug requires having a project and to have a project, we need a user to own it.
 
-Then, we can use it in our tests like this:
+In that case, we are creating all the rows by hand:
 
 ```ts
-// ARRANGE (Given)
-const { db, project, user } = await setupBugTest()
-const { report } = createCaller(authContext({ db }, user))
-
-// ACT (When)
-// create bug
-
-// ASSERT (Then)
-// check if a bug is created and how we expect it to be
+const [userOwner, userOther] = await insertAll(db, 'user', [
+  fakeUser(),
+  fakeUser(),
+])
+const [project] = await insertAll(db, 'project', {
+  name: 'My Project',
+  userId: userOwner.id,
+})
 ```
 
-One significant difference between bug and project procedures is that we no longer can directly know all the necessary details about permissions from the request. If a person is creating a bug for projectId = 5, we do not know if they can do that. We will need to check if they have access to that project, which, in our case, means that they are the project's owner (`project.userId === authUser.id`). We could check that in every procedure or create a middleware function that does that for us. We will go with the latter approach. This middleware demands `projectId`, which is then used to fetch the `project` and check if the `authUser` is the project's owner. If they are, we can proceed with the request. Otherwise, we can throw an error.
-
-You can find it in the server's `trpc/projectIdOwnerProcedure` folder. It will have an additional `provideRepos` statement that we will touch on in the next step.
-
-### Step 7. Add an endpoint for marking a bug as resolved
-
-We will provide a few testing methods without a database for this endpoint. One of them is to provide a database mock. If we know what methods we will use on the repository, we can create a mock that will return the needed data. Unfortunately, this introduces a decent bit of implementation details into our tests:
+Then, we are performing some checks:
 
 ```ts
-// For example, our test would end up needing the following mock:
-const db = {
-  getRepository(entity: string) {
-    if (entity.name === 'Project') {
-      findOne: () => ({ id: 1, userId: user.id }),
-    }
+it('allows reporting a bug', async () => {
+  // ARRANGE (Given)
+  const { report } = createCaller(authContext({ db }, userOwner))
+  const bug = fakeBug({ projectId: project.id })
 
-    if (entity.name === 'Bug') {
-      update: () => ({ affected: 1 }),
-      findOneByOrFail: () => ({
-        ...bug,
-        // Instead of saving a boolean, such as isResolved
-        // we save the resolvedAt date as it captures more
-        // information that we realistically could need in
-        // this type of application. In your own solution,
-        // you are free to use a boolean if you want.
-        resolvedAt: new Date(),
-      }),
-    },
+  // ACT (When)
+  const bugReturned = await report(bug)
+  const [bugSaved] = await selectAll(db, 'bug', (eb) =>
+    eb('id', '=', bugReturned.id)
+  )
+
+  expect(bugReturned).toEqual(bugSaved)
+})
+
+it('allows other users to report a bug', async () => {
+  // ARRANGE (Given)
+  const { report } = createCaller(authContext({ db }, userOther))
+
+  // ACT (When)
+  await expect(report(bug)).resolves.toMatchObject(bug)
+})
+
+// a few more conditions - non-logged-in user, what happens if incorrect projectId
+// is passed, etc.
+```
+
+This is a fine approach. However, it can be a bit verbose, especially if each test requires a long chain of database rows to be created.
+
+### Step 7. Add endpoints for getting and marking bugs as resolved
+
+Getting a list of bugs is simple enough. We can follow the same approach as we did for the previous endpoints. One slightly tricky case is that seeing the list of bugs can be done only by the project owner. We can demonstrate this in the `bugFind.spec.ts` test.
+
+```ts
+it.todo('should return a list of bugs for the project owner')
+it.todo('should throw an error if the user is not the project owner')
+```
+
+We could use the same general flow we used for the previous endpoint - create a few rows in the database and check who can get them.
+
+However, we will use this as an opportunity to showcase a different approach - mocking repositories.
+
+In our case, a very simple mock (a stub) might work the best. Here, we are providing a pair of fake repos that we will pass into our context. These will be used instead of the real repositories due to `provideRepos` middleware.
+
+```ts
+// For example, our test would end up needing the following fake repositories:
+const repos = {
+  projectRepository: {
+    hasUserId: vi.fn(async () => true),
+  },
+  bugRepository: {
+    update: vi.fn(async (id, bug) => ({ id, ...bug })),
   },
 }
 ```
 
-This is not a very good approach for two reasons:
-
-1. It is pretty verbose.
-2. It requires us to hunt down all the repositories and methods we use in the procedure function.
-3. It exposes the implementation details of the repository.
-
-We could shift our procedure from depending on the database to the repositories it explicitly asks for to address the first two issues. This way, we can see what repositories we need and mock them in our tests. For mapping `db` to asked dependencies, we have added a helper function `provideRepos` that you can find in `trpc/provideRepos`. It essentially does the following:
+Wrapping the methods in `vi.fn` allows us to override the return value of these functions:
 
 ```ts
-// pseudo-code with rough logic, not type accurate
-const provideRepos = (entitiesWanted) => middleware(({ ctx, next }) => {
-  if (hasAllRepositories(/* ... */)) {
-    return next(/* ... */)
-  }
+// if we add the following line in our test, it will override the return value
+repos.projectRepository.hasUserId.mockResolvedValueOnce(false)
+```
 
-  const repos = entitiesWanted.map(key => ctx.db.getRepository(key))
+Then, we could use these repositories in our test:
 
-  return next({
-    // add repos to the context
-    ctx: {
-      repos,
-    },
+```ts
+const { resolve } = createCaller({
+  authUser: { id: 1 },
+  repos,
+} as any)
+
+// these ids are not important, just required by schema validation to be numbers
+const bug = { id: 14, projectId: 24 }
+
+// Example with a mocked database
+it('should set a bug as resolved', async () => {
+  // ACT (When)
+  const bugResolved = await resolve(bug)
+
+  // ASSERT (Then)
+  expect(bugResolved).toMatchObject({
+    id: bug.id,
+    resolvedAt: expect.any(Date),
   })
+})
+
+it('should throw an error if user does not own the bug project', async () => {
+  // we override the hasUserId method to return false in this case
+  repos.projectRepository.hasUserId.mockResolvedValueOnce(false)
+
+  // ACT (When) & ASSERT (Then)
+  await expect(resolve(bug)).rejects.toThrow(/does not belong/i)
 })
 ```
 
-Then, in our procedure, we no longer touch the TypeORM DataSource directly, but we ask for repositories instead:
+This approach works well enough if we have a small number of methods to mock. However, this can be tricky to write in TDD style as we would need to anticipate the methods we would need to mock.
 
-```ts
-export default projectIdOwnerProcedure
-  // what repositories do we depend on
-  .use(provideRepos({ Bug }))
-
-  // what user input do we need
-  .input(bugSchema.pick({ id: true })) // id of the bug we want to mark as resolved
-
-  // what we do and return
-  .mutation(async ({ input: { id }, ctx: { repos } }) => {
-    await repos.Bug.update({ id }, { resolvedAt: new Date() })
-
-    const bugUpdated = /* ... */
-
-    return bugUpdated
-  })
-```
-
-For this to work, we had to extend the context in `trpc/index.ts`. Then, in tests, we provide fake repositories through a small helper function:
-
-```ts
-const createCaller = createCallerFactory(bugRouter)
-
-const { resolve } = createCaller(
-  authRepoContext(
-    {
-      Project: {
-        findOne: () => ({ id: 1, userId: user.id }),
-      },
-      Bug: {
-        update: () => ({ affected: 1 }),
-        findOneByOrFail: () => ({
-          ...bug,
-          resolvedAt: new Date(),
-        }),
-      },
-    },
-    user
-  )
-)
-```
-
-However, we still expose ourselves to implementation details that would be hard to anticipate. Also, if we find out that there are some more optimal ways to accomplish the same result, our test would need to follow the implementation details. That is not a very good approach if we want to have robust tests. A better approach would involve either extending the default repository with custom methods that are more specific to our use case or creating a service layer that would hide the implementation details of the repository. However, this goes beyond the scope of this exercise.
+Both approaches have their own pros and cons. Using a database connection (integration-style) requires more data setup, while the mock approach requires more setup in the test itself and some coupling with the implementation. The first one is closer to how the application would work in production and is great if we do not have a good idea of what we would need to mock. Meanwhile, the second one is great if we know what we need to mock, we want to test the controllers in isolation, or we want to test some edge cases that are hard to reproduce with a real database (database timeouts, network errors, etc.).
 
 ### Step 8. Using the signup E2E test, replace fake client signup with signup through the server
 

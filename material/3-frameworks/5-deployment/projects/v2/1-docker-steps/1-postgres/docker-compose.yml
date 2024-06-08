@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    # Use postgres, version 16.1, on lightweight Alpine Linux
+    image: postgres:16.1-alpine
+
+    # Set environment variables, which PostgreSQL will read on startup
+    # and use to configure itself. How to know which environment variables
+    # to set? You can open search online "postgres docker" and you will find
+    # postgres image on Docker Hub: https://hub.docker.com/_/postgres
+    # There you can find "Environment Variables" section, which lists all
+    # environment variables that can be set.
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: bugs
+
+    # By default, PostgreSQL uses port 5432. However, you might already have
+    # your own machine running PostgreSQL, so we will use a different port
+    # for this container.
+    # OUR_PORT: CONTAINER_PORT
+    # We want to use 5435 on our machine to access port 5432 on the container.
+    ports:
+      - "5435:5432"
+
+    # Mount a volume to persist data. We might want to persist data so that
+    # we don't lose it when we stop the container. We can do this by mounting
+    # a volume.
+    # We will call it "bugs-db" and it will be used to store data in
+    # /var/lib/postgresql/data on the container, which is where PostgreSQL
+    # stores its data.
+    volumes:
+      - bugs-db:/var/lib/postgresql/data
+
+# Define the volume we will use to persist data.
+volumes:
+  bugs-db:
+    # If we don't specify a name, Docker will generate a name based
+    # on the current directory and volume name. However, we will want
+    # to use the same volume for containers in other steps, so we will
+    # give it a name.
+    name: bugs-db

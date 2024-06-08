@@ -171,11 +171,63 @@ const pool = new Pool({/* ... */})
 
 ## PostgreSQL: Connecting with Kysely (3 hours)
 
-{{ MUST: add guide to migrate a Kysely project from SQLite to PostgreSQL }}
+While SQLite and PostgreSQL differ quite a bit under the hood, the vast majority of your SQLite queries will work just as well in PostgreSQL. To understand a few differences of where you might need to adjust your queries, you will need to go through migrating a project from SQLite to PostgreSQL.
+
+We will work on the same project with articles, comments and users. The project has evolved a bit.
+
+- A developer noticed that it's quite hard to manage the configuration of the project. They have refactored the project to use a `src/config.ts` file to manage the configuration. This file is used to store all the configuration values the project needs. It should be used for machine-specific configuration and secrets instead of `process.env` or hardcoding values in the codebase. We recommend inspecting the file and how it is used.
+- The project allows wrapping the tests in transactions. This way, we can interact with a real database and after each test, the database will be rolled back to the state before the test. This is done to ensure that the tests are isolated from each other and do not affect each other's results. It uses some advanced helper functions to achieve this and it is not necessary to understand them at this point.
+- A developer has refactored some files to simplify the codebase and prepare it for using PostgreSQL.
+
+Now, you have been tasked with migrating the codebase to use PostgreSQL instead of SQLite.
+
+If you are looking for a challenge, you can try to do this on your own as it is not that hard.
+
+On the other hand, if you are looking for a more guided approach, you can follow the steps below:
+
+**0. Set up a fresh PostgreSQL database**
+
+You can run the following command when connected to your PostgreSQL database to create a new database:
+
+```sql
+CREATE DATABASE database_name;
+```
+
+**1. Connect to PostgreSQL instead of SQLite**
+
+In the `src/database/index.ts` file, we have a function which connects to the database. Luckily, this is the only place where we need to change the database connection. Go back to the Kysely [Getting Started guide](https://kysely.dev/docs/getting-started) and figure out how to connect to a PostgreSQL database instead of SQLite. While it is fine to provide database, host, user, password, and port as separate properties, we recommend using the `connectionString` to provide all the connection information in a single string. This makes the database configuration a bit easier to manage.
+
+Instead of providing a file path to the SQLite database, you will need to provide a connection string to the PostgreSQL database. The connection string should have the following format: `postgres://username:password@localhost:5432/database_name`. Use that in your `.env` file.
+
+**2. Update migrations to use PostgreSQL data types**
+
+While the majority of SQLite data types work out of the box in PostgreSQL, there are a few differences. In our case, there are just two general changes you need to make:
+
+- Instead of `AUTOINCREMENT`, we recommend using the `GENERATED ALWAYS AS IDENTITY` syntax for the primary key column. You should be able to figure out what to change in the migration files, as Kysely provides a method to form this SQL statement.
+- Instead of `datetime` for capturing moments in time, we recommend using `timestamptz` for storing timestamps with time zone information. This is a PostgreSQL-specific data type that stores the timestamp in UTC and includes the time zone information. This makes it more resilient to changes in the server database configuration.
+
+After applying these changes, run `npm run migrate:latest`. If you get an error - investigate the error message, try to fix it and run the migrations again.
+
+**3. Tie up loose ends**
+
+Update the `gen-types` script in `package.json` to use `postgres` dialect instead of `sqlite`. Also, you could apply a few optional changes, such as:
+
+- Removing the `better-sqlite3` package and its types package from your project.
+- Adding `.url()` validation to the `connectionString` in the `config.ts` file to ensure it is a valid URL and removing the `:memory:` default value as it is not applicable to PostgreSQL.
+
+**4. Run the project**
+
+If everything is set up correctly, you should be able to run the project without any issues:
+
+- `npm run test` should run the tests without any errors.
+- `npm run dev` should start the development server without any errors.
 
 ## PostgreSQL: Connecting with Kysely (solution) (1 hour)
 
-{{ MUST: add }}
+{{ MUST: add download link }}
+Once you are done with this stack update, download a possible solution to identify any differences between your solution and the provided one.
+
+The changes you should be aware about have been tagged with the `NEW:` comments. You can search for those in the project to find the changes we have applied. In VS Code you can do this by pressing `Ctrl/Cmd + Shift + F` and typing `NEW:` in the search bar.
 
 # Directions for further research (1 hour+)
 

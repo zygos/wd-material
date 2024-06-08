@@ -99,7 +99,9 @@ Most of the time, choosing between multiple tools is a trade-off. In this case, 
 
 **What is tRPC?**
 
-tRPC is a TypeScript-first library for building RPC APIs. We will use it together with Express.js to build a type-safe full-stack application.
+tRPC is a TypeScript-first library for building RPC APIs. It is a relatively light framework that is relatively easy to use, while still providing a lot of benefits and introducing a structured way to build APIs, which is a common with larger applications.
+
+We will use it together with Express.js to build a type-safe full-stack application.
 
 - Scroll through [tRPC homepage](https://trpc.io/)
 - Read: [tRPC concepts](https://trpc.io/docs/concepts) (5 mins)
@@ -137,8 +139,8 @@ This exercise will focus on the tRPC server part and how it differs from a regul
 {{ MUST: migrate away from TypeORM back to Kysely }}
 **Step 0.** [Download](https://drive.google.com/file/d/1003-iIXqCA4v9lfhAcv3402hefEXk-qH/view?usp=drive_link) and setup `2-trpc-server` project:
 
-1. Run `npm install` in the root directory to install dependencies.
-2. If you still need to create a database for our bug-tracking project from the previous exercise, create a new PostgreSQL database now.
+1. Run `npm i` in the root directory to install dependencies.
+2. Create a new PostgreSQL database.
 3. Add the connection details to a new `.env` file, which you can base on the `.env.example`.
 4. You might need to reload your VS Code if it does not pick up the new TypeScript types.
 
@@ -149,24 +151,26 @@ This exercise will focus on the tRPC server part and how it differs from a regul
 While we are introducing a lot of new files, you should be already familiar with most of them. We are bringing the following parts together:
 
 - Express.js server
-- tRPC wrapper for type-safe API calls
-- models
+- tRPC wrapper to provide us with a more structured way to build APIs
+- zod schemas for input validation
+- repositories to abstract away database queries
+- individual route handlers (controllers)
 
 Here is a quick overview of the folders:
 
 ```
+/controllers - our request handlers
 /database - connects to the database
-/models - abstraction over database tables
-/modules - our endpoints
+/entities - schemas for database records
+/repositories - abstraction over database tables
 /shared - a folder that we will expose to our front-end
 /trpc - tRPC wrapper
-/utils - a single function for validation
-app.ts - our Express.js server definition
+app.ts - our Express.js server definition with tRPC
 config.ts - zod-validated server configuration
 index.ts - starts our entire Express application
 ```
 
-Everything from a few test utilities should be understandable under a few minutes of investigation.
+Everything apart some test utilities should be understandable under a few minutes of investigation.
 
 **Step 2.** Fix the greeting message.
 
@@ -174,11 +178,21 @@ Let's say our requirements have changed, and now we must use an exclamation mark
 
 1. Start the server by running `npm run dev`.
 2. Run `npm test greet` to test our `user.greet` procedure (`modules/user/greet`).
-3. Update the test to check for an exclamation mark!
+3. Update the test to check for an exclamation mark! For example, instead of `'Hello, Sofia'`, you should expect `'Hello, Sofia!'`.
 4. Update the greeting procedure to return a greeting with an exclamation mark.
 5. Your test should pass 🎉.
 
-**Step 3.** Add a signup procedure.
+**Step 3.** Investigate additional methods of testing out tRPC endpoints.
+
+While using **automated unit/integration tests** should be your primary way of testing your endpoints, there are other ways to see how they work:
+
+- Because every time we visit a URL in a browser, it performs a `GET` request, we can use our browser to test out our queries just by visiting their URLs. In our case, that would be `http://localhost:3000/api/trpc/user.greet?input="Peter"`.
+- Use some REST client, such as [Insomnia](https://insomnia.rest/), [Postman](https://www.postman.com/), [Bruno](https://www.usebruno.com/) or [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client) to test out your endpoints. You can read more about how [tRPC maps procedures to HTTP](https://trpc.io/docs/rpc).
+- We have added one more method - using a generated panel page. In `app.ts` you will find a route handler for `/api/trpc-panel`, which is handled by an external package. This package displays a basic GUI for your tRPC endpoints. You can visit it by going to `http://localhost:3000/api/trpc-panel`. There you will be able to test out your endpoints manually. This package has some limitations and it might not work with some more complex endpoints with middleware functions.
+
+While these other methods are useful, they should not replace automated tests.
+
+**Step 4.** Add a signup procedure.
 
 Let's add the most naive signup procedure possible. It should:
 
@@ -186,32 +200,26 @@ Let's add the most naive signup procedure possible. It should:
 - create a new user in the database. No password hashing, no nothing. We will work on this later.
 - return an object containing just the `{ id, email }`.
 
-**Start with a test**. We have already added a `signup.spec.ts` to show how to test a signup procedure. You will generally need to lean more on automated tests than on manual tests through a REST GUI client because RPC is slightly more tricky to test manually. However, you can still use a REST GUI client to [call the endpoints by hand](https://trpc.io/docs/rpc).
+**Start by looking at a provided test file**. We have already added a `userSignup.spec.ts` to show how to test a signup procedure.
 
-Then, add the `signup` procedure to the `modules/user/signup/index.ts` file.
+Besides our validated `input`, every procedure receives the context - `ctx` (defined in `trpc/index.ts`). It will be our primary vehicle for dependency injection for stateful objects, such as database connections. In our tests, we will use it to pass a database connection that is configured to automatically rollback everything that happens inside a test.
 
-Besides our validated input, every procedure receives the context - `ctx`:
+If we run, `npm test signup`, our test fails. **Finish the `signup` procedure** in the `controllers/user/signup/index.ts` file to make the test pass.
 
-- if we run our entire application through `app.ts`, it would pass in our real database connection
-- if we run our procedures in isolation in tests, we can pass in context ourselves. We can create a temporary in-memory SQLite test database and then pass it to our procedures through the `createCaller(ctx)` method. Then, this ctx will be available in our procedures.
+**Hint.** You can use the `db` object from the `ctx` to interact with the database - `db.selectFrom('user')...`.
 
-**Step 4.** Use an already existing user schema for signup.
+**Step 5.** Use an already existing user schema for signup.
 
-We are using a custom schema for our signup function. That is not a problem in itself, and we do not need to rush to reuse existing validation functions to minimize code repetition. However, there is a more pesky problem - we will need to add a login procedure in the future, and if it has its schema, it might get out of sync with the signup schema. One possible issue is that the user signs up with `Myemail@domain.com` and then tries to log in with `myemail@domain.com`. This would fail as the email is case-sensitive. We would then need to update the user's email in the database to lowercase, ensure that the signup procedure saves all emails in lowercase and that the login procedure converts the email to lowercase. We could have avoided this issue if we had a single thought-out schema that would be used for both signup and login.
+We are using a custom schema for our signup procedure. That is not a problem in itself, and we do not need to rush to reuse existing validation functions to minimize code repetition. However, there is a more pesky problem - we will need to add a login procedure in the future, and if it has its schema, it might get out of sync with the signup schema. We generally would like to have a single set of schemas that we can reuse across our application, which make sure that all `user.email` and `user.password` validations are the same.
 
-Use an already existing `userSchema` (or `userInsertSchema`). Consider what would happen if you added more properties to the user table in the future, such as `first_name`, `last_name`. Would your signup schema still work correctly? How could you derive a signup schema from the user schema that performs correctly, no matter what additional properties are added to the user table?
+Import an existing schema `userBase` (or `userInsert`) from the `entities/user.ts` file into your signup procedure. How could you derive a signup schema from the user schema that performs correctly, no matter what additional properties are added to the user table later on?
 
-**Hint.** Look into Zod's `pick` method.
-
-**Step 5.** Add a schema validation that the password is between 8 and 64 characters long.
-
-Also, add an easy-to-understand error message if the password is too short or too long. How could you add them to the existing schema? How could you add a friendly error message to each of these errors?
+**Hint.** Look into Zod's `pick` method. It allows specifying a subset of properties from an object that you want to accept and validate.
 
 **Step 6.** Add the following procedures to your project:
 
 - User can create a project (`project.create`).
 - User can see a list of projects (`project.find`).
-- User can see a list of bugs in a project (`bugs.find`).
 
 You can also call these procedures more descriptively, such as `project.findProjectBugs({ ... })`.
 
@@ -219,11 +227,10 @@ Implement these 3 requirements as tRPC procedures. Try to start with a test for 
 
 Right now, you can assume that every endpoint is reached by an authenticated user with appropriate permissions. We will build upon these procedures in upcoming sprint parts.
 
-**Hint.** You might need to create a new user in your tests. An alternative method would be to test with a mocked database that pretends to have a user.
+**Hint.** You might need to create a new user in your tests.
 
 # Directions for further research (1 hour+)
 
-- How would you call a tRPC endpoint from a GUI REST client?
 - What are the trade-offs between REST APIs and RPC APIs?
 - How could you have Express.js endpoints and tRPC endpoints in the same application?
 - How could you deliver readable errors to the front end from your tRPC endpoints?

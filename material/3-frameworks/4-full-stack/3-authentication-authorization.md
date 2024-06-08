@@ -150,7 +150,7 @@ One issue with our hash is that there are some well-known lists of popular passw
 
 We want our project's passwords to differ from any other project's. We could sprinkle some **salt** to our password. Salt is some random data added to the password before (or during) hashing. In its most basic implementation, we are just making the password longer. However, we are making it longer with our unique string. This way, even if someone gets access to the list of hashed passwords, they cannot use a pre-computed list of popular passwords to crack our passwords.
 
-```
+```js
 // Regular hashing produces the same password hash
 // in our app and other apps. This allows hackers
 // to pre-compute a list of hashes for popular

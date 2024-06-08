@@ -1,6 +1,6 @@
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll, selectAll } from '@tests/utils/records'
-import { createTestDatabase } from '@tests/utils/createTestDatabase'
+import { createTestDatabase } from '@tests/utils/database'
 import buildRepository from '../repository'
 import { fakeArticle, articleMatcher } from './utils'
 

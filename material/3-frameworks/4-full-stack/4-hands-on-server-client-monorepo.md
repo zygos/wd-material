@@ -117,26 +117,22 @@ As an external service:
 
 1. [Download the project starter](https://drive.google.com/file/d/1o3KWOKqs6ul1FETnRRZRlu_itpDCwAEs/view?usp=drive_link).
 2. Run `npm i` in the top-level folder to install all dependencies.
-3. This project supports 0-setup back-end. Try running the back-end with `npm run dev:mem` in the `server` folder. It should start up a development server with a PostgreSQL-like in-memory database.
-4. We recommend to work with your actual PostgreSQL database. Setup `.env` files in the `client` and `server` folders based on `.env.example` files.
-5. Start the front-end and back-end development servers by running `npm run dev` in the `client` and `server` folders.
-6. Explore the app's UI. It is a minimal Vue 3 app built with [Flowbite components](https://flowbite-vue.com/) and [Tailwind CSS](https://tailwindcss.com/).
+3. Setup `.env` files in the `client` and `server` folders based on `.env.example` files.
+4. Start the front-end and back-end development servers by running `npm run dev` in the `client` and `server` folders.
+5. Explore the app's UI. It is a minimal Vue 3 app built with [Flowbite components](https://flowbite-vue.com/) and [Tailwind CSS](https://tailwindcss.com/).
 
 It has a minimal front-end design sufficient to communicate the main user flow. This part focuses on the back end and connecting our front end to the back end. We do not expect you to do any design work here.
 
 There are a few minor gotchas with cross-package type safety.
 
 - Sometimes, TypeScript might not immediately pick up the type changes. You might need to jump to the file exporting a type for TypeScript to pick up the changes. If that does not help, you might need to run "Developer: Reload Window" in the VS Code command palette. Your mileage may vary.
-- It relies on the back end to provide the correct types. If the back end is not type-safe, the front end will also not be type-safe. Unfortunately, TypeORM has issues with type safety for relations, so we must be careful. To ensure output type safety, we could add [output validators](https://trpc.io/docs/server/validators#output-validators).
-- Zod strips out additional properties. We can chain `.strict()` after our Zod schema to explicitly throw an error for passed-in additional properties. This is not reflected in the TypeScript types.
+- It relies on the back end to provide the correct types. If the back end is not type-safe, the front end will also not be type-safe.
 
 A few notes on the starter project:
 
 - You can navigate through the existing front-end code without any authentication. It does not make any calls to the back end yet. You could provide random credentials, and it would pretend to log you in.
 - You should reuse and adapt your existing code from the previous exercises.
 - It includes various helper functions that you might find helpful - `entities/tests/fakes.ts`, `tests/utils/**`. However, you are not required to use them.
-- The project exposes [pg-mem](https://github.com/oguimbal/pg-mem) instead of SQLite in-memory database for tests and running the project with `npm run dev:mem`. `pg-mem` more closely resembles a proper PostgreSQL database and is more suitable for testing.
-- By default, the server `npm run test` sets `DB_TYPE=pg-mem` and runs tests on the fake in-memory PostgreSQL database. However, the project is flexible enough to run tests and the main application in any configuration. You can run `npm run test:db` to run tests against your configured PostgreSQL development database instead. You might need to write your tests slightly differently to make them work with a real database.
 
 ## Recommended approach
 
@@ -145,8 +141,8 @@ A few notes on the starter project:
 3. Start with the signup and login endpoints
 4. Add an endpoint for creating a project
 5. Add an endpoint for finding user projects
-6. Add endpoints for reporting and finding bugs
-7. Add an endpoint for marking a bug as resolved
+6. Add an endpoint for reporting bugs
+7. Add endpoints for getting and marking bugs as resolved
 8. Using the signup E2E test, replace fake client signup with signup through the server
 9. Add real login and authentication to the client
 10. Add route guards to protect routes that require authentication
@@ -198,18 +194,17 @@ To understand the `shared` folder, we must ask ourselves **why we would not want
 
 **What should you import from the back end?** You can import the necessary types, but avoid importing business logic. Remember that if something is imported to the front end, it immediately becomes public. Someone could open the browser console, snoop around your code, and find your private business logic or secret keys if you import them to the front end. That could lead to a security breach. In our application, we added a `shared` folder in the back end, which should be used to import types to the front end. Sharing some pure functions that do not rely on configuration or back-end dependencies is also possible.
 
-For back-end-to-front-end imports we will **import from `@mono/server/src/shared/...`**. We will not rely on your memory alone to remember this. We have added an ESLint rule to disallow other cross-package imports, which is a good security measure.
+For back-end-to-front-end imports we will **import from `@serer/shared/...`**. We will not rely on your memory alone to remember this. There is an ESLint rule to disallow other cross-package imports, which is a good security measure.
 
 ## Bonus challenges
 
 Since we will be working on a very minimal application, we can only cover some topics you would encounter in a real-world application. Here are some bonus challenges that you can try to tackle:
 
-- Experiment with different testing approaches when dealing with the database - an in-memory database, a real PostgreSQL database, a mocked database, etc.
-- Use cookies for authentication instead of local storage.
+- Add pagination for projects and bugs.
 - Handle expired access tokens.
 - Add OAuth authentication with GitHub.
+- Use cookies for authentication instead of local storage.
 - Add E2E tests for user stories ("As a user, I can...").
-- Add pagination for projects and bugs.
 - Display a bug count on the project page that would be correct even if the front-end client does not get all the bugs from the back-end.
 
 ## Approach to Solving the Task
@@ -218,6 +213,7 @@ Follow this approach to tackle the hands-on exercise:
 
 - Spend up to 10 hours attempting to solve the task on your own.
 - If you struggle during the first hours and find it too difficult, try seeking help from your peers or JTLs for an additional 10 hours. Spend half of this time working with someone else, whether a study buddy, a peer who has completed the exercise, or a JTL in an open session.
+// MUST: update the guide to reflect the new approach
 - If you still need help, look at [the provided solution](https://drive.google.com/file/d/1VMKySTmrxedH9K5vQdKb5jQgPl_7Npkl/view?usp=drive_link) and [its walkthrough guide](https://drive.google.com/file/d/1NSyue4W5W0jtadZQ6AmWU5A_8T-s3dZ1/view?usp=drive_link). Spend up to 10 hours on the walkthrough.
 - Try to go back to your solution once the provided solution clears up any obstacles you encountered.
 - We recommend checking the final provided solution, even if you have completed the task on your own, to compare approaches and potentially learn new techniques.

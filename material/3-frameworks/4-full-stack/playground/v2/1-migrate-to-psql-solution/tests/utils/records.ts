@@ -6,7 +6,7 @@ import {
   type SqlBool,
   SqliteAdapter,
 } from 'kysely'
-import { DB } from '@/database'
+import type { DB } from '@/database'
 
 type DatabaseTypes<N extends keyof DB> = { [P in N]: DB[P] }
 

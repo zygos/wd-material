@@ -16,14 +16,14 @@ export default function createApp(db: Database) {
 
   // Endpoint for health checks - pinging the server to see if it's alive.
   // This can be used by tests, load balancers, monitoring tools, etc.
-  app.use('/health', (_, res) => {
+  app.use('/api/health', (_, res) => {
     res.status(200).send('OK')
   })
 
   // Using TRPC router, which will live under /v1/trpc
   // path. It will be used for all our procedures.
   app.use(
-    '/v1/trpc',
+    '/api/trpc',
     createExpressMiddleware({
       // Created context for each request, which we will be able to
       // access in our procedures.

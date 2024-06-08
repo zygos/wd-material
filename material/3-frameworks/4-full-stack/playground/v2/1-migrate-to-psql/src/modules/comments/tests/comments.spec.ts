@@ -1,11 +1,11 @@
 import supertest from 'supertest'
-import { createTestDatabase } from '@tests/utils/createTestDatabase'
+import { createTestDatabase } from '@tests/utils/database'
 import { insertAll } from '@tests/utils/records'
-import { Insertable } from 'kysely'
+import type { Insertable } from 'kysely'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import createApp from '@/app'
 import * as fixtures from './fixtures'
-import { Comment } from '@/database'
+import type { Comment } from '@/database'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const app = createApp(db)
@@ -17,8 +17,8 @@ const usersSeeded = await insertAll(db, 'user', fixtures.users)
 const fakeComment = (
   overrides: Partial<Insertable<Comment>> = {}
 ): Insertable<Comment> => ({
-  articleId: articlesSeeded[0].id,
-  userId: usersSeeded[0].id,
+  articleId: articlesSeeded[0].id!,
+  userId: usersSeeded[0].id!,
   content: 'Some Content',
   ...overrides,
 })
@@ -50,8 +50,8 @@ describe('GET', () => {
   })
 
   it('should return a list of comments for a given article', async () => {
-    const articleId1 = articlesSeeded[0].id
-    const articleId2 = articlesSeeded[1].id
+    const articleId1 = articlesSeeded[0].id!
+    const articleId2 = articlesSeeded[1].id!
 
     await insertAll(db, 'comment', [
       fakeComment({
@@ -69,7 +69,7 @@ describe('GET', () => {
 
     expect(body).toEqual([
       commentMatcher({
-        articleId: articleId2,
+        articleId: articleId2!,
         content: 'Other Content',
       }),
     ])
@@ -87,7 +87,7 @@ describe('POST', () => {
   })
 
   it('persists the new comment', async () => {
-    const articleId1 = articlesSeeded[0].id
+    const articleId1 = articlesSeeded[0].id!
 
     // if we create a comment with a specific articleId
     await supertest(app)

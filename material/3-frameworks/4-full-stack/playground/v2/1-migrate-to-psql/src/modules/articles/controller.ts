@@ -4,7 +4,7 @@ import buildRepository from './repository'
 import * as schema from './schema'
 import { jsonRoute } from '@/utils/middleware'
 import { ArticleNotFound } from './errors'
-import { Database } from '@/database'
+import type { Database } from '@/database'
 
 export default (db: Database) => {
   const router = Router()

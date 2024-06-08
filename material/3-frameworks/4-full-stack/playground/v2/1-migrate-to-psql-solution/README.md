@@ -1,6 +1,6 @@
 ## Setup
 
-**Note:** For this exercise, we have provided an `.env` file with the database connection string. Normally, you would not commit this file to version control. We are doing it here for simplicity and given that we are using a local SQLite database.
+Add the connection string to your PostgreSQL database in the `.env` file based on the `.env.example` file.
 
 ## Migrations
 

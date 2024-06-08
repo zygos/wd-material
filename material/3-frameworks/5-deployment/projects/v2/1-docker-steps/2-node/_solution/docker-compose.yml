@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: bugs
+    ports:
+      - "5435:5432"
+    volumes:
+      - bugs-db:/var/lib/postgresql/data
+
+  server:
+    build: .
+    environment:
+      DATABASE_URL: postgres://turing:turing@postgres:5432/bugs
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  bugs-db:
+    name: bugs-db

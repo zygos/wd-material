@@ -1,5 +1,5 @@
 import supertest from 'supertest'
-import { createTestDatabase } from '@tests/utils/createTestDatabase'
+import { createTestDatabase } from '@tests/utils/database'
 import { clearTables, insertAll } from '@tests/utils/records'
 import { omit } from 'lodash/fp'
 import { wrapInRollbacks } from '@tests/utils/transactions'

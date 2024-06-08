@@ -7,7 +7,7 @@ export type Generated<T> =
 
 export interface Article {
   content: string
-  id: Generated<number>
+  id: Generated<number | null>
   title: string
 }
 
@@ -15,13 +15,13 @@ export interface Comment {
   articleId: number
   content: string
   createdAt: Generated<string>
-  id: Generated<number>
+  id: Generated<number | null>
   userId: number
 }
 
 export interface User {
   firstName: string
-  id: Generated<number>
+  id: Generated<number | null>
   lastName: string
 }
 

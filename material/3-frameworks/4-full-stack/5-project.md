@@ -34,7 +34,6 @@ Your application needs to fulfill the following technical requirements:
 
 - It is written in TypeScript.
 - It uses a database. You can pick any database(s) you prefer apart from SQLite.
-- Use an ORM or a query builder. You can use TypeORM, Kysely, or any other tool you choose.
 - Use Express.js with tRPC or a plain Express.js REST server.
 - Have at least 70% back-end line test coverage for your initial server functionality. You can use Vitest or Jest.
 - The project should have a monorepo structure even if it does not have a front end at this point.
@@ -44,9 +43,7 @@ Your application needs to fulfill the following technical requirements:
 
 Feel free to use hands-on exercises and previous projects as a boilerplate. However, ensure that you use your unique entities for this project. Reusing the same entities (movies, projects, bugs) is not allowed, but you can (and probably should) reuse the project setup, utility functions, etc. if that makes sense for your project.
 
-At this point, you do not need to add database migrations, build or host your project. However, you should be able to run your project with `npm run dev`.
-
-Ideally, your back-end could be launched without setting up a database, similar to the `npm run dev:mem` command in the hands-on exercise, which uses a fake in-memory PostgreSQL database. This would simplify the project setup for the reviewer. However, some features might require an actual PostgreSQL database. If that is the case, please provide the necessary details on how to set up the database in the README file.
+At this point, you do not need to host your project. However, you should be able to run your project with `npm run dev` for demonstration purposes.
 
 ## Reviewer role
 

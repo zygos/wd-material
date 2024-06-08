@@ -1,19 +1,19 @@
 {
-  "extends": "@tsconfig/node18/tsconfig.json",
-  "include": ["**/*.ts"],
+  "extends": "@tsconfig/node20/tsconfig.json",
 
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": ".",
+    "rootDir": "..",
     "outDir": "dist",
+    "sourceMap": true,
 
-    // "allowSyntheticDefaultImports": true,
-    "module": "ESNext",
-    "target": "ESNext",
+    "module": "ES2022",
+    "target": "ES2022",
     "moduleResolution": "Node",
 
     "strict": true,
-    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
 
     "types": ["vitest/globals"],
 

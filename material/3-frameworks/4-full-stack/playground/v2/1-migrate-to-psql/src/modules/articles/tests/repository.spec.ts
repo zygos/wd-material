@@ -1,6 +1,6 @@
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { clearTables, insertAll, selectAll } from '@tests/utils/records'
-import { createTestDatabase } from '@tests/utils/createTestDatabase'
+import { createTestDatabase } from '@tests/utils/database'
 import buildRepository from '../repository'
 import { fakeArticle, articleMatcher } from './utils'
 
@@ -111,7 +111,7 @@ describe('findById', () => {
     const [article] = await insertAll(db, 'article', fakeArticle())
 
     // ACT (When we call...)
-    const foundArticle = await repository.findById(article.id)
+    const foundArticle = await repository.findById(article.id!)
 
     // ASSERT (Then we should get...)
     expect(foundArticle).toEqual(articleMatcher())
@@ -132,7 +132,7 @@ describe('update', () => {
     const [article] = await insertAll(db, 'article', fakeArticle())
 
     // ACT (When we call...)
-    const updatedArticle = await repository.update(article.id, {
+    const updatedArticle = await repository.update(article.id!, {
       title: 'Updated article',
     })
 
@@ -149,7 +149,7 @@ describe('update', () => {
     const [article] = await insertAll(db, 'article', fakeArticle())
 
     // ACT (When we call...)
-    const updatedArticle = await repository.update(article.id, {})
+    const updatedArticle = await repository.update(article.id!, {})
 
     // ASSERT (Then we should get...)
     expect(updatedArticle).toMatchObject(articleMatcher())
@@ -174,7 +174,7 @@ describe('remove', () => {
     const [article] = await insertAll(db, 'article', fakeArticle())
 
     // ACT (When we call...)
-    const removedArticle = await repository.remove(article.id)
+    const removedArticle = await repository.remove(article.id!)
 
     // ASSERT (Then we should get...)
     expect(removedArticle).toEqual(articleMatcher())

@@ -1,10 +1,10 @@
 import supertest from 'supertest'
-import { createTestDatabase } from '@tests/utils/createTestDatabase'
+import { createTestDatabase } from '@tests/utils/database'
 import { selectAll } from '@tests/utils/records'
-import { Insertable } from 'kysely'
+import type { Insertable } from 'kysely'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import createApp from '@/app'
-import { User } from '@/database'
+import type { User } from '@/database'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const app = createApp(db)

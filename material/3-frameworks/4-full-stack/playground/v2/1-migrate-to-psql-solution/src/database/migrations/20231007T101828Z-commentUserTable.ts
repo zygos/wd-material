@@ -1,4 +1,4 @@
-import { Kysely, sql } from 'kysely'
+import { type Kysely, sql } from 'kysely'
 
 export async function up(db: Kysely<any>) {
   // postgres
@@ -25,7 +25,6 @@ export async function up(db: Kysely<any>) {
     .addColumn('id', 'integer', (c) =>
       c.primaryKey().generatedAlwaysAsIdentity()
     )
-
     .addColumn('user_id', 'integer', (column) =>
       column.references('user.id').notNull()
     )
@@ -39,9 +38,8 @@ export async function up(db: Kysely<any>) {
     // the timezone information, so it is more resilient to changes in
     // the database timezone settings, daylight saving time, etc.
     .addColumn('created_at', 'timestamptz', (column) =>
-      column.defaultTo(sql`now()`).notNull()
+      column.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )
-
     .execute()
 }
 

@@ -1,6 +1,6 @@
 import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely'
 import pg from 'pg'
-import { type DB } from './types'
+import type { DB } from './types'
 
 // NEW: optionally, using PoolConfig instead of our custom type.
 // After all, our createDatabase is only passing options to the
