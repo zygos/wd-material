@@ -32,7 +32,7 @@ npm run dev -w client
 
 ## Running the project in production
 
-Client:
+Client (when not using a dedicated server application):
 
 ```bash
 npm run build -w client

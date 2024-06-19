@@ -1,10 +1,9 @@
+MUST: update the exercise
 Part 4: Hands-on: Monorepo
 
 # Part Introduction
 
-This part of the course is designed to not only synthesize your previous lessons but also to stretch your capabilities by working on a full-stack application situated in a monorepo setup. By the end of this section, you will have built a small full-stack bug reporting tool. As a preparatory step for your capstone project, this exercise will help you gain confidence in handling both the client-side and server-side aspects of web development.
-
-You will step into the shoes of a developer who's just received a half-finished minimal viable project: the front-end of a bug-reporting platform is visually alright but it lacks any back-end functionality. The front-end has some placeholder data, and it's your job to breathe life into this static prototype by developing a back-end that can save and serve real data from a database. You'll also need to connect the front-end to the back-end, so that the two can communicate with each other.
+This part of the course is designed to not only synthesize your previous lessons but also to stretch your capabilities by working on a full-stack application situated in a monorepo setup. By the end of this section, you will have built a minimal full-stack blogging platform. As a preparatory step for your capstone project, this exercise will help you gain confidence in handling both the client-side and server-side aspects of web development.
 
 # Key learning topics & resources for this part
 
@@ -74,54 +73,53 @@ Try out using both approaches, especially in the provided monorepo exercises. Fi
 
 # Task Description
 
-You will continue working on the tiny bug-reporting application for the remainder of this part. It is designed to allow registered developers to add new projects and report bugs for those projects via a public API endpoint. The application will also allow developers to mark bugs as resolved. In this case, the users are the developers who are using the application to track bugs in their projects.
+The project has progressed a bit since the last part.
 
-1. Visitor signs up and logs in.
-2. A user sees a list of their projects. The list is empty at first.
-3. A user creates a new project by providing its name.
-4. A user can see a list of bugs for their project. The list is empty at first.
-5. A user can call a public API endpoint to report a bug for their project.
-6. A user can see all reported bugs for their project.
-7. A user can check a bug as resolved.
+1. It has the endpoints we have worked on in the previous parts.
+2. It has a work-in-progress auth system to allow users to sign up and log in.
+3. The front-end developer has added a minimal front-end design to the project.
 
-You will start with a monorepo that contains a front-end and a back-end. The front-end client already has most of the front-end code implemented. You will need to add the necessary back-end code, connect the front end to the back end, and replace the current dummy data in the front end with data from the back-end server.
+Here are the **requirements for the project**:
 
-## Requirements
+1. Any visitor can public see a list of articles on the homepage.
+2. A visitor can sign up and log in as a signed up user.
+3. A user can post a new article.
+4. A user can post a comment on any article.
+5. Any visitor can see the comments on the article.
+6. Each comment shows the first name and last name of the user who posted it.
 
-As a visitor:
+**Optional requirement**:
 
-- I can sign up with an email and a password.
-- I can sign in with an email and a password.
-- I can not visit any `/dashboard` pages if I am not signed in.
+7. An article author can mark a comment as spam, which will hide the comment from the article for everyone.
 
-As a user:
+You will start with a monorepo that contains a frontend and a back end. The front-end client already has most of the visual-centric code implemented. The frontend has some static placeholder data that you will replace with real data from the back end.
 
-- I can see a list of my projects on a dashboard page.
-- I can create a new project.
-- I can see a list of bugs for my projects on a project page.
-- I can mark a bug as resolved.
-- I can sign out.
+Your tasks are to:
 
-As an external service:
-
-- I can report a new project bug by calling a public API endpoint. This endpoint is public as it could be called inside a mobile app, a desktop app, a user's browser, etc. It does not require authentication. In practice, it would require the user to provide a project API key, but we will not implement that for this exercise.
+- finish implementing a few more endpoints on the back end;
+- instead of using placeholder data, connect the frontend to the back end.
 
 ## Technical requirements
 
-- The application should hash the password and not return it to the client.
-- The application should use tRPC for full-stack type safety.
+- The application should hash the password and not return it to the client under any circumstances.
+- The application can return comment author's id, first name and last name, but not the email or password.
+- The application performs some reasonable validation on user input.
+- The key user flows are tested with E2E tests.
+- The application should return article's comments and their authors' public information in a single request.
+
+Implementing anything beyond the requirements, such as pagination, is entirely optional.
 
 ## Project starter
 
 **Step 0.** Setup the project.
-
+{{ MUST: Update the link }}
 1. [Download the project starter](https://drive.google.com/file/d/1o3KWOKqs6ul1FETnRRZRlu_itpDCwAEs/view?usp=drive_link).
 2. Run `npm i` in the top-level folder to install all dependencies.
-3. Setup `.env` files in the `client` and `server` folders based on `.env.example` files.
-4. Start the front-end and back-end development servers by running `npm run dev` in the `client` and `server` folders.
-5. Explore the app's UI. It is a minimal Vue 3 app built with [Flowbite components](https://flowbite-vue.com/) and [Tailwind CSS](https://tailwindcss.com/).
-
-It has a minimal front-end design sufficient to communicate the main user flow. This part focuses on the back end and connecting our front end to the back end. We do not expect you to do any design work here.
+3. Create a new PostgreSQL database, or use your existing one from previous exercises.
+4. Setup `.env` files in the `client` and `server` folders based on `.env.example` files.
+5. Run the database migrations by running `npm run migrate:latest` in the `server` folder.
+6. Start the front-end and back-end development servers by running `npm run dev` in the `client` and `server` folders.
+7. Explore the app's UI. It is a minimal Vue 3 app built with [Flowbite components](https://flowbite-vue.com/) and [Tailwind CSS](https://tailwindcss.com/). Knowing how these packages work is not required for this exercise as we will focus on the back end.
 
 There are a few minor gotchas with cross-package type safety.
 
@@ -131,30 +129,29 @@ There are a few minor gotchas with cross-package type safety.
 A few notes on the starter project:
 
 - You can navigate through the existing front-end code without any authentication. It does not make any calls to the back end yet. You could provide random credentials, and it would pretend to log you in.
-- You should reuse and adapt your existing code from the previous exercises.
+- You might it best to reuse and adapt some code from the previous exercises.
 - It includes various helper functions that you might find helpful - `entities/tests/fakes.ts`, `tests/utils/**`. However, you are not required to use them.
 
 ## Recommended approach
 
 1. Setup
-2. Think through the required API endpoints
+2. Think through required API endpoints
 3. Start with the signup and login endpoints
-4. Add an endpoint for creating a project
-5. Add an endpoint for finding user projects
-6. Add an endpoint for reporting bugs
-7. Add endpoints for getting and marking bugs as resolved
-8. Using the signup E2E test, replace fake client signup with signup through the server
-9. Add real login and authentication to the client
-10. Add route guards to protect routes that require authentication
-11. Replace fake front-end data with data from API calls
-12. Add any missing endpoints and handle errors
+4. Add an endpoint for creating an article
+5. Add a repository method for getting a list of comments with their authors
+6. Add an endpoint for getting a list of comments with their authors
+7. Add an endpoint for creating a comment
+8. Add real login and authentication to the client
+9. Add route guards to protect routes that require authentication
+10. Run E2E tests and replace fake front-end data with real data from our API server
+11. Handle errors
 
 ## How to work with a monorepo
 
 First, you must **decide on the approach** you will take to build this application. There are two main approaches:
 
-A. Think of the front end and back end as primarily independent. Implement all your endpoints in the back-end and then jump to the front-end.
-B. Think of the application as a whole and simultaneously work feature-by-feature on the front-end and back-end.
+A. Think of the front end and back end as mainly independent. Implement all your endpoints in the back-end and then jump to the front-end. This is great if you can easily plan out which fields you will need in the database.
+B. Think of the application as a single unit and simultaneously work feature-by-feature on the front-end and back-end. This is a better approach if you can easily visualize what should happen on the page but you are not sure what endpoints you will need.
 
 Here is an example of the A approach:
 
@@ -166,7 +163,7 @@ Here is an example of the A approach:
 
 Here is an example of the B approach:
 
-1. Start with an **acceptance test** - a test that maps directly to a user story. For example, "As a visitor, I can sign up with an email and a password.". This test would be an E2E test that would run in a browser and would simulate a user going through the application.
+1. Start with an **acceptance E2E test** - a test that maps directly to a user story. For example, "As a visitor, I can sign up with an email and a password.". This test would be an E2E test that would run in a browser and would simulate a user going through the application.
 2. Go line-by-line through the test (pseudo-code):
   - `page.visit('/signup')` --> create a `/signup` route in the front-end
   - `emailInput.fill('user@domain.com')` -> add an email input to a form in the page
@@ -178,23 +175,27 @@ Here is an example of the B approach:
 
 The result is the same. However, the process is different.
 
-We recommend working with the first (A) approach when working on this application, as it allows focusing on the same set of tools for a longer time. Then, you can get into the groove of writing back-end tests, writing procedures, etc.
+We recommend working with the first (A) approach when working on this application, as it allows focusing on the same set of tools for a longer time. Then, you can get into the groove of writing back-end tests, writing procedures, etc. Then, you only need to "wire up" the client to the back-end API server.
 
-Using the latter (B) approach would require us to switch between front-end and back-end more often, and it is more suited when you are very familiar with the tools you are using and have just 1 - 2 features to implement.
+Using the latter (B) approach would require us to switch between front-end and back-end more often, and it is more suited when you are very familiar with the tools you are using and have just 1 - 2 features to implement. Alternatively, it is useful in the exploration phase when you are OK with mixing some fake static data and real data in the front end.
 
 ## Additional comments
 
-**The role of `server/shared` folder**
+Sometimes, you will need to refer to some entity types in your front end, such as `User`, `Article`, etc. Without any setup, you would need to copy-paste these types to the front end. However, this would require you to maintain two copies of the same type, which is not ideal. Every time you would need to change a type, you would need to update it in two places. That's quite inconvenient and error-prone.
 
-To understand the `shared` folder, we must ask ourselves **why we would not want to import everything to the front-end**? Well, there are a few reasons:
+We could do better. Instead of copying the types, we can import them from the back end, which is closer to the source of truth. This way, we only need to maintain the types in one place.
+
+So, **can we would not want to import everything to the front-end**? Well, there are a few reasons why we would not want to do that:
 
 - our back-end handles private data, such as database connection details, API keys, etc. We do not want to expose that to the front end. That would be a security breach.
 - our back-end might contain secret methods around the business logic.
 - our back-end server might load in megabytes of code in size, while our front-end should be as small as possible.
 
-**What should you import from the back end?** You can import the necessary types, but avoid importing business logic. Remember that if something is imported to the front end, it immediately becomes public. Someone could open the browser console, snoop around your code, and find your private business logic or secret keys if you import them to the front end. That could lead to a security breach. In our application, we added a `shared` folder in the back end, which should be used to import types to the front end. Sharing some pure functions that do not rely on configuration or back-end dependencies is also possible.
+**What should you import from the back end?** You can import the necessary types, but avoid importing business logic. Remember that if something is imported to the front end, it immediately becomes public. Someone could open the browser console, snoop around your code, and find your private business logic or secret keys if you import them to the front end. That could lead to a security breach.
 
-For back-end-to-front-end imports we will **import from `@serer/shared/...`**. We will not rely on your memory alone to remember this. There is an ESLint rule to disallow other cross-package imports, which is a good security measure.
+**We have added a `shared` folder in the back end**, which should be used to import types to the front end. Sharing some pure functions that do not rely on configuration or back-end dependencies is also possible.
+
+If you ever need to import something from the back end, use **import from `@server/shared/...`** statements. Also, we have added an ESLint rule to disallow other cross-package imports to make it easier to spot when you are importing something you should not.
 
 ## Bonus challenges
 
@@ -204,8 +205,6 @@ Since we will be working on a very minimal application, we can only cover some t
 - Handle expired access tokens.
 - Add OAuth authentication with GitHub.
 - Use cookies for authentication instead of local storage.
-- Add E2E tests for user stories ("As a user, I can...").
-- Display a bug count on the project page that would be correct even if the front-end client does not get all the bugs from the back-end.
 
 ## Approach to Solving the Task
 

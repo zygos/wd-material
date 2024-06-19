@@ -4,11 +4,11 @@
  * Tasks:
  * 1. Some users sign up with very weak passwords. Please validate the password length,
  *    so it has to be between 8 and 32 characters.
- * 2. Validate the email format.
+ * 2. Ensure that the email is unique when registering a new user.
  * 3. It seems that the current data structure for storing users is not the best for heavy read
  *    operations. How would you change it?
- * 4. Pretend that you have some hashing function (you can create a new function that performs
- *    any string manipulation). How would you adapt the AuthSystem to use it?
+ * 4. Bonus. Pretend that you have some hashing function (you can create a new function
+ *    that performs any string manipulation). How would you adapt the AuthSystem to use it?
  *
  * --- --- ---
  * Passing: 3/4 tasks done.

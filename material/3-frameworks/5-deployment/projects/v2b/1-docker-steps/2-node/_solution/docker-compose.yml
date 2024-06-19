@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: blog
+    ports:
+      - "5435:5432"
+    volumes:
+      - blog-db:/var/lib/postgresql/data
+
+  server:
+    build: .
+    environment:
+      DATABASE_URL: postgres://turing:turing@postgres:5432/blog
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  blog-db:
+    name: blog-db

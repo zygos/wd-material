@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
 const isCi = process.env.CI === 'true' || process.env.CI === '1'
 
@@ -26,6 +26,9 @@ export default defineConfig({
         '**/src/trpc/index.ts',
       ],
     },
+
+    // necessary for Vitest VS Code extension to pick up env variables
+    env: loadEnv('', process.cwd(), ''),
   },
   resolve: {
     alias: {

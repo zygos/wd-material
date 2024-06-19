@@ -238,7 +238,7 @@ To deploy, we will need:
 
 Once installed, run `aws configure` and add your access key ID, secret key, and region that you used in Lightsail, and you can pick an output format, for example, `json.` Here is an [AWS page on configuring your credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-authentication-user.html).
 
-**Step 2.** Using `docker build`, build front-end and back-end containers, and tag them however you like, for example, `dogs/client`, `dogs/server`.
+**Step 2.** Using `docker build`, build front-end and back-end containers, and tag them however you like, for example, `blog/client`, `blog/server`.
 
 **Note for Mac users.** As most servers, our server will run on a Linux server using the AMD/Intel x86-64 architecture. Docker expects that the container is built for the matching architecture. Since modern Macs use ARM-based processors, you must specify that you want to build for x86-64. You can pass a `platform` flag to your docker build command (`docker build --platform linux/amd64`). Alternatively, you could add it to your Dockerfile - `FROM --platform=linux/amd64 node:...`, or set it as the default platform by adding a [permanent environment variable](https://stackoverflow.com/questions/22502759/mac-os-x-10-9-setting-permanent-environment-variables) `DOCKER_DEFAULT_PLATFORM="linux/amd64"` in your terminal.
 
@@ -261,7 +261,7 @@ These commands should print some information. The most important piece to take n
 
 If you would search for "aws lightsail deploy container", you would quickly find the [create-container-service-deployment](https://docs.aws.amazon.com/cli/latest/reference/lightsail/create-container-service-deployment.html) aws cli command. It has lots of arguments, but primarily it needs to know what is the Ligthsail service name (`--service-name`), which containers it should deploy (`--containers`) and which container will be responsible for routing all public traffic (`--public-endpoint`). Specifying the service name is easy, however the other two arguments are a bit more tricky and it is easier to specify them as JSON files, which we will pass to the `aws` cli.
 
-Create 2 new files in the root of our mini project:
+Create 2 new files in the root of our project:
 
 `containers.json`, which is a Lightsail-specific file that does pretty much the same job as `docker-compose.yml` for starting up containers:
 

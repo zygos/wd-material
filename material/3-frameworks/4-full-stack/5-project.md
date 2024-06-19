@@ -41,7 +41,7 @@ Your application needs to fulfill the following technical requirements:
 - The application needs to use user authentication. You can use third-party services, such as Auth0.
 - The project should be in a working state and have a README file with instructions on how to run it and how to "poke" its existing functionality via tests, API calls, or a provided front-end.
 
-Feel free to use hands-on exercises and previous projects as a boilerplate. However, ensure that you use your unique entities for this project. Reusing the same entities (movies, projects, bugs) is not allowed, but you can (and probably should) reuse the project setup, utility functions, etc. if that makes sense for your project.
+Feel free to use hands-on exercises and previous projects as a boilerplate. However, ensure that you use your unique entities for this project. Reusing the same entities (movies, articles) is not allowed, but you can (and probably should) reuse the project setup, utility functions, etc. if that makes sense for your project.
 
 At this point, you do not need to host your project. However, you should be able to run your project with `npm run dev` for demonstration purposes.
 

@@ -114,15 +114,6 @@ const [user, project] = await Promise.all([
 ])
 ```
 
-- **Database optimizations:** Consider using eager loading or joins to fetch related data in a single query rather than making separate queries for each relationship. Avoid making queries in a loop, which can quickly lead to performance issues.
-
-```js
-userRepository.findOne({
-  where: { id: userId },
-  relations: { projects: true },
-})
-```
-
 - **Caching:** Instead of performing a (relatively) slow request, you can remember the result of the previous request and return it the next time the same request is made. This is called caching. It could be used for data that does not change often or it is not critical to keep it completely up-to-date. Caching can be implemented on the back end or the front end. Most large projects have various caching mechanisms on both sides.
 
 ```ts
@@ -143,7 +134,7 @@ async function getWeatherForCity(city: string) {
 }
 ```
 
-- **Bonus: Indexes:** Try out using indexes in your database entities schema for keys that are often used for querying data.
+- **Bonus: Indexes:** Try out using indexes to your database for columns that are often used for querying data.
 
 # Directions for further research (1 hour+)
 

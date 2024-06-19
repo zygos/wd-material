@@ -6,12 +6,12 @@ import { userRepository } from './userRepository'
 export type RepositoryFactory = <T>(db: Database) => T
 
 // index of all repositories for provideRepos
-const respositories = { bugRepository, projectRepository, userRepository }
+const repositories = { bugRepository, projectRepository, userRepository }
 
-export type RepositoriesFactories = typeof respositories
+export type RepositoriesFactories = typeof repositories
 export type Repositories = {
   [K in keyof RepositoriesFactories]: ReturnType<RepositoriesFactories[K]>
 }
 export type RepositoriesKeys = keyof Repositories
 
-export { respositories }
+export { repositories }

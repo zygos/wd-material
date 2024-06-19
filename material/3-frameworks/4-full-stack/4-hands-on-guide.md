@@ -1,5 +1,7 @@
 Part 4: Hands-on: Full-stack monorepo application (Solution)
 
+## Steps
+
 ### Step 1. Setup
 
 Install dependencies, set up a database, and add `.env` variables based on `.env.example` files.
@@ -7,16 +9,20 @@ Install dependencies, set up a database, and add `.env` variables based on `.env
 Open up at least two terminals. Start the front-end client and the back-end server in development mode:
 
 ```bash
-# terminal 1
+# install dependencies for both packages
+npm i
+
+# terminal 1, dedicated to the client
 cd client
 npm run dev
 
-# terminal 2
+# terminal 2, dedicated to the server
 cd server
+npm run migrate:latest
 npm run dev
 ```
 
-Browse through the web app and see what it does.
+First, browse through the web app and see what it does.
 
 ### Step 2. Think through required API endpoints
 
@@ -27,357 +33,876 @@ We should review the user flow and consider what data we need to send and receiv
 ```md
 As a visitor:
 
-- I can sign up with an email and a password.
+- I can see a list of articles.
+- I can see a list of comments for an article.
+- I can sign up using an email and a password.
 - I can sign in with an email and a password.
 
 As a user:
 
-- I can create a new project.
-- I can see a list of my projects.
-- I can see a list of bugs for a given project.
-- I can mark a bug as resolved.
+- I can create a new article.
+- I can create a new comment on an article.
 - I can sign out.
 
-As an external service:
-
-- I can report a new project bug by calling an API endpoint.
+As an article author:
+- I can mark a comment as spam on my article.
 ```
 
 While we could start from any endpoint, we recommend working in the same order as the most common user flow.
 
 In our case, our main flow is:
 
-1. Visitor signs up and logs in.
-2. A user sees a list of their projects.
-3. A user creates a new project. A project contains a list of bugs.
-4. A user can call a public endpoint on our API to report a bug.
-5. A user can see all reported bugs for their project.
+1. A visitor sees a list of articles.
+2. A visitor signs up.
+3. A visitor logs in.
+4. A user creates a new article.
+5. A user creates a new comment.
+6. A user marks a comment on their article as spam.
 
 We could map these steps to endpoints:
 
-- Signup = creating a new user.
-- Login = creating a login token.
-- Listing projects = fetching all projects for a given user.
-- Creating a project.
-- Reporting a bug = creating a new bug.
-- Seeing a list of bugs = fetching all bugs for a given project.
+- Article list = `article.findAll` (or `article.list`, `article.find`, etc.)
+- Signup = `user.signup`
+- Login = `user.login`
+- Article creation = `article.create` (or `article.post`)
+- Comment creation = `comment.post`
+- Comment spam = `comment.markAsSpam`
 
-Since the primary user flow starts with signup and login, we will begin with these endpoints.
+We already have the `article.findAll` procedure. It would be a good time to investigate how it works. We could use it as an example.
 
 ### Step 3. Start with the signup and login endpoints
 
-Given that you have already followed the previous exercises, you should be able to reuse a good chunk of your existing code.
+You should be able to reuse a good chunk of the code from the previous auth exercises, so we will quickly review the few changes necessary to adapt it to the current project.
 
-We will skip the signup and login endpoints, as already implemented in the previous exercises.
+**Signup**. It is enough to swap out the fake user repository with the real one and to use the `userSchema` to validate the incoming data.
+**Login**. The same goes for the login endpoint.
 
-### Step 4. Add an endpoint for creating a project
+### Step 4. Add an endpoint for creating an article
 
-We need at least two endpoints to work with projects:
+Let's create `article/create.ts` file, add it to the `article/index.ts` router and add a test `article/tests/articleCreate.spec.ts`.
 
-- creating a new project
-- fetching user's projects
+What would be the simplest test case for this endpoint? Likely, it would be something that returns a static value or throws an error. Are there any such cases in this endpoint?
 
-Let's start with the `project.create`.
+#### Part A. Testing the authentication for creating an article
 
-Creating a project requires two things:
-
-- project data, which is sent in the request body
-- user ID, which we get from the request token
-
-Also, we need to make sure that only logged-in users can create projects. We can do that in two ways:
-
-- inside our main procedure function, we can check if the user ID is present in the provided token in the request headers
-- we can create a separate middleware function that does the same for us
-
-If you have followed the previous exercise, you should already have a middleware function that does this for us. It is called authenticatedProcedure. Here is how it roughly works:
+Our `article.create` procedure should not allow unauthenticated users to create articles. Instead of doing anything with a database, we would throw an error — tRPC would wrap it in JSON and return it to the client. Let's test throwing an error for unauthenticated users.
 
 ```ts
+import { createCallerFactory } from '@server/trpc'
+import articleRouter from '..'
+
+const createCaller = createCallerFactory(articleRouter)
+
+it('should throw an error if user is not authenticated', async () => {
+  // ARRANGE
+  const { create } = createCaller({} as any)
+
+  // ACT & ASSERT - when dealing with errors in tests,
+  // it is easier to use the expect().rejects.toThrow()
+  // syntax over wrapping everything in a try/catch block
+  await expect(
+    create({
+ title: 'My Article',
+ content: 'Some content.',
+ })
+ ).rejects.toThrow(/unauthenticated/i)
+})
+```
+
+**Note.** We are using a regular expression for the error message as we would not want our test to fail if we changed the error message slightly. We only care that the error message contains the word "unauthenticated".
+
+Now, we can add a simple procedure to handle this case:
+
+```ts
+// article/create.ts
+import { articleSchema } from '@server/entities/article'
+import { publicProcedure } from '@server/trpc'
+
+export default publicProcedure
+
+  // user can provide the following fields
+ .input(
+    articleSchema.pick({
+ title: true,
+ content: true,
+ })
+ )
+
+  // Our mutation is not doing anything with the database, just
+  // sending the input back to the client.
+ .mutation(async ({ input }) => input)
+```
+
+Our test should fail, as the procedure has no logic to check whether the user is authenticated. We could check whether the request contains a valid token inside the procedure body. However, we can forsee that quite a few procedures in our application will need the same check. This check always comes before we do anything "useful" with the request, which is a good candidate for a middleware function.
+
+We could use the `authenticatedProcedure` middleware from our authentication exercises.
+
+```ts
+// simplified version of the authenticatedProcedure middleware
 export const authenticatedProcedure = publicProcedure.use(async ({ ctx, next }) => {
-  // We can skip this middleware if we already have an authenticated user.
-  // This also allows us to bypass this middleware in tests.
-  if (authUser) return next(/* ... */)
+  // We can skip this middleware if we already have an authenticated user.
+  // This also allows us to bypass this middleware in tests.
+  if (authUser) return next(/* ... */)
 
-  const token = getTokenFromHeader(ctx.req.header('Authorization'))
-  const authUser = getUserFromToken(token)
+  const token = getTokenFromHeader(ctx.req.header('Authorization'))
+  const authUser = getUserFromToken(token)
 
-  // Add authUser to the context, which is passed to the main procedure function.
-  return next({
-    ctx: { authUser },
-  })
+  // Add authUser to the context, which is passed down to the procedure.
+  return next({
+ ctx: { authUser },
+ })
 })
 ```
 
-The complete fleshed-out example is provided in the solution. Also, it is slightly upgraded and slightly detached from `jsonwebtoken` package.
-
-For project endpoints, we followed a very two-step approach:
-
-- add a test that calls an endpoint and checks for its response
-- add the procedure function that handles the request
-
-For the first `project.create` endpoint, we could have the following test:
+We could use it instead of `publicProcedure` in our `article/create.ts` file:
 
 ```ts
-const createCaller = createCallerFactory(projectRouter)
+// article/create.ts
+// authenticatedProcedure reads the Authorization header,
+// checks whether it contains a token, and if so, sets
+// the authUser in the ctx
+export default authenticatedProcedure
+// ...
+```
+
+Does that make our test pass? Not quite. We are getting an error, but not the right one:
+
+```
+Missing Express request object. If you are running tests, make sure to provide some req object in the procedure context.
+```
+
+This is because our `authenticatedProcedure` relies on reading request headers using the `req` Express object in the `ctx`. Our tests do not provide this object:
+
+```ts
+// articleCreate.spec.ts
+// we would need to provide a fake request object inside the ctx object, which
+// right now is empty - {}
+const { create } = createCaller({} as any)
+```
+
+Providing a `req` object would require looking up what the `req` object should look like and what properties we use from it. This is a hassle, and it is not something we would want to do in every test. Instead, we've added a simple helper function that provides a fake `req` object:
+
+```ts
+// articleCreate.Spec.ts
+
+// We are using 'as any' as TS demands a database object
+// in the ctx, but we do not yet need it for this test.
+const { create } = createCaller(requestContext({} as any))
+```
+
+It is a simple utility function for our tests that provides a few `req` object properties for us to get through the `authenticatedProcedure` middleware. It pretends there are no headers in the request, which is a good enough approximation for our test.
+
+If there were actual headers, we should test them in the `authenticatedProcedure` middleware tests.
+
+**Alternative to mocking a request object.** Alternatively, we could mock the `authenticatedProcedure` middleware itself. This is also an acceptable approach. It would be preferable if the requirements to get the `authUser` object were more complex, and we would need to test them in isolation.
+
+#### Part B. Testing the article creation
+
+Now, we will need to start dealing with the database. Let's update our test appropriately:
+
+```ts
+import { authContext, requestContext } from '@tests/utils/context'
+import { fakeUser } from '@server/entities/tests/fakes'
+import { createTestDatabase } from '@tests/utils/database'
+import { createCallerFactory } from '@server/trpc'
+import { wrapInRollbacks } from '@tests/utils/transactions'
+import { insertAll } from '@tests/utils/records'
+import articleRouter from '..'
+
+const createCaller = createCallerFactory(articleRouter)
+
+// Key part #1 - we are wrapping our database operations in a
+// transaction which will be rolled back after each test is done.
 const db = await wrapInRollbacks(createTestDatabase())
-const { create } = createCaller({ db })
 
-it('should create a persisted project', async () => {
-  // ARRANGE
-  // nothing to arrange
+// ... authentication test is the same as before ...
 
-  // ACT
-  const projectCreated = await create({
-    name: 'My Special Project',
-  })
+// Our new test:
+it('should create a persisted article', async () => {
+  // ARRANGE
+  // 1. Make a request as some signed-in user
 
-  // ASSERT
-  expect(projectCreated).toMatchObject({
-    id: expect.any(Number),
-    name: 'My Special Project',
-  })
+  // ACT
+  // 2. Call the article.create procedure with some input ({ title, content })
+
+  // ASSERT
+  // 3. Expect the procedure to return the created article
+  // 4. Expect the database to contain the created article
 })
 ```
 
-This is a very similar test setup to our signup/login tests.
+We recommend to try and write this test on your own. There are a few utility functions that you might find useful:
 
-Apart from the fact that this test would fail, we have one major issue - how can we pass in the user ID? After all, it is provided by the token. Should we pass it as an additional field in the procedure? Or should we set it as an Express header?
+- `insertAll` - inserts and returns given rows into the database.
+- `selectAll` - selects rows from some table with a given condition.
+- `authContext` - similar to `requestContext`, but it injects `authUser` into the procedure `ctx`, which is useful for testing authenticated endpoints. However, you could provide the `authUser` directly in the `createCaller` function.
 
-We do not need to pollute our project tests with request-level details, especially since we have tested our authentication middleware separately.
-
-We can use the fact that our authentication middleware function does not run anything auth-related if we provide the `authUser` upfront. Then, we can pass in the `authUser` to the `create` caller:
+We recommend creating a repository to interact with articles. While it could be initialized in the procedure itself, we recommend providing it in a more dependency-injection-friendly way. This way, we could replace the repository with a mock repository in the tests without mocking at the import level, as these mocks are a bit harder to manage.
 
 ```ts
-const { create } = createCaller({
-  // pretend to be logged in as user with ID 1
-  authUser: {
-    id: 1,
-  },
+// article/create.ts
+export default authenticatedProcedure
+ .use(provideRepos({ articleRepository }))
+  // ... input
+ .mutation(async ({ input, repos }) => {
+    // repos.articleRepository is now available in the procedure
+    // and we can use it to interact with the database.
+    // However, make sure that the repository has the necessary
+    // methods to do what you need to do in the procedure.
+ })
+```
 
-  // pass in the database connection
-  db,
+You can find the solution in the `article/create.ts` file.
+
+### Step 5. Add a repository method for getting a list of comments with their authors
+
+We have the following requirements around seeing a list of comments:
+
+- Any visitor can see the comments on the article.
+- Each comment shows the first name and last name of the user who posted it.
+
+We can already imagine we will need some sort of `comment.find` procedure. It could behave exactly like the `article.findAll` procedure, but it would return comments instead of articles. Even though that would work, how would we get the author's first and last names?
+
+We could add another endpoint to get a user's first and last name using their ID. But that would require an additional request for each comment. Alternatively, we could allow passing a list of user IDs and getting a list of user first names and last names in a single request. While this is a bit better, there might even better solutions in our case.
+
+After all, we are not interested in the user's first name and last name in isolation. We are interested in the user's first name and last name in the context of a comment. We could use a JOIN or a subquery to get the user's first and last names in the same query as the comments. Then, we would return it to the client:
+
+```json
+{
+  "id": 1,
+  "content": "Some content",
+  "userId": 2,
+  "firstName": "John",
+  "lastName": "Doe"
+}
+```
+
+Even better, we could return the user's first name and last name in a nested object:
+
+```json
+{
+  "id": 1,
+  "content": "Some content",
+  "author": {
+    "id": 2,
+    "firstName": "John",
+    "lastName": "Doe"
+  }
+}
+```
+
+This is a bit easier to work with on the client side. It is clear what belongs to the comment and belongs to the author.
+
+It seems that our `comment.find` (or `comment.list`, `comment.findByArticleId`, ...) procedure will be a thin wrapper around a repository method performing the JOIN/subquery. So, instead of trying to get these parts working simultaneously, we will focus entirely on the repository method. Once it is working, adding a procedure that uses it should be a breeze.
+
+Let's go to our `repositories` folder and add a test file for the `commentRepository`:
+
+```ts
+// commentRepository.spec.ts
+// using a describe block to organize tests by method
+describe('findByArticleId', () => {
+  it('should find comments with authors by article id', async () => {
+    // Given
+    const comments = await insertAll(db, 'comment', [
+      // a few comments
+    ])
+
+    // When
+    const commentsFound = await repository.findByArticleId(
+      // some article id
+ )
+
+    // Then
+    expect(commentsFound).toEqual([
+      // a few comments with nested authors
+    ])
+ })
 })
 ```
 
-That should get us through the authentication middleware and the main procedure function. If we start implementing the procedure function by using the provided `ctx.authUser.id` to set `userId` before we insert the project, we will stumble upon one issue:
+To begin with, if we want to insert a few comments into the database, we need two more entities: an article and a user (its author). Whenever we face a need for stateful dependencies (such as a database, external API, or file system) in our tests, we should consider one of the two options:
 
-```
-insert or update on table "project" violates foreign key constraint "project_user_id_fkey"
-```
+- **create and provide "the real thing" in the test itself**
+- **mock it out with a fake object/function**
 
-Our project provides a user ID, but that user does not exist in the database.
+Which one should we choose? Consider the following:
 
-This raises a question - should we create a user in the test? This is one of the drawbacks of testing with a database that enforces foreign key constraints. We could either:
+1. **What would you test?**
+2. **What would provide you with the most confidence in your test?**
+3. **What would be the easiest to write and change?**
 
-A. Disable foreign key constraints in the test database. It simplifies the test setup, but we lose some of the safety guarantees we would expect from running tests with a database.
-B. Create a user in the test. This is more work, but it is safer. We then simulate this endpoint much closer to how it would work in production.
-C. Mock the project repository with some fake JavaScript object. This is quite easy, but it exposes various implementation details of the repository. Also, if we do not have a good idea of what we would need out of the repository up front, we might have issues writing a test before writing the actual code.
+If we are testing the repository method and testing an outcome against a running database, then it is clear what we will expect - we will expect some change in the database. What are the alternatives?
 
-A is a hack that is well-suited for seeding the database with some initial fake data. However, we would like to preserve foreign key constraints if we test the API endpoints.
+- The method ends up forming the right SQL query string.
+- The method calls the right query builder (or ORM) methods.
 
-B requires more work since setting up additional fake data is quite a hassle. At the same time, since we are dealing with real database-level constraints, we can be quite confident that our tests are quite close to how the application would work in production.
+At this point, we do not even know what our query will look like or which methods we will use to build it. If we can't specify what we expect to happen, we should look for other ways to test our code.
 
-C is a good approach if we want to test the API endpoints in isolation from anything database-related.
+Also, we argue that **testing a repository without a database might not provide us with much confidence**.
 
-For now, we will demonstrate the B approach for this endpoint - we will create a user in the test.
+Finally, trying to form our tests around specific SQL queries or query builder (such as Kysely) methods might be a bit too **implementation-specific**. We might not care about the exact SQL query, but rather about the outcome of the query.
 
-```ts
-const [authUser] = await insertAll(db, 'user', { email: 'test@mail.com', password: 'Password.123!' })
-```
+Given this, we will opt for the first option - **providing the actual database in the test**.
 
-This should be sufficient to get us through the first test. However, if we need to create a user in every test, we might want to extract this into a helper function that can be used to create multiple users with random emails.
+If we want to test getting a list of comments from a real database, we must have some comments in the database. We will insert some with the `insertAll` utility function.
 
 ```ts
-import { random } from '@tests/utils/random'
+// we could write it ourselves
+const comments = insertAll(db, 'comment', [{
+ content: 'Some content',
+}])
 
-export const fakeUser = <T extends Partial<Insertable<User>>>(overrides: T = {} as T) => ({
-  email: random.email(),
-  password: 'Password.123!',
-  ...overrides,
-})
+// or we could use a helper function that generates some random data
+const comments = insertAll(db, 'comment', [fakeComment()])
 ```
 
-While we could build a function for generating random emails ourselves, this is a common problem someone else might have already solved. And indeed, quite a few packages do this for us. If we wanted an extensive library that does this and much more, we could use `faker.js`. However, it is heavyweight, and it slows down the tests by a decent 10 - 20% overhead (depending on other factors). For this reason, we will use a much smaller package called `chance` ([docs](https://chancejs.com/)). It is a tiny package with fewer features than `faker.js`, but it is also much faster to import.
+However, we must provide an `articleId` and a `userId` for every comment. If we tried to insert a comment without an article ID, we would get a foreign key constraint violation - our database checks that the article and user ids point to existing rows in the database.
 
-We have added `fakeUser` as a helper function in `entities/tests/fakes.ts`. You could choose a different location for this function. Still, we wanted to be relatively close to the modules that will change hand-in-hand with these fake entity-generating functions. Also, to separate it from the actual entities, we added it to a `tests` folder.
+This raises the question of whether we should create an article for the comments test. That is one of the drawbacks of testing with a database that enforces foreign key constraints. We could either:
 
-Now, having this sort of setup is quite helpful because we can create a user in our test like this:
+A. **Create an article in the test**. This is more work, but we can simulate this endpoint much closer to how it would work in production.
+B. **Disable foreign key constraints** in the test database. It simplifies the test setup, but we lose some of the safety guarantees we would expect from running tests with a database.
 
-```ts
-const authUser = await insertAll(db, 'user', fakeUser())
+The B method is a hack well-suited for seeding the database with some initial fake data. However, we would like to preserve foreign key constraints if we test the API endpoints.
 
-const { create } = createCaller({
-  authUser,
-  db,
-})
-```
-
-We have added one more thing to our `projectCreate` test:
+Let's stick with creating a few articles and users for the test.
 
 ```ts
-// authContext function that forms the authUser object for us
-// so if we change the authUser shape, it does not require us
-// to change lots of tests to reflect that change
-const { create } = createCaller(authContext({ db }, user))
-```
+// commentRepository.spec.ts
+const db = await wrapInRollbacks(createTestDatabase())
+const repository = commentRepository(db)
 
-That was a good amount of setup, but we will not need to do it again for the next test.
-
-You can review the server `project/create/index` procedure in the solution. It includes a few things that are best covered in code comments.
-
-### Step 5. Add an endpoint for finding user's projects
-
-Finding user projects is very similar to creating a project. You can review the `project/find/index` procedure and its test. We have kept it close to the previous endpoint, so it should be easy to follow.
-
-### Step 6. Add an endpoint for reporting bugs
-
-We can use the same approach as we did for projects to report (create) bugs. The one difference is that now we are seeing how adding a bug requires us to have a project, which requires having a user. There are three methods to address this:
-
-A. Set up some user and project database rows in the test. We will demonstrate this in the `bugResolve.spec.ts`.
-B. Do not test with a database; test with a mock. We will demonstrate this in the `bugFind.spec.ts` and `bugReport.spec.ts`.
-
-If we are testing with real database rows, we will need to create all the surrounding database rows in the test. In our case, dealing with a bug requires having a project and to have a project, we need a user to own it.
-
-In that case, we are creating all the rows by hand:
-
-```ts
-const [userOwner, userOther] = await insertAll(db, 'user', [
-  fakeUser(),
-  fakeUser(),
+const [userOne, userTwo] = await insertAll(db, 'user', [
+  fakeUser(),
+  fakeUser(),
 ])
-const [project] = await insertAll(db, 'project', {
-  name: 'My Project',
-  userId: userOwner.id,
+
+// 2 articles, both written by userOne
+const [articleOne, articleTwo] = await insertAll(db, 'article', [
+  fakeArticle({
+ userId: userOne.id,
+ }),
+  fakeArticle({
+ userId: userOne.id,
+ }),
+])
+
+describe('findByArticleId', () => {
+  it('should find comments with authors by article id', async () => {
+    // Given the following combination of comments
+    const comments = await insertAll(db, 'comment', [
+      fakeComment({
+ articleId: articleOne.id,
+ userId: userOne.id,
+ }),
+      fakeComment({
+ articleId: articleTwo.id,
+ userId: userOne.id,
+ }),
+      fakeComment({
+ articleId: articleOne.id,
+ userId: userTwo.id,
+ }),
+    ])
+
+    // When we call the repository method
+    const commentsFound = await repository.findByArticleId(articleOne.id)
+
+    // Then we should get the following comments with authors
+    expect(commentsFound).toEqual([
+      {
+        ...comments[0],
+ author: userOne,
+ },
+      {
+        ...comments[2],
+ author: userTwo,
+ },
+    ])
+ })
 })
 ```
 
-Then, we are performing some checks:
+It's time to implement the `findByArticleId` method to pass this test.
 
 ```ts
-it('allows reporting a bug', async () => {
-  // ARRANGE (Given)
-  const { report } = createCaller(authContext({ db }, userOwner))
-  const bug = fakeBug({ projectId: project.id })
-
-  // ACT (When)
-  const bugReturned = await report(bug)
-  const [bugSaved] = await selectAll(db, 'bug', (eb) =>
-    eb('id', '=', bugReturned.id)
-  )
-
-  expect(bugReturned).toEqual(bugSaved)
-})
-
-it('allows other users to report a bug', async () => {
-  // ARRANGE (Given)
-  const { report } = createCaller(authContext({ db }, userOther))
-
-  // ACT (When)
-  await expect(report(bug)).resolves.toMatchObject(bug)
-})
-
-// a few more conditions - non-logged-in user, what happens if incorrect projectId
-// is passed, etc.
+// Often repositories are written as classes, but we will use a function
+// with a plain object for simplicity.
+export function commentRepository(db: Database) {
+  return {
+    async findByArticleId(articleId: number): Promise<Comment[]> {
+      return db
+ .selectFrom('comment')
+ .select(commentKeysPublic)
+ .where('articleId', '=', articleId)
+ .execute()
+ }
+ }
+}
 ```
 
-This is a fine approach. However, it can be a bit verbose, especially if each test requires a long chain of database rows to be created.
+While this should select the comments for a given article, it does not include the author's first name and last name. How could we include them?
 
-### Step 7. Add endpoints for getting and marking bugs as resolved
-
-Getting a list of bugs is simple enough. We can follow the same approach as we did for the previous endpoints. One slightly tricky case is that seeing the list of bugs can be done only by the project owner. We can demonstrate this in the `bugFind.spec.ts` test.
+There are a few ways to do this. We will explore the most straightforward one - `INNER JOIN` with the `user` table on the `userId` column. Then, we would need to manually restructure the result into a nested object containing the `author`. We would use `LEFT JOIN` if we could have comments without authors or there is a possibility that there are multiple authors for a single comment. In our case, we will assume that every comment has an author.
 
 ```ts
-it.todo('should return a list of bugs for the project owner')
-it.todo('should throw an error if the user is not the project owner')
+const comments = await db
+ .selectFrom('comment')
+ .innerJoin('user', 'comment.userId', 'user.id')
+ .where('articleId', '=', articleId)
+ .select([
+    ...commentKeysPublic,
+    'firstName',
+    'lastName',
+  ])
+ .execute()
+
+// move all author fields to a nested author object
+return comments.map(({ firstName, lastName, ...comment }) => ({
+  ...comment,
+ author: {
+ id: comment.userId,
+    firstName,
+    lastName,
+ },
+}))
 ```
 
-We could use the same general flow we used for the previous endpoint - create a few rows in the database and check who can get them.
-
-However, we will use this as an opportunity to showcase a different approach - mocking repositories.
-
-In our case, a very simple mock (a stub) might work the best. Here, we are providing a pair of fake repos that we will pass into our context. These will be used instead of the real repositories due to `provideRepos` middleware.
+This nearly works. We get an error `column reference "id" is ambiguous`. Is there something special about the `id` column that happens in this query but not in our previous queries? Well, `id` could mean the `id` column from the `comment` table or the `id` column from the `user` table. We should be more explicit about which field is taken from which table:
 
 ```ts
-// For example, our test would end up needing the following fake repositories:
+'comment.id',
+'comment.content',
+// ...
+```
+
+While this is fine, we could do a bit better and make this piece of code more expressive and resistant to future changes to the database schema. We could use the `commentKeysPublic` array and add a utility function to prefix all keys with the table name:
+
+```ts
+// produces ['comment.id', 'comment.content', ...]
+...prefixTable('comment', commentKeysPublic),
+
+// we could do the same with the user keys, but we
+// will keep this very simple for this example
+'firstName',
+'lastName',
+```
+
+`prefixTable` is just a simple function with a `map`. However, it requires a bit of TypeScript magic to make it "smart", so it does not just return `string`, but the exact literal types that calm down Kysely's type safety checks.
+
+We still might get a type error that `author` is not in the `Comment` type. We could create a new type, `CommentPublic` (or `CommentWithAuthor`), that extends `Comment` and adds the `author` field. We could keep that type in the `entities/comment.ts` file.
+
+#### Advanced methods building JSON on the database side
+
+We have added several alternative approaches to building a nested JSON object.
+
+PostgreSQL allows us to build JSON objects directly in the database. We could use the `json_build_object` function (or `json_build_array` for arrays) to construct a JSON object directly in the query:
+
+```sql
+SELECT
+  comment.id,
+  comment.content,
+ json_build_object(
+    'id', user.id,
+    'firstName', user.firstName,
+    'lastName', user.lastName
+ ) AS author
+FROM comment
+JOIN user ON comment.userId = user.id
+WHERE comment.articleId = 1
+```
+
+This would allow skipping the JSON building step in the application code. Alternatively, we could use a subquery to build the JSON object:
+
+```sql
+SELECT
+  comment.id,
+  comment.content,
+ (
+    SELECT json_build_object(
+      'id', user.id,
+      'firstName', user.firstName,
+      'lastName', user.lastName
+ )
+    FROM user
+    WHERE user.id = comment.userId
+ ) AS author
+FROM comment
+WHERE comment.articleId = 1
+```
+
+This is a very developer-friendly approach as we could move the logic for building the JSON object to a single function:
+
+```ts
+function withAuthor(eb: ExpressionBuilder<DB, 'comment'>) {
+  return jsonObjectFrom(
+    eb
+ .selectFrom('user')
+ .select(userKeysPublic)
+ .whereRef('user.id', '=', 'comment.userId')
+ ).as('author') as AliasedRawBuilder<UserPublic, 'author'>
+}
+```
+
+Then, adding author to a specific query becomes as simple as:
+
+```ts
+const comments = await db
+ .selectFrom('comment')
+ .select(commentKeysPublic)
+ .select(withAuthor) // single line for the author relationship
+ .where('articleId', '=', articleId)
+ .execute()
+```
+
+We could even use it for the `RETURNING` clause in the `INSERT` statement:
+
+```ts
+const commentInserted = await db
+ .insertInto('comment')
+ .values(comment)
+ .returning(commentKeysPublic)
+ .returning(withAuthor) // single line to return the author as well
+ .executeTakeFirstOrThrow()
+```
+
+All in all, this is a compelling approach, but it is optional for simple applications. Also, some of you might be aware of some trade-offs of using subqueries vs. joins in the database, but the query planner in modern databases might mitigate these. These details do not matter too much in a small application. Focus on what is the most readable and maintainable for you, and then optimize if necessary.
+
+The approaches for building JSON objects are covered in the [Kysely documentation](https://kysely.dev/docs/recipes/relations).
+
+Once this works, we could add more test cases to cover a few more scenarios.
+
+### Step 6. Add an endpoint for getting a list of comments with their authors
+
+This step is quite straightforward. Our endpoint is just taking the `articleId` and returning the comments with the authors. We will use the `commentRepository` method we have just created.
+
+The more interesting part is the test. We have already tested the repository method, and our endpoint is just a thin wrapper around it. We could test it in a very similar way to how we tested the repository method. We would need to create a few test users, articles, and comments and then test whether our endpoint returns the comments with the authors. However, there might be better uses of our time than adding more tests around the same functionality. Also, if we decide to change something, we need to change a lot of tests in multiple places. This can be counter-productive.
+
+Instead, we could test the `comment.find` procedure with a mocked repository. After all, we have tested it, and if we want to test more edge cases surrounding the database interaction, we could do it in the repository tests.
+
+How can we mock the comment repository?
+
+In our simple application setup, it is as simple as providing a fake repository object to `ctx`. This is one of the purposes behind the `provideRepos` middleware. If it finds that we have already passed in a repository, it uses that instead of creating a new one with a real database.
+
+```ts
+// Example with a real database.
+const db = await wrapInRollbacks(createTestDatabase())
+const { find } = createCaller({ db })
+
+// Example with a fake repository.
+const commentRepository = {
+  findByArticleId: async () => [
+    // some hard-coded return value
+  ],
+}
+
+const { find } = createCaller({
+ repos: { commentRepository },
+})
+```
+
+When we provide a mocked repository, we do not need to worry about the database setup, seed data, database constraints, etc. This is fine, as long as we have a test for the repository method we are mocking.
+
+Here how the complete test could look like:
+
+```ts
+// import statements...
+
 const repos = {
-  projectRepository: {
-    hasUserId: vi.fn(async () => true),
-  },
-  bugRepository: {
-    update: vi.fn(async (id, bug) => ({ id, ...bug })),
-  },
+ commentRepository: {
+    // findByArticleId will return whatever we pass in
+    findByArticleId: async (articleId: number) => [
+      // using fakeComment, so we do not list all the fields
+      fakeComment({
+ id: 1,
+        articleId,
+ author: { id: 1, firstName: 'Jane', lastName: 'Doe' },
+ }),
+    ],
+    // Type check to make sure that the fake repository satisfies
+    // the CommentRepository interface. Then, TypeScript will
+    // notify us if our mock has an incompatible type.
+ } satisfies Partial<CommentRepository>,
 }
-```
 
-Wrapping the methods in `vi.fn` allows us to override the return value of these functions:
+const createCaller = createCallerFactory(commentRouter)
+const { find } = createCaller(authRepoContext(repos))
 
-```ts
-// if we add the following line in our test, it will override the return value
-repos.projectRepository.hasUserId.mockResolvedValueOnce(false)
-```
+it('should return a list of comments of a given article', async () => {
+  // ARRANGE (Given)
+  const articleId = 5
 
-Then, we could use these repositories in our test:
+  // ACT (When)
+  const commentsFound = await find({ articleId })
 
-```ts
-const { resolve } = createCaller({
-  authUser: { id: 1 },
-  repos,
-} as any)
-
-// these ids are not important, just required by schema validation to be numbers
-const bug = { id: 14, projectId: 24 }
-
-// Example with a mocked database
-it('should set a bug as resolved', async () => {
-  // ACT (When)
-  const bugResolved = await resolve(bug)
-
-  // ASSERT (Then)
-  expect(bugResolved).toMatchObject({
-    id: bug.id,
-    resolvedAt: expect.any(Date),
-  })
-})
-
-it('should throw an error if user does not own the bug project', async () => {
-  // we override the hasUserId method to return false in this case
-  repos.projectRepository.hasUserId.mockResolvedValueOnce(false)
-
-  // ACT (When) & ASSERT (Then)
-  await expect(resolve(bug)).rejects.toThrow(/does not belong/i)
+  // ASSERT (Then)
+  expect(commentsFound).toMatchObject([
+    { id: 1, articleId, author: { id: 1, firstName: 'Jane', lastName: 'Doe' } },
+  ])
 })
 ```
 
-This approach works well enough if we have a small number of methods to mock. However, this can be tricky to write in TDD style as we would need to anticipate the methods we would need to mock.
+Our procedure does little, so it is OK to have a straightforward test. We could add some functionality not covered by the repository method, such as what happens if the `articleId` is passed in not as a `number` or how the procedure handles an error thrown by the repository method.
 
-Both approaches have their own pros and cons. Using a database connection (integration-style) requires more data setup, while the mock approach requires more setup in the test itself and some coupling with the implementation. The first one is closer to how the application would work in production and is great if we do not have a good idea of what we would need to mock. Meanwhile, the second one is great if we know what we need to mock, we want to test the controllers in isolation, or we want to test some edge cases that are hard to reproduce with a real database (database timeouts, network errors, etc.).
+### Step 7. Add an endpoint for creating a comment
 
-### Step 8. Using the signup E2E test, replace fake client signup with signup through the server
+While we tested the `comment.find` procedure with a mocked repository, we will demonstrate how to test the `comment.post` procedure with a database.
 
-Now that we have implemented most of the necessary endpoints, we can connect the client to the server.
+You are free to choose either approach. Either way, you will need to test the interactions with the database in the procedure or repository.
 
-There is an E2E test `signup` that we can run with `npm run test:e2e`.
-
-The most straightforward approach to call the back-end in the front-end is to import the `trpc` client where we need it:
+Let's describe the expected behavior of the `comment.post` procedure:
 
 ```ts
-// SignupView.vue
-import { trpc } from '@/trpc'
+// commentPost.spec.ts
+// import statements
 
-const userForm = ref({
-  email: '',
-  password: '',
+// overall setup
+const createCaller = createCallerFactory(commentRouter)
+const db = await wrapInRollbacks(createTestDatabase())
+
+// some initial setup, if needed
+
+it('allows creating a comment', async () => {
+  // ARRANGE (Given)
+  // given some fake comment data
+
+  // ACT (When)
+  // call the comment.post procedure with the fake comment data
+  // as some signed-in user
+
+  // ASSERT (Then)
+  // expect the database to contain the saved comment
+  // expect the procedure to have returned the saved comment
 })
+```
 
-async function submitSignup() {
-  await trpc.user.signup.mutate(userForm.value)
+How would we will fill in these parts?
 
-  // ... redirect to a successful signup page
+We would need to create a user and an article in the database upfront.
+
+```ts
+// We will leave this outside of our particular test, as this looks like
+// something we would need in multiple tests.
+const [userArticleAuthor] = await insertAll(db, 'user', [
+  fakeUser(),
+])
+
+const [article] = await insertAll(
+  db,
+  'article',
+  fakeArticle({
+ userId: userArticleAuthor.id,
+ })
+)
+
+it('allows creating a comment', async () => {
+  // ARRANGE (Given)
+  const comment = fakeComment({ articleId: article.id })
+
+  // ACT (When)
+  // call the comment.post procedure with the fake comment data
+  // as some signed-in user
+
+  // ASSERT (Then)
+  // expect the database to contain the saved comment
+  // expect the procedure to have returned the saved comment
+})
+```
+
+Time to move on to the `ACT` part. We will need to create a user and call the `comment.post` procedure with the comment data.
+
+```ts
+const comment = fakeComment({ articleId: article.id })
+const { post } = createCaller({
+  db,
+ authUser: // ???
+})
+```
+
+What sort of scenario should we test? We could test the following:
+
+- The article author can post a comment.
+- Another user can post a comment.
+- A non-logged-in user cannot post a comment.
+
+While all three scenarios deserve our attention, we will focus on the "Another user can post a comment" as it is the most complex. Instead, we will leave the easier scenarios covered in the solution source code.
+
+```ts
+const { post } = createCaller({
+  db,
+
+  // or otherUser, or just user, it's all personal preference
+ authUser: userOther.id,
+})
+```
+
+Where will we get this `userOther`? The same way we got our `userArticleAuthor`—by inserting a user into the database.
+
+```ts
+const [userArticleAuthor, userOther] = await insertAll(db, 'user', [
+  fakeUser(),
+  fakeUser(),
+])
+```
+
+Now, we have access to two users in this test file. This sounds like enough for a reasonable test.
+
+```ts
+it('allows creating a comment', async () => {
+  // ARRANGE (Given)
+  const comment = fakeComment({ articleId: article.id })
+
+  // ACT (When)
+  const ctx = { db, authUser: userOther }
+  const { post } = createCaller(ctx)
+  const commentReturned = await post(comment)
+
+  // ASSERT (Then)
+  // simple check - does the returned comment match the saved comment?
+  const [commentSaved] = await selectAll(db, 'comment', (cb) =>
+    cb('id', '=', commentReturned.id)
+ )
+  expect(commentReturned).toMatchObject(commentSaved)
+  expect(commentSaved).toHaveProperty('userId', userOther.id)
+})
+```
+
+Now, how would we implement this?
+
+```ts
+// comment/post.ts
+export default authenticatedProcedure
+
+  // inject the commentRepository into the procedure
+ .use(
+    provideRepos({
+      commentRepository,
+ })
+ )
+
+  // user provides the content for their comment
+  // and the articleId they are commenting on
+ .input(
+    commentSchema.pick({
+ articleId: true,
+ content: true,
+ })
+ )
+
+  // create a comment and return it to the client so they
+  // can update the front-end with the new comment
+ .mutation(
+    async ({
+ input: comment,
+ ctx: { authUser, repos },
+ }): Promise<CommentPublic> => {
+      const commentCreated = await repos.commentRepository.create({
+        ...comment,
+ userId: authUser.id,
+ })
+
+      return commentCreated
+ }
+ )
+```
+
+However, what happens if the user tries to comment on an article that does not exist? We should add a test for this case.
+
+```ts
+it('throws an error if the article does not exist', async () => {
+  // ARRANGE (Given)
+  const comment = fakeComment({ articleId: article.id + 999999 })
+
+  // ACT (When) & ASSERT (Then)
+  const { post } = createCaller(authContext({ db }))
+  await expect(post(comment)).rejects.toThrow(/not found/i)
+})
+```
+
+Unfortunately, our procedure throws an error about the violated `foreign key constraint`. This is because our database checks that the `articleId` in the `comment` table points to an existing row in the `article` table.
+
+Instead of this "ugly" error, we would like to throw a more user-friendly error. There are a few ways to do this:
+
+A. Check whether the article exists before inserting the comment.
+B. Catch the error and re-throw a more user-friendly error.
+
+Here's what the upfront check could look like:
+
+```ts
+const article = await repos.articleRepository.findById(comment.articleId)
+
+if (!article) {
+  throw new TRPCError({
+ code: 'NOT_FOUND',
+ message: 'Article not found',
+ })
 }
+
+// proceed to create the comment
 ```
 
-### Step 9. Add real login and authentication to the client
+This is easy to understand and allows for adding additional conditionals in the application code. For example, some articles might have their comments disabled, some might require only some users to comment, etc. This would be harder to enforce at the database level than just with a few `if` statements. The drawback of this approach is that we are making two database queries instead of one — first to get an article and then to insert a comment.
 
-This is a slightly tricky part. Instead of just calling the tRPC login, we would like to do something with its response, which includes `accessToken`. Given that we will need to pass this token to every request and might have a few places interested in the current user, we should keep this logic in a separate file.
+Alternatively, we could just insert the comment, catch the error, and re-throw a more user-friendly error:
+
+```ts
+// We could use a try/catch block, but it is a bit too lengthy
+// for a simple operation like this, so we will use the build-in
+// Promise.prototype.catch method.
+const commentCreated = await repos.commentRepository
+ .create({
+    ...comment,
+ userId: authUser.id,
+ })
+ .catch((error) => {
+    // foreign key constraint violation
+    // We could look for a specific string in the error message
+    // or we could look for a specific error code.
+    // We could look up online "postgres error codes" and find
+    // "foreign_key_violation" is code 23503.
+    if (error.code === '23503') {
+      // re-throw a more user-friendly error
+      throw new TRPCError({
+ code: 'NOT_FOUND',
+ message: 'Article not found',
+ cause: error, // optional, but could be useful for server logs
+ })
+ }
+
+    // If this is not the error we are looking for, we will
+    // re-throw the original error. Maybe the database is down
+    // or there is some other issue. In that case, we might want
+    // to display a generic error message to the user in the front end.
+    throw error
+ })
+```
+
+### Step 8. Add real login and authentication to the client
+
+**Now we will focus on the `client` - our front-end application.**
+
+Authentication works by sending credentials to the server, which checks whether they are valid. The browser can send the credentials in the request. HTTP requests contain two parts:
+
+- Request body. It is used for username and password authentication in a POST request.
+- Request header - such as an `Authorization` header with a `Bearer` token for JWTs or by passing a JWT/Session ID in a `Cookie` header.
+
+Usually, authentication is done first by sending a request to the server with the credentials, such as a username and password. Then, the server sends back some sort of string that is used to authenticate the user in the future. This string is usually a session ID or a JWT.
+
+In our case, we will be using a JWT.
+
+Suppose we call the `login` procedure; it returns an `accessToken`. We need to attach this token to every request we make to the server. By convention, it is attached to the `Authorization` header. However, if we do not store it anywhere, the token lives only as a variable in the browser's memory. Once the page is refreshed, the token is lost.
+
+Some Auth schemes use multiple tokens and having an in-memory token might make sense. However, our simple single-token setup relies on saving the token somewhere on the client so it is not lost between page refreshes. **We would like our users to stay logged in for some time even if they refresh the page**.
+
+How would we do that? Is there any mechanism to persist data in the browser?
+
+Some of you might remember `localStorage`. It is an acceptable way to store a JWT in the browser. While it has some drawbacks, such as being accessible from any JS script on the page, it is sufficient for our needs.
+
+So, we will need to:
+
+1. Call the `login` procedure.
+2. Store the `accessToken` in `localStorage`.
+3. Attach the `accessToken` as an `Authorization: Bearer {token}` header in every request.
 
 We will create a `user.ts` file in the `stores` folder. It will contain the following:
 
@@ -385,76 +910,82 @@ We will create a `user.ts` file in the `stores` folder. It will contain the foll
 import { trpc } from '@/trpc'
 
 export async function login(userLogin: { email: string; password: string }) {
-  // login might not be considered a mutation, but we are considering it as such
-  // given that it creates a new "thing" - an access token.
-  const { accessToken } = await trpc.user.login.mutate(userLogin)
+  // login might not be considered a mutation, but we are considering it as such
+  // given that it creates a new "thing" - an access token.
+  const { accessToken } = await trpc.user.login.mutate(userLogin)
 
-  storage.setItem('token', token)
+  localStorage.setItem('token', token)
 }
 ```
 
+OK, once we log in, we add the token to `localStorage`. **How would we attach it to every request?**
+
+A quick "trpc headers" web search should lead us to the [tRPC Custom Headers page](https://trpc.io/docs/client/headers). Luckily for us, it even has a token-based example, because it is a very common use case.
+
 We would then pass this auth token to all procedures in the `Authorization` header.
+
+In our case, we are pulling the token from `localStorage`, so it we need to simply add a function that returns the desired headers as a plain object.
 
 ```ts
 // trpc/index.ts
 export const trpc = createTRPCProxyClient<AppRouter>({
-  links: [
-    httpBatchLink({
-      // ...
-      headers: () => {
-        const token = localStorage.getItem('token')
+ links: [
+    httpBatchLink({
+      // ...
+      headers: () => {
+        const token = localStorage.getItem('token')
 
-        if (!token) return {}
+        if (!token) return {}
 
-        return {
-          Authorization: `Bearer ${token}`,
-        }
-      },
-    }),
-  ],
+        return {
+ Authorization: `Bearer ${token}`,
+ }
+ },
+ }),
+  ],
 })
 ```
 
-We are dealing with tokens in multiple places in our application. If we wanted to change the token's name, we would need to change it in multiple places. We should consider colocating all auth-token functions in a single module. We used `utils/auth.ts` for that.
+Our application deals with tokens in multiple places. If we wanted to change the token's name, we would need to do so in multiple places. We should consider colocating all auth-token functions in a single module. We used `utils/auth.ts` for that.
 
-### Step 10. Add route guards to protect routes that require authentication
+### Step 9. Add route guards to protect routes that require authentication
 
 We want to keep dashboard routes protected from unauthenticated users. If a user tries to go to the `/dashboard` route, we would like to redirect them to the login page.
 
 We can do that by using a route guard.
 
-While we could use a global route guard, we will use a local one as it is easier to reason. You can find more details on per-route guards in the [Vue Router docs](https://router.vuejs.org/guide/advanced/navigation-guards.html#Per-Route-Guard).
+While we could use a global route guard, we will use a local one as it is easier to understand. You can find more details on per-route guards in the [Vue Router docs](https://router.vuejs.org/guide/advanced/navigation-guards.html#Per-Route-Guard).
 
 We can add a simple guard function that checks if the user is logged in, and if not, it redirects them to the login page:
 
 ```ts
 // router/guards.ts
 export const authenticate = () => {
-  // isLoggedIn would be a function that checks if the user is logged in
-  // if the user is not logged in, we redirect them to the login page
-  if (!isLoggedIn()) return { name: 'Login' }
+  // isLoggedIn would be a function that checks if the user is logged in
+  // if the user is not logged in, we redirect them to the login page
+  if (!isLoggedIn()) return { name: 'Login' }
 
-  // if the user is logged in, we can continue
-  return true
+  // if the user is logged in, we can continue
+  return true
 }
 
 // router/index.ts
 const router = createRouter({
-  routes: [
-    /* ... */
-    {
-      path: '/dashboard',
-      component: DashboardLayout,
-      beforeEnter: [authenticate], // guard
-      children: [
-        // all routes here will be protected by the authenticate guard
-      ],
-    }
-  ],
+ routes: [
+    /* ... */
+ {
+ path: '/dashboard',
+ component: DashboardLayout,
+ beforeEnter: [authenticate], // guard
+ children: [
+        // all routes here will be protected by the authenticate guard
+      ],
+ }
+  ],
 })
 ```
 
-How would we implement `isLoggedIn`? While we could check `localStorage` for the token, moving away from low-level APIs and using a more high-level abstraction is recommended. We could use a variable for tracking if a user is logged in.
+How would we implement `isLoggedIn`? We could use the same logic as we did in the `user.ts` file. Given it is used in multiple places and we wouldn't want this logic to get out of sync, we've added `getStoredAccessToken` function which simply returns the token from `localStorage`.
 
 ```ts
 // stores/user.ts
@@ -465,8 +996,8 @@ How would we implement `isLoggedIn`? While we could check `localStorage` for the
 export const isLoggedIn = ref(!!getStoredAccessToken(localStorage)) // true if token is present
 
 function login(/* ... */) {
-  // ...
-  isLoggedIn.value = true
+  // ...
+  isLoggedIn.value = true
 }
 ```
 
@@ -476,21 +1007,38 @@ Then we could import it in our route guard:
 if (!isLoggedIn.value) return { name: 'Login' }
 ```
 
-This is acceptable, but a more versatile approach would be to use a pipe `authToken` => `authUser` => `isLoggedIn`. Then, we would worry only about managing the `authToken` correctly, and everything else would be set automatically for us by `computed` properties. This is the approach we took in the solution. Then, our `login` (or `logout`) does not need to worry about setting the `isLoggedIn` variable; it just needs to deal with the token. You can find the implementation in `stores/user.ts`.
-
-### Step 11. Replace fake front-end data with real data from API calls
+### Step 10. Run E2E tests and replace fake front-end data with real data from our API server
 
 At this point, we need to replace all remaining hard-coded client data with data from the server. One way to do it is to wrap existing functionality in E2E tests and then replace the hard-coded data with API calls.
 
-We have added `e2e/project.test.ts` for that purpose. It goes through the entire flow with a new user and project. It is more verbose than the previous tests but is quite similar overall.
+We have added E2E tests for that purpose. It goes through the main user flows.
 
-It uses a new `loginNewUser` helper function that creates a new user and logs them in if they do not exist. It allows us to bypass checking the same login UI flow in every test, which is relatively slow, and we have already tested it in `user.test.ts`, so we do not need to test it again and again.
+We have added various helper functions to facilitate testing the application from different users' perspectives.
 
-Then, we replaced all the hard-coded data with API calls. You might notice the `useErrorMessage` composable in the solution, which seems to be used in a few places. It is a generic error handling composable that we will cover in the next step.
+While we could add a lot of procedural logic to the E2E, we recommend playing around with more expressive code. An example of that is shown in the `client/e2e/comment.test.ts` where we have tested a bonus requirement - the ability for article authors to report a comment as spam. This requires switching between multiple roles, which would be a hassle with procedural code.
 
-### Step 12. Add any missing endpoints and handle errors
+```ts
+// this would create the necessary user, log in as that user,
+// and perform the necessary actions as that user within the
+// provided function
+const author = fakeUser()
+const article = await asUser(page, author, async () => {
+  // ... produce an article
+})
 
-We have added a procedure for getting a single project, which is useful on the project details page. We could try getting all user projects and filtering them on the front end, but that might not be the best idea if we want to add pagination in the future.
+// we perform some actions as another user
+const commenter = fakeUser()
+const comment = await asUser(page, commenter, async () => {
+  // ... produce a comment
+})
+
+// we switch back to the author and report the comment as spam
+await asUser(page, author, async () => {
+  // test out reporting the comment as spam
+})
+```
+
+### Step 11. Handle errors
 
 What about handling errors on the client?
 
@@ -499,18 +1047,18 @@ We would handle them in a simple `try`/`catch` block:
 ```ts
 const errorMessage = ref('')
 async function submitSignup() {
-  try {
-    await signup(userForm.value)
+  try {
+    await signup(userForm.value)
 
-    // display a success message
-    hasSucceeded.value = true
+    // display a success message
+    hasSucceeded.value = true
 
-    // clear error
-    errorMessage.value = ''
-  } catch (error) {
-    // set error, which will be automatically displayed
-    errorMessage.value = error instanceof Error ? error.message : DEFAULT_SERVER_ERROR
-  }
+    // clear error
+    errorMessage.value = ''
+ } catch (error) {
+    // set error, which will be automatically displayed
+    errorMessage.value = error instanceof Error ? error.message : DEFAULT_SERVER_ERROR
+ }
 }
 ```
 
@@ -518,42 +1066,48 @@ We could also use a more generic approach and create a Vue composable that does 
 
 ```ts
 const [submitSignup, errorMessage] = useErrorMessage(async () => {
-  await signup(userForm.value)
+  await signup(userForm.value)
 
-  hasSucceeded.value = true
+  hasSucceeded.value = true
 })
 ```
 
-It takes in a function and returns a function that sets the error message if the function throws an error:
+It takes in a function and returns a function that sets the error message if the original function throws an error:
 
 ```ts
 // simplified version
 const errorMessage = ref('')
 
 const fnWrapped = (fn: Function) => {
-  try {
-    const result = await fn()
-    // fn is the function that we pass in:
-    // await signup(userForm.value)
-    // hasSucceeded.value = true
+  try {
+    const result = await fn()
+    // fn is the function that we pass in:
+    // await signup(userForm.value)
+    // hasSucceeded.value = true
 
-    // clear error message
-    errorMessage.value = ''
+    // clear error message
+    errorMessage.value = ''
 
-    return result
-  } catch (error) {
-    errorMessage.value = getErrorMessage(error)
+    return result
+ } catch (error) {
+    errorMessage.value = getErrorMessage(error)
 
-    if (doRethrow) throw error
-  }
+    if (doRethrow) throw error
+ }
 }
 
 return [fnWrapped, errorMessage]
 ```
 
-**Note.** We did not flesh out all error handling, and various auth flow cases. For example:
+**Note.** We did not flesh out all error handling and various authorization flow cases. For example:
 
-- What happens if a request fails due to a network error? Is the user notified?
+- What happens if a request fails due to a network error or some unexpected error? Is the user notified about it? Is the user exposed to unnecessary (possibly sensitive) information in error messages?
 - What happens if a request fails due to an expired token? We want to catch these errors, possibly at the tRPC client level, and redirect the user to the login page.
 
-We could cover many more cases, such as rate limiting, pagination, caching, and managing front-end loading states and state management, but this is beyond the scope of this small exercise. We already did quite a bit of work to get to this point.
+We could cover many more cases, such as rate limiting, pagination, caching, and managing front-end loading states and state management, but this is beyond the scope of this exercise. We already did quite a bit of work to get to this point! Great work!
+
+## Bonus feature - reporting comments as spam
+
+We have implemented an additional feature to demonstrate a more complex authorization middleware function that safeguards a procedure from unauthorized access. Article authors can report comments as spam. This was not a requirement for the exercise, but we've added it to demonstrate how to implement more complex authorization logic.
+
+You do not necessarily need to move most of the authorization logic to middleware functions. It is a good practice if you use the same logic in multiple places.

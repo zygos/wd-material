@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # spin up a database
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: turing
+      POSTGRES_PASSWORD: turing
+      POSTGRES_DB: blog
+    ports:
+      - "5432"
+    volumes:
+      - blog-db:/var/lib/postgresql/data
+
+  # start up an API server
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    # If we would have some secrets that we want to pass:
+    # env_file:
+    #   - ./server/.env
+    environment:
+      DATABASE_URL: postgres://turing:turing@postgres:5432/blog
+      PORT: 3000
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+
+  # start up a client (and proxy) server
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    environment:
+      # Since our client NGINX server is not only serving static
+      # files, but also routing /api requests to our API server,
+      # we need to inform NGINX how it can reach the API server.
+      # Our API server is accessible as "http://server:3000".
+      # Docker Compose does some magic for us to map the
+      # service name (server) to the internal container IP.
+      # However, when we will deploy our application to
+      # production, we will not use Docker Compose, and we
+      # might need to use localhost instead.
+      # To support both environments, we will use an environment
+      # variable to configure the proxy pass.
+      # Our development environment will use the provided value
+      # below.
+      API_PROXY_PASS: http://server:3000
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
+
+volumes:
+  blog-db:
