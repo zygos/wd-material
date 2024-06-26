@@ -1,4 +1,3 @@
-import { authContext } from '@tests/utils/context'
 import { fakeArticle, fakeUser } from '@server/entities/tests/fakes'
 import { createTestDatabase } from '@tests/utils/database'
 import { createCallerFactory } from '@server/trpc'
@@ -9,19 +8,38 @@ import articleRouter from '..'
 const createCaller = createCallerFactory(articleRouter)
 const db = await wrapInRollbacks(createTestDatabase())
 
+// a general setup for the tests
+await clearTables(db, ['article'])
 const [user] = await insertAll(db, 'user', fakeUser())
-const { findAll } = createCaller(authContext({ db }, user))
+
+// as a non-logged in user
+const { findAll } = createCaller({ db })
+
+it('should return an empty list, if there are no articles', async () => {
+  // Given (ARRANGE)
+  expect(await findAll()).toHaveLength(0)
+})
 
 it('should return a list of articles', async () => {
   // Given (ARRANGE)
-  await clearTables(db, ['article'])
-  expect(await findAll()).toHaveLength(0)
-
-  // When (ACT)
   await insertAll(db, 'article', [fakeArticle({ userId: user.id })])
 
+  // When (ACT)
+  const articles = await findAll()
+
   // Then (ASSERT)
-  expect(await findAll()).toHaveLength(1)
+  expect(articles).toHaveLength(1)
+})
+
+it('should return a list of articles', async () => {
+  // Given (ARRANGE)
+  await insertAll(db, 'article', [fakeArticle({ userId: user.id })])
+
+  // When (ACT)
+  const articles = await findAll()
+
+  // Then (ASSERT)
+  expect(articles).toHaveLength(1)
 })
 
 it('should return the latest article first', async () => {

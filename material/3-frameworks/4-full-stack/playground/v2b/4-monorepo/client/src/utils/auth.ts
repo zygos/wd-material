@@ -1,5 +1,7 @@
 import type { AuthUser } from '@server/shared/types'
 
+// This is a simplified version of auth functions without error handling.
+
 const TOKEN_KEY = 'token'
 
 export function getStoredAccessToken(storage: Storage): string | null {

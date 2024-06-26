@@ -14,26 +14,21 @@ export const trpc = createTRPCProxyClient<AppRouter>({
       url: `${apiOrigin}${apiPath}`,
 
       // send the access token with every request
-      headers: () => {
-        return {
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        }
-      },
+      headers: () => ({
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      }),
     }),
   ],
 })
 
-type UserLogin = Parameters<typeof trpc.user.signup.mutate>[0]
+type UserLogin = Parameters<typeof trpc.user.login.mutate>[0]
 type UserLoginAuthed = UserLogin & { id: number; accessToken: string }
 
 /**
  * Logs in a new user by signing them up and logging them in with the provided
  * user login information.
  */
-export async function loginNewUser(
-  page: Page,
-  userLogin: UserLogin = fakeUser()
-): Promise<UserLoginAuthed> {
+export async function loginNewUser(userLogin: UserLogin = fakeUser()): Promise<UserLoginAuthed> {
   try {
     await trpc.user.signup.mutate(userLogin)
   } catch (error) {
@@ -57,7 +52,7 @@ export async function asUser<T extends any>(
 ): Promise<T> {
   // running independent tasks in parallel
   const [user] = await Promise.all([
-    loginNewUser(page, userLogin),
+    loginNewUser(userLogin),
     (async () => {
       // if no page is open, go to the home page
       if (page.url() === 'about:blank') {

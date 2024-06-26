@@ -39,7 +39,7 @@ export const authenticatedProcedure = publicProcedure.use(({ ctx, next }) => {
   // we depend on having an Express request object
   if (!ctx.req) {
     const message =
-      config.env === 'development'
+      config.env === 'development' || config.env === 'test'
         ? 'Missing Express request object. If you are running tests, make sure to provide some req object in the procedure context.'
         : 'Missing Express request object.'
 

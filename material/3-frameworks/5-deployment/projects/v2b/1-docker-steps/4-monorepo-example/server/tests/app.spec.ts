@@ -3,7 +3,7 @@ import createApp from '@server/app'
 import supertest from 'supertest'
 import { createTestDatabase } from './utils/database'
 
-const database = await createTestDatabase()
+const database = createTestDatabase()
 const app = createApp(database)
 
 afterAll(() => {

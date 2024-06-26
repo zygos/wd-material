@@ -1,8 +1,7 @@
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
-// @ts-ignore - importing through direct path propagates types faster
+// @ts-ignore - importing through a direct path propagates types faster
 import type { AppRouter } from '@server/shared/trpc'
 import { apiBase } from '@/config'
-import { getStoredAccessToken } from '@/utils/auth'
 import SuperJSON from 'superjson'
 
 export const trpc = createTRPCProxyClient<AppRouter>({
@@ -14,13 +13,8 @@ export const trpc = createTRPCProxyClient<AppRouter>({
 
       // send the access token with every request
       headers: () => {
-        const token = getStoredAccessToken(localStorage)
-
-        if (!token) return {}
-
-        return {
-          Authorization: `Bearer ${token}`,
-        }
+        // TODO: attach the access token to the request Authorization header
+        return {}
       },
     }),
   ],

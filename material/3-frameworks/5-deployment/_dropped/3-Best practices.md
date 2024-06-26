@@ -1,3 +1,38 @@
+## Exercise: Error management with Sentry (3 hours)
+
+While logs are great for investigating issues, you'd want to be immediately notified when new errors occur so that you can track them and ensure they get fixed promptly. This proactive approach to error management is crucial for maintaining a high-quality user experience and ensuring the stability of your web application.
+
+One of the most popular tools for error tracking and management is Sentry. Sentry provides real-time error tracking, which gives you insight into production deployments and information to reproduce and fix crashes.
+
+**Task.** Set up Sentry to log your errors in your application's front end (FE) and backend (BE). Although it's possible to set them up as a single project, it's best practice to configure them as separate projects following [Sentry guidelines](https://blog.sentry.io/organizing-projects/).
+
+For testing purposes, deliberately throw some errors in your application code and ensure they are being logged to Sentry from your development machine. This will allow you to familiarize yourself with Sentry's dashboard and features.
+
+Here's how you can get started:
+
+**Development side**
+
+1. Sign up for a Sentry account.
+2. Create two new projects in Sentry, one for your front end and one for your back end.
+3. Follow the Sentry documentation to install the necessary Sentry packages in your projects. For Vue, you would use `@sentry/vue,`, and for Node, you would use the `@sentry/node` package.
+4. Add a call to Sentry in your error logging middleware. There are plenty of official and non-official guides on how you might do it in your project. You might start with Sentry's official [Express](https://docs.sentry.io/platforms/node/guides/express/), [tRPC Middleware](https://docs.sentry.io/platforms/node/configuration/integrations/pluggable-integrations/#trpc-middleware) and [Vue](https://docs.sentry.io/platforms/javascript/guides/vue/) examples.
+5. Find some simple scenario that would throw an error in your application. You could even create an endpoint or a view to throw a dummy error. Verify that it appears in your Sentry project dashboard. Bonus challenge - how could you test it in an automated manner?
+
+**Environment variables and deployment**
+
+6. Pass in your Sentry keys through environment variables. Ideally, these keys should follow the same configuration management as your other env variables. For example, you might have a config.ts file validating and managing these variables. You would need to pass the front end with a `VITE_` prefix, so it is exposed to the client code. Exposing the front-end app key is not an issue, as Sentry will reject error reports from unknown domains. Make sure everything still works.
+7. Add the right environment variables in your GitHub variables and secrets configuration. Update your Actions workflow to pass these variables to your container build stage.
+
+Finally, you might want to avoid triggering real Sentry calls in your tests and development environment. Also, requiring a valid Sentry API key to start up your app in development seems overly strict and cumbersome. You could make the Sentry API key optional in your application configuration (or required only in production) and trigger Sentry calls only when a Sentry API key is present. Then, your peers and STLs will not need to provide a Sentry key just to run your project.
+
+8. Update your Sentry calls so your app does not call Sentry if no Sentry key is present. This should make Sentry error reporting an opt-in feature.
+9. Push your code; ensure it passes the tests and gets deployed.
+10. Make sure you can trigger an error on Sentry with your deployed application in the FE and the BE.
+
+Remember to handle errors gracefully in your application, providing user-friendly error messages and fallbacks where appropriate. Using Sentry doesn't replace the need for good error-handling practices; it augments them by giving you a window into the application's health in a production environment.
+
+**Note.** Be mindful of sensitive information when sending data to Sentry. Avoid logging personally identifiable information (PII) or any other sensitive data that could compromise user privacy or security.
+
 ## Optional Exercise: Set up a process manager (1 hour)
 
 Long-running Node processes can sometimes crash due to a mistake in error handling, exhausting available RAM and crashing the process.

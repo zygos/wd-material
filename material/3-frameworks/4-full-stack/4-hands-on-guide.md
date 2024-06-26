@@ -2,7 +2,7 @@ Part 4: Hands-on: Full-stack monorepo application (Solution)
 
 ## Steps
 
-### Step 1. Setup
+### Step 0. Setup
 
 Install dependencies, set up a database, and add `.env` variables based on `.env.example` files.
 
@@ -24,7 +24,7 @@ npm run dev
 
 First, browse through the web app and see what it does.
 
-### Step 2. Think through required API endpoints
+### Step 1. Think through required API endpoints
 
 What endpoints do we need to implement to make the app work?
 
@@ -70,14 +70,7 @@ We could map these steps to endpoints:
 
 We already have the `article.findAll` procedure. It would be a good time to investigate how it works. We could use it as an example.
 
-### Step 3. Start with the signup and login endpoints
-
-You should be able to reuse a good chunk of the code from the previous auth exercises, so we will quickly review the few changes necessary to adapt it to the current project.
-
-**Signup**. It is enough to swap out the fake user repository with the real one and to use the `userSchema` to validate the incoming data.
-**Login**. The same goes for the login endpoint.
-
-### Step 4. Add an endpoint for creating an article
+### Step 3. Add an endpoint for creating an article
 
 Let's create `article/create.ts` file, add it to the `article/index.ts` router and add a test `article/tests/articleCreate.spec.ts`.
 
@@ -102,10 +95,10 @@ it('should throw an error if user is not authenticated', async () => {
   // syntax over wrapping everything in a try/catch block
   await expect(
     create({
- title: 'My Article',
- content: 'Some content.',
- })
- ).rejects.toThrow(/unauthenticated/i)
+      title: 'My Article',
+      content: 'Some content.',
+    })
+  ).rejects.toThrow(/unauthenticated/i)
 })
 ```
 
@@ -123,13 +116,13 @@ export default publicProcedure
   // user can provide the following fields
  .input(
     articleSchema.pick({
- title: true,
- content: true,
- })
- )
+      title: true,
+      content: true,
+    })
+  )
 
-  // Our mutation is not doing anything with the database, just
-  // sending the input back to the client.
+  // Our mutation is not doing anything with the
+  // database, just sending the input back to the client.
  .mutation(async ({ input }) => input)
 ```
 
@@ -149,8 +142,8 @@ export const authenticatedProcedure = publicProcedure.use(async ({ ctx, next }) 
 
   // Add authUser to the context, which is passed down to the procedure.
   return next({
- ctx: { authUser },
- })
+    ctx: { authUser },
+  })
 })
 ```
 
@@ -242,19 +235,20 @@ We recommend creating a repository to interact with articles. While it could be 
 ```ts
 // article/create.ts
 export default authenticatedProcedure
- .use(provideRepos({ articleRepository }))
+  .use(provideRepos({ articleRepository }))
+
   // ... input
- .mutation(async ({ input, repos }) => {
+  .mutation(async ({ input, repos }) => {
     // repos.articleRepository is now available in the procedure
     // and we can use it to interact with the database.
     // However, make sure that the repository has the necessary
     // methods to do what you need to do in the procedure.
- })
+  })
 ```
 
 You can find the solution in the `article/create.ts` file.
 
-### Step 5. Add a repository method for getting a list of comments with their authors
+### Step 4. Add a repository method for getting a list of comments with their authors
 
 We have the following requirements around seeing a list of comments:
 
@@ -310,13 +304,13 @@ describe('findByArticleId', () => {
     // When
     const commentsFound = await repository.findByArticleId(
       // some article id
- )
+    )
 
     // Then
     expect(commentsFound).toEqual([
       // a few comments with nested authors
     ])
- })
+  })
 })
 ```
 
@@ -349,7 +343,7 @@ If we want to test getting a list of comments from a real database, we must have
 ```ts
 // we could write it ourselves
 const comments = insertAll(db, 'comment', [{
- content: 'Some content',
+  content: 'Some content',
 }])
 
 // or we could use a helper function that generates some random data
@@ -380,11 +374,11 @@ const [userOne, userTwo] = await insertAll(db, 'user', [
 // 2 articles, both written by userOne
 const [articleOne, articleTwo] = await insertAll(db, 'article', [
   fakeArticle({
- userId: userOne.id,
- }),
+    userId: userOne.id,
+  }),
   fakeArticle({
- userId: userOne.id,
- }),
+    userId: userOne.id,
+  }),
 ])
 
 describe('findByArticleId', () => {
@@ -392,17 +386,17 @@ describe('findByArticleId', () => {
     // Given the following combination of comments
     const comments = await insertAll(db, 'comment', [
       fakeComment({
- articleId: articleOne.id,
- userId: userOne.id,
- }),
+        articleId: articleOne.id,
+        userId: userOne.id,
+      }),
       fakeComment({
- articleId: articleTwo.id,
- userId: userOne.id,
- }),
+        articleId: articleTwo.id,
+        userId: userOne.id,
+      }),
       fakeComment({
- articleId: articleOne.id,
- userId: userTwo.id,
- }),
+        articleId: articleOne.id,
+        userId: userTwo.id,
+      }),
     ])
 
     // When we call the repository method
@@ -412,14 +406,14 @@ describe('findByArticleId', () => {
     expect(commentsFound).toEqual([
       {
         ...comments[0],
- author: userOne,
- },
+        author: userOne,
+      },
       {
         ...comments[2],
- author: userTwo,
- },
+        author: userTwo,
+      },
     ])
- })
+  })
 })
 ```
 
@@ -432,12 +426,12 @@ export function commentRepository(db: Database) {
   return {
     async findByArticleId(articleId: number): Promise<Comment[]> {
       return db
- .selectFrom('comment')
- .select(commentKeysPublic)
- .where('articleId', '=', articleId)
- .execute()
- }
- }
+        .selectFrom('comment')
+        .select(commentKeysPublic)
+        .where('articleId', '=', articleId)
+        .execute()
+    }
+  }
 }
 ```
 
@@ -460,11 +454,11 @@ const comments = await db
 // move all author fields to a nested author object
 return comments.map(({ firstName, lastName, ...comment }) => ({
   ...comment,
- author: {
- id: comment.userId,
-    firstName,
-    lastName,
- },
+  author: {
+  id: comment.userId,
+      firstName,
+      lastName,
+  },
 }))
 ```
 
@@ -502,11 +496,11 @@ PostgreSQL allows us to build JSON objects directly in the database. We could us
 SELECT
   comment.id,
   comment.content,
- json_build_object(
+  json_build_object(
     'id', user.id,
     'firstName', user.firstName,
     'lastName', user.lastName
- ) AS author
+  ) AS author
 FROM comment
 JOIN user ON comment.userId = user.id
 WHERE comment.articleId = 1
@@ -535,12 +529,11 @@ This is a very developer-friendly approach as we could move the logic for buildi
 
 ```ts
 function withAuthor(eb: ExpressionBuilder<DB, 'comment'>) {
-  return jsonObjectFrom(
-    eb
- .selectFrom('user')
- .select(userKeysPublic)
- .whereRef('user.id', '=', 'comment.userId')
- ).as('author') as AliasedRawBuilder<UserPublic, 'author'>
+  return jsonObjectFrom(eb
+    .selectFrom('user')
+    .select(userKeysPublic)
+    .whereRef('user.id', '=', 'comment.userId')
+  ).as('author') as AliasedRawBuilder<UserPublic, 'author'>
 }
 ```
 
@@ -548,22 +541,22 @@ Then, adding author to a specific query becomes as simple as:
 
 ```ts
 const comments = await db
- .selectFrom('comment')
- .select(commentKeysPublic)
- .select(withAuthor) // single line for the author relationship
- .where('articleId', '=', articleId)
- .execute()
+  .selectFrom('comment')
+  .select(commentKeysPublic)
+  .select(withAuthor) // single line for the author relationship
+  .where('articleId', '=', articleId)
+  .execute()
 ```
 
 We could even use it for the `RETURNING` clause in the `INSERT` statement:
 
 ```ts
 const commentInserted = await db
- .insertInto('comment')
- .values(comment)
- .returning(commentKeysPublic)
- .returning(withAuthor) // single line to return the author as well
- .executeTakeFirstOrThrow()
+  .insertInto('comment')
+  .values(comment)
+  .returning(commentKeysPublic)
+  .returning(withAuthor) // single line to return the author as well
+  .executeTakeFirstOrThrow()
 ```
 
 All in all, this is a compelling approach, but it is optional for simple applications. Also, some of you might be aware of some trade-offs of using subqueries vs. joins in the database, but the query planner in modern databases might mitigate these. These details do not matter too much in a small application. Focus on what is the most readable and maintainable for you, and then optimize if necessary.
@@ -572,7 +565,7 @@ The approaches for building JSON objects are covered in the [Kysely documentatio
 
 Once this works, we could add more test cases to cover a few more scenarios.
 
-### Step 6. Add an endpoint for getting a list of comments with their authors
+### Step 5. Add an endpoint for getting a list of comments with their authors
 
 This step is quite straightforward. Our endpoint is just taking the `articleId` and returning the comments with the authors. We will use the `commentRepository` method we have just created.
 
@@ -597,7 +590,7 @@ const commentRepository = {
 }
 
 const { find } = createCaller({
- repos: { commentRepository },
+  repos: { commentRepository },
 })
 ```
 
@@ -614,15 +607,15 @@ const repos = {
     findByArticleId: async (articleId: number) => [
       // using fakeComment, so we do not list all the fields
       fakeComment({
- id: 1,
+        id: 1,
         articleId,
- author: { id: 1, firstName: 'Jane', lastName: 'Doe' },
- }),
+        author: { id: 1, firstName: 'Jane', lastName: 'Doe' },
+      }),
     ],
     // Type check to make sure that the fake repository satisfies
     // the CommentRepository interface. Then, TypeScript will
     // notify us if our mock has an incompatible type.
- } satisfies Partial<CommentRepository>,
+  } satisfies Partial<CommentRepository>,
 }
 
 const createCaller = createCallerFactory(commentRouter)
@@ -644,7 +637,7 @@ it('should return a list of comments of a given article', async () => {
 
 Our procedure does little, so it is OK to have a straightforward test. We could add some functionality not covered by the repository method, such as what happens if the `articleId` is passed in not as a `number` or how the procedure handles an error thrown by the repository method.
 
-### Step 7. Add an endpoint for creating a comment
+### Step 6. Add an endpoint for creating a comment
 
 While we tested the `comment.find` procedure with a mocked repository, we will demonstrate how to test the `comment.post` procedure with a database.
 
@@ -691,8 +684,8 @@ const [article] = await insertAll(
   db,
   'article',
   fakeArticle({
- userId: userArticleAuthor.id,
- })
+    userId: userArticleAuthor.id,
+  })
 )
 
 it('allows creating a comment', async () => {
@@ -715,7 +708,7 @@ Time to move on to the `ACT` part. We will need to create a user and call the `c
 const comment = fakeComment({ articleId: article.id })
 const { post } = createCaller({
   db,
- authUser: // ???
+  authUser: // ???
 })
 ```
 
@@ -732,7 +725,7 @@ const { post } = createCaller({
   db,
 
   // or otherUser, or just user, it's all personal preference
- authUser: userOther.id,
+  authUser: userOther.id,
 })
 ```
 
@@ -776,34 +769,32 @@ export default authenticatedProcedure
   // inject the commentRepository into the procedure
  .use(
     provideRepos({
-      commentRepository,
- })
- )
+      commentRepository,
+    })
+  )
 
   // user provides the content for their comment
   // and the articleId they are commenting on
- .input(
+  .input(
     commentSchema.pick({
- articleId: true,
- content: true,
- })
- )
+      articleId: true,
+      content: true,
+    })
+  )
 
   // create a comment and return it to the client so they
   // can update the front-end with the new comment
- .mutation(
-    async ({
- input: comment,
- ctx: { authUser, repos },
- }): Promise<CommentPublic> => {
-      const commentCreated = await repos.commentRepository.create({
-        ...comment,
- userId: authUser.id,
- })
+  .mutation(async ({
+    input: comment,
+    ctx: { authUser, repos },
+  }): Promise<CommentPublic> => {
+    const commentCreated = await repos.commentRepository.create({
+      ...comment,
+      userId: authUser.id,
+    })
 
       return commentCreated
- }
- )
+  })
 ```
 
 However, what happens if the user tries to comment on an article that does not exist? We should add a test for this case.
@@ -832,10 +823,10 @@ Here's what the upfront check could look like:
 const article = await repos.articleRepository.findById(comment.articleId)
 
 if (!article) {
-  throw new TRPCError({
- code: 'NOT_FOUND',
- message: 'Article not found',
- })
+  throw new TRPCError({
+    code: 'NOT_FOUND',
+    message: 'Article not found',
+  })
 }
 
 // proceed to create the comment
@@ -852,8 +843,8 @@ Alternatively, we could just insert the comment, catch the error, and re-throw a
 const commentCreated = await repos.commentRepository
  .create({
     ...comment,
- userId: authUser.id,
- })
+    userId: authUser.id,
+  })
  .catch((error) => {
     // foreign key constraint violation
     // We could look for a specific string in the error message
@@ -863,21 +854,21 @@ const commentCreated = await repos.commentRepository
     if (error.code === '23503') {
       // re-throw a more user-friendly error
       throw new TRPCError({
- code: 'NOT_FOUND',
- message: 'Article not found',
- cause: error, // optional, but could be useful for server logs
- })
- }
+        code: 'NOT_FOUND',
+        message: 'Article not found',
+        cause: error, // optional, but could be useful for server logs
+      })
+    }
 
     // If this is not the error we are looking for, we will
     // re-throw the original error. Maybe the database is down
     // or there is some other issue. In that case, we might want
     // to display a generic error message to the user in the front end.
     throw error
- })
+  })
 ```
 
-### Step 8. Add real login and authentication to the client
+### Step 7. Add real login and authentication to the client
 
 **Now we will focus on the `client` - our front-end application.**
 
@@ -910,8 +901,6 @@ We will create a `user.ts` file in the `stores` folder. It will contain the foll
 import { trpc } from '@/trpc'
 
 export async function login(userLogin: { email: string; password: string }) {
-  // login might not be considered a mutation, but we are considering it as such
-  // given that it creates a new "thing" - an access token.
   const { accessToken } = await trpc.user.login.mutate(userLogin)
 
   localStorage.setItem('token', token)
@@ -929,7 +918,7 @@ In our case, we are pulling the token from `localStorage`, so it we need to simp
 ```ts
 // trpc/index.ts
 export const trpc = createTRPCProxyClient<AppRouter>({
- links: [
+  links: [
     httpBatchLink({
       // ...
       headers: () => {
@@ -938,17 +927,17 @@ export const trpc = createTRPCProxyClient<AppRouter>({
         if (!token) return {}
 
         return {
- Authorization: `Bearer ${token}`,
- }
- },
- }),
+          Authorization: `Bearer ${token}`,
+        }
+      },
+    }),
   ],
 })
 ```
 
-Our application deals with tokens in multiple places. If we wanted to change the token's name, we would need to do so in multiple places. We should consider colocating all auth-token functions in a single module. We used `utils/auth.ts` for that.
+Our application deals with tokens in multiple places. If we wanted to change the token's localStorage key, we would need to do so in multiple places. We should consider colocating all auth-token functions in a single module. In this case, we have moved all token functions to `utils/auth.ts`.
 
-### Step 9. Add route guards to protect routes that require authentication
+### Step 8. Add route guards to protect routes that require authentication
 
 We want to keep dashboard routes protected from unauthenticated users. If a user tries to go to the `/dashboard` route, we would like to redirect them to the login page.
 
@@ -961,43 +950,43 @@ We can add a simple guard function that checks if the user is logged in, and if 
 ```ts
 // router/guards.ts
 export const authenticate = () => {
-  // isLoggedIn would be a function that checks if the user is logged in
-  // if the user is not logged in, we redirect them to the login page
-  if (!isLoggedIn()) return { name: 'Login' }
+  // isLoggedIn would be a property that is true if the user is logged in.
+  // If the user is not logged in, we redirect them to the login page.
+  if (!isLoggedIn.value) return { name: 'Login' }
 
-  // if the user is logged in, we can continue
+  // otherwise, we can continue as usual
   return true
 }
 
 // router/index.ts
 const router = createRouter({
- routes: [
+  routes: [
     /* ... */
- {
- path: '/dashboard',
- component: DashboardLayout,
- beforeEnter: [authenticate], // guard
- children: [
-        // all routes here will be protected by the authenticate guard
-      ],
- }
+    {
+      path: '/dashboard',
+      component: MainLayout,
+      beforeEnter: [authenticate], // guard
+      children: [
+          // all routes here will be protected by the authenticate guard
+      ],
+    }
   ],
 })
 ```
 
-How would we implement `isLoggedIn`? We could use the same logic as we did in the `user.ts` file. Given it is used in multiple places and we wouldn't want this logic to get out of sync, we've added `getStoredAccessToken` function which simply returns the token from `localStorage`.
+How would we implement `isLoggedIn`? We probably want to keep it close to the `user.ts` store - it is a piece of user state after all. We could use a Vue `computed` property to derive the `isLoggedIn` value from the `authToken` value.
 
 ```ts
 // stores/user.ts
 
-// This does not have to be a ref, but it would allow us to use it in
-// components as a reactive variable, which is sometimes useful
-// if loggedIn state can change without navigation to a different route.
-export const isLoggedIn = ref(!!getStoredAccessToken(localStorage)) // true if token is present
+// isLoggedIn can be derived from the authToken value.
+// When authToken exists, isLoggedIn = true.
+// When authToken does not exist, isLoggedIn = false.
+export const isLoggedIn = computed(() => !!authToken.value)
 
 function login(/* ... */) {
   // ...
-  isLoggedIn.value = true
+  authToken.value = accessToken
 }
 ```
 
@@ -1007,7 +996,7 @@ Then we could import it in our route guard:
 if (!isLoggedIn.value) return { name: 'Login' }
 ```
 
-### Step 10. Run E2E tests and replace fake front-end data with real data from our API server
+### Step 9. Run E2E tests and replace fake front-end data with real data from our API server
 
 At this point, we need to replace all remaining hard-coded client data with data from the server. One way to do it is to wrap existing functionality in E2E tests and then replace the hard-coded data with API calls.
 
@@ -1038,7 +1027,7 @@ await asUser(page, author, async () => {
 })
 ```
 
-### Step 11. Handle errors
+### Step 10. Handle errors
 
 What about handling errors on the client?
 
@@ -1101,10 +1090,10 @@ return [fnWrapped, errorMessage]
 
 **Note.** We did not flesh out all error handling and various authorization flow cases. For example:
 
-- What happens if a request fails due to a network error or some unexpected error? Is the user notified about it? Is the user exposed to unnecessary (possibly sensitive) information in error messages?
 - What happens if a request fails due to an expired token? We want to catch these errors, possibly at the tRPC client level, and redirect the user to the login page.
+- What happens if a request fails due to a network error or some unexpected error? Is the user notified about it? Is the user exposed to unnecessary (possibly sensitive) information in error messages?
 
-We could cover many more cases, such as rate limiting, pagination, caching, and managing front-end loading states and state management, but this is beyond the scope of this exercise. We already did quite a bit of work to get to this point! Great work!
+We could cover many more cases, such as rate limiting, pagination, caching, and managing front-end loading states and optimizing the state management, but this is beyond the scope of this exercise. We already did quite a bit of work to get to this point! Great work!
 
 ## Bonus feature - reporting comments as spam
 

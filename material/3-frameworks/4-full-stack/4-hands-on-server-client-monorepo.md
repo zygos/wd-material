@@ -1,11 +1,10 @@
-MUST: update the exercise
 Part 4: Hands-on: Monorepo
 
 # Part Introduction
 
 This part of the course is designed to not only synthesize your previous lessons but also to stretch your capabilities by working on a full-stack application situated in a monorepo setup. By the end of this section, you will have built a minimal full-stack blogging platform. As a preparatory step for your capstone project, this exercise will help you gain confidence in handling both the client-side and server-side aspects of web development.
 
-# Key learning topics & resources for this part
+# Key learning topics & resources for thisq part
 
 ## Monorepos (0.5 hours)
 
@@ -18,7 +17,7 @@ As you might have noticed, there is no single way to structure an application in
 - we want to empower you to build a full-stack application (front end + back end)
 - we are using a single programming language (TypeScript)
 - we are using a single package manager (NPM)
-- your capstone project will have a team of 1 person (that's you, hi!)
+- your capstone project has a team of 1 person (that's you, hi!)
 
 Given these circumstances, a monorepo is an easy choice. We will now start following the following project structure:
 
@@ -78,6 +77,7 @@ The project has progressed a bit since the last part.
 1. It has the endpoints we have worked on in the previous parts.
 2. It has a work-in-progress auth system to allow users to sign up and log in.
 3. The front-end developer has added a minimal front-end design to the project.
+4. Another developer has added a few more endpoints and some additional logic to the back end.
 
 Here are the **requirements for the project**:
 
@@ -88,11 +88,7 @@ Here are the **requirements for the project**:
 5. Any visitor can see the comments on the article.
 6. Each comment shows the first name and last name of the user who posted it.
 
-**Optional requirement**:
-
-7. An article author can mark a comment as spam, which will hide the comment from the article for everyone.
-
-You will start with a monorepo that contains a frontend and a back end. The front-end client already has most of the visual-centric code implemented. The frontend has some static placeholder data that you will replace with real data from the back end.
+You will start with a monorepo that contains a front end and a back end. The front-end client already has most of the visual-centric code implemented. The frontend has some static placeholder data that you will replace with real data from the back end.
 
 Your tasks are to:
 
@@ -108,6 +104,18 @@ Your tasks are to:
 - The application should return article's comments and their authors' public information in a single request.
 
 Implementing anything beyond the requirements, such as pagination, is entirely optional.
+
+**You will notice that many of the requirements are already implemented or partially implemented.**
+
+## Bonus challenges
+
+Since we will be working on a very minimal application, we can only cover some topics you would encounter in a real-world application. Here are some bonus challenges that you can try to implement after you finish the main requirements:
+
+- An article author can mark a comment as spam, which will hide the comment from the article for everyone. **This challenge is implemented in the provided solution.**
+- Add front end pagination for getting a list of articles.
+- Handle expired access tokens.
+- Add OAuth authentication with GitHub.
+- Use cookies for authentication instead of local storage.
 
 ## Project starter
 
@@ -128,23 +136,23 @@ There are a few minor gotchas with cross-package type safety.
 
 A few notes on the starter project:
 
+- To simplify serializing/deserializing Date objects, we have added `superjson` to the project. It does not make a difference in tests, but if you want to call your endpoints using a tool like Postman, you will need to wrap the request body in `{"json": ...}`.
 - You can navigate through the existing front-end code without any authentication. It does not make any calls to the back end yet. You could provide random credentials, and it would pretend to log you in.
 - You might it best to reuse and adapt some code from the previous exercises.
 - It includes various helper functions that you might find helpful - `entities/tests/fakes.ts`, `tests/utils/**`. However, you are not required to use them.
 
 ## Recommended approach
 
-1. Setup
-2. Think through required API endpoints
-3. Start with the signup and login endpoints
-4. Add an endpoint for creating an article
-5. Add a repository method for getting a list of comments with their authors
-6. Add an endpoint for getting a list of comments with their authors
-7. Add an endpoint for creating a comment
-8. Add real login and authentication to the client
-9. Add route guards to protect routes that require authentication
-10. Run E2E tests and replace fake front-end data with real data from our API server
-11. Handle errors
+1. Setup and investigate the project.
+2. Think through required API endpoints.
+3. Add an endpoint for creating an article.
+4. Add a repository method for getting a list of comments with their authors.
+5. Add an endpoint for getting a list of comments with their authors.
+6. Add an endpoint for creating a comment.
+7. Add real login and authentication to the client.
+8. Add route guards to protect routes that require authentication.
+9. Run E2E tests and replace fake front-end data with real data from our API server.
+10. Handle errors.
 
 ## How to work with a monorepo
 
@@ -196,15 +204,6 @@ So, **can we would not want to import everything to the front-end**? Well, there
 **We have added a `shared` folder in the back end**, which should be used to import types to the front end. Sharing some pure functions that do not rely on configuration or back-end dependencies is also possible.
 
 If you ever need to import something from the back end, use **import from `@server/shared/...`** statements. Also, we have added an ESLint rule to disallow other cross-package imports to make it easier to spot when you are importing something you should not.
-
-## Bonus challenges
-
-Since we will be working on a very minimal application, we can only cover some topics you would encounter in a real-world application. Here are some bonus challenges that you can try to tackle:
-
-- Add pagination for projects and bugs.
-- Handle expired access tokens.
-- Add OAuth authentication with GitHub.
-- Use cookies for authentication instead of local storage.
 
 ## Approach to Solving the Task
 

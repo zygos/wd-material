@@ -27,12 +27,8 @@ it('should save a user', async () => {
   expect(userCreated.password).toHaveLength(60)
 
   expect(response).toEqual({
-    id: expect.any(Number),
-    firstName: user.firstName,
-    lastName: user.lastName,
+    id: userCreated.id,
   })
-
-  expect(response.id).toEqual(userCreated.id)
 })
 
 it('should require a valid email', async () => {

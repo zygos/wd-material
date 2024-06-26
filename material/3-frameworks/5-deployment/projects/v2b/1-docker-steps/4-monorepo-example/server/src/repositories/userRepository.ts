@@ -28,3 +28,5 @@ export function userRepository(db: Database) {
     },
   }
 }
+
+export type UserRepository = ReturnType<typeof userRepository>

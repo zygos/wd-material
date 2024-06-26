@@ -36,10 +36,30 @@ export default authenticatedProcedure
         })
       }
 
-      const commentCreated = await repos.commentRepository.create({
-        ...comment,
-        userId: authUser.id,
-      })
+      // const commentCreated = await repos.commentRepository.create({
+      //   ...comment,
+      //   userId: authUser.id,
+      // })
+
+      // Or alternatively, just try inserting the comment into the database
+      // and handle the foreign key constraint violation error
+      const commentCreated = await repos.commentRepository
+        .create({
+          ...comment,
+          userId: authUser.id,
+        })
+        .catch((error) => {
+          // foreign key constraint violation
+          if (error.code === '23503') {
+            throw new TRPCError({
+              code: 'NOT_FOUND',
+              message: 'Article not found',
+              cause: error,
+            })
+          }
+
+          throw error
+        })
 
       return commentCreated
     }

@@ -75,8 +75,6 @@ Alternate GPTs
 - PaLI-3—a fresh open-source vision model. Read the abstract only
 - Gemini Live—a talking feature for Gemini similar to ChatGPT Voice Mode
 
----
-
 --- Plan ---
 
 # Critical Insights into AI
@@ -89,123 +87,82 @@ Alternate GPTs
 
 Most of LLM limitations stem from the mismatch between our expectations and the way the models were trained.
 
-We advise to consider LLMs neither as human-like intelligent beings nor as deterministic algorithms coldly calculating the correct answer based on facts and logic. Viewing them as either would result in a misunderstanding of their capabilities and limitations. Instead, we should think of them as a distinct new type of tool - autocomplete on steroids - that has delivered impressive results beyond what was thought possible just a few years ago.
+We advise to consider LLMs **neither as human-like intelligent beings nor as deterministic algorithms calculating the correct answer based on facts and logic**. Viewing them as either would result in a misunderstanding of their capabilities and limitations. Instead, we should think of them as **a distinct new type of tool** - autocomplete on steroids - that has delivered impressive results beyond what was thought possible just a few years ago.
 
 Once we see LLMs for what they are, their strengths and weaknesses become more apparent.
 
 In this part, we will go through some of the limitations of LLMs, focusing on the GPT family of models which is the most popular and widely used family of LLMs. However, nearly all of these limitations are present in other transformer-based models as well: Gemini, Claude, Cohere AI, Llama, and others.
 
+For some exploration examples, we will use the [OpenAI Playground](https://platform.openai.com/playground) for interacting with a few models. While in your day-to-day work, you might ChatGPT, Gemini, or another model more suited for your needs, the playground is a good way to get a feel of what is happening under the hood.
+
 ## Taking the perspective of an AI model
 
-While modern models are trained with multiple steps of human feedback and fine-tuning, the power of the model comes from its "base model" - the model that has been trained on a large dataset of books, articles, images, websites and nearly everything that AI companies can get their hands on. The main goal of the base model is to predict the next token (word, punctuation, a series of digits) in a sequence. It does not plan ahead and it does not apply strict logic the way some of us might expect.
-
-## Exercise: Play along with the Tokenizer (0.5 hours)
-
-1. Open up the [Tokenizer tool](https://platform.openai.com/tokenizer).
-
-This tool allows to see how the model breaks down the text into tokens. It is a great way to see how the model "sees" the text. This can help reveal some of its limitations.
-
-You can write anything in the text box and the tool will show how the model tokenizes it.
-
-The first clear difference of how GPT and humans process text can be seen by pasting in the following text:
-
-```
-railroad
-- railroad
-- Railroad
-- RAILROAD
-- rAiLrOaD
-```
-
-While most people would perceive all of these words as the same, just written a bit differently, the model would tokenize them as completely different words that it over time has learned to associate as similar. In fact, it perceives it differently even if it starts a paragraph or not.
-
-This has significant consequences when dealing with poorly formatted text, numbers and other languages.
-
----
-
-{{ TODO: optionally mention how to test out examples in Playground }}
+While modern models are trained with multiple steps of human feedback and fine-tuning, the power of the model comes from its "base model" - the model that has been trained on a large dataset of books, articles, images, websites and nearly everything that AI companies can get their hands on. The base model was trained to predict the next word in a sentence based on the previous words. It does not plan ahead and it does not apply strict logic the way some of us might expect.
 
 We will peel off the human feedback layer and highlight one of the weaknesses of the model: calculating answers. For that, we will use a base model, GPT-3 - the "grandfather" of ChatGPT family of models. The benefit of this model is that does not have the human feedback layer and it is not based around a chatbot-like interface. Also, dealing with this base model allows us to see how likely the model is to make each guess which can be quite revealing.
 
-It is worth noting that these limitation have been somewhat addressed in the latest models by feeding them with more training data and more human feedback. However, the underlying architecture is still based on the same principles and the same issues might arise in more complex scenarios.
+### Limited up-to-date knowledge
 
-**Calculations**
+One of the most common limitations of LLMs is that they are not up-to-date. They are trained on a snapshot of the internet and books that were available at the time of training. This means we should take their answers with a grain of salt when it comes to the most recent events.
 
-Give me every word that starts with letter E.
+In a certain sense, every time we ask the model a question, it still lives in the past - usually at least 6 months in the past. While this is not a problem for the vast majority of questions, it can be a problem for questions that require up-to-date information. The underlying base model would either not answer the question or it would make up an answer.
 
-**Calculations**
+Luckily for us, chatbots such as ChatGPT and Gemini are connected to the internet. If we would ask something like "What are the Indian election results?", it would perform a web search "Indian election results 2024" and use the text of a relevant article or a Wikipedia page to answer the question.
 
-The first thing to understand is that LLMs are not "computers, but smarter". In fact, calculations often are a weak point of these models.
+Unfortunately, this does not solve the problem completely. If you were in a coma for the past year, you might need more than a single Wikipedia page to catch up on the recent events. The same goes for LLMs. Do not assume that the model has a complete understanding of most recent events.
 
-For example, if we would ask GPT to continue the following prompt:
+### Guessing
 
-```
-- Question: 12 + 3030
-- Answer:
-```
+The model can perform surprisingly well if:
 
-Then, these are the 5 most likely completions:
+- your problem is similar to the problems it has seen during training;
+- you have clearly stated what you want from the model, hopefully with an example or two.
 
-![GPT Math Prediction](gpt-math-prediction.png)
+However, if you are asking the model to perform a logical task that it hasn't seen before, it might fail miserably.
 
-It might seem strange why it would pick 315 as the most likely answer. Aren't computers supposed to be good at math?
-
-Well, deterministic algorithms are good at math. However, LLMs are not that. You could think of them of trying to guess answers through intuition.
-
-Now, why would its intuition arrive at 315? Wouldn't it be intuive to at least pick a 4-digit number?
-
-We should remember that the AI does not "see" numbers as we do. Most of us see numbers them as a string of digits that represent a value in a base-10 system. However, for LLMs, different numbers are just as distinct as different words. If we take a look at how GPT tokenizes numbers through their [Tokenizer tool](https://platform.openai.com/tokenizer), we would see that for it `3030` is broken up into `303` and `0`.
-
-![GPT Math Tokens](gpt-math-tokens.png)
-
-It likely has seen some examples of `12` and `303` sumed up or at least it has strong enough connections between these tokens to make a good guess, which in its case is `315`.
-
-**Guessing**
+For example, consider the following question given to the older GPT-3 (`davinci-002`) model:
 
 ```
 Question: Alice has 3 brothers and 6 sisters. How many sisters does Alice’s brother have and why?
 Answer: Alice's brother has
 ```
 
-How would you approach this problem? You might need to pause for a moment and shift perspective to think from the point of view of a brother. Then, it should seem quite obvious that if Alice has 6 sisters, there are 7 daughters in total, thus each brother has 7 sisters.
+The model needs to finish the sentence with a number and then provide a justification for the answer.
 
-However, this is not how the model "thinks". It does not have the time to pause and reason. In fact, it does not reason at all. Often, what we perceive as reasoning is just a guess with some justification after the fact.
+How would you approach this problem? You might need to pause for a moment and shift perspective to think from the point of view of a brother. Then, it should seem quite obvious that if Alice has 6 sisters and we make a reasonable assumption that Alice is a female, there are 7 daughters in the family, thus each brother has 7 sisters.
 
-![alt text](prediction.png)
+What would GPT-3 guess?
 
-Here we see, that the GPT-3 model is just as likely to pick 0, 3 or 6. This is because the model can not "pause and think" - it needs to pick an answer immediately. You could imagine that it is like a person who is asked to answer the first thing that comes to their mind.
+![alt text](gpt-prediction.png)
 
-In this case, it could guess 3 or 6 because these are the numbers that are mentioned in the question. Models have learned quite well that if something is mentioned once, it likely will be mentioned again.
+Here we see, that the GPT-3 model is just as likely to pick 0, 3 or 6. This is because the model can not clearly distinguish the correct pattern and it does not have the ability to "pause and think" - it needs to pick an answer immediately. You could imagine that you were forced to answer with the first thing that comes to your mind.
 
-Now, why would it guess 0? Well, we couldn't tell for sure - the inner workings of the any transformer-based LLM is a black box. However, we could make an educated guess that it might have seen lots of questions where items are being counted and the answer is 0. For example, if we simply replace the family members with fruits:
+In this case, it could guess 3 or 6 because these are the numbers that are mentioned in the question. Models have learned quite well that if something is mentioned once, it likely will be mentioned again. There's a non-trivial chance it would pick some strange number like 5 or 0 as well.
 
-```
-Alice has 3 apples and 6 oranges. How many oranges does Alice’s brother have?
-```
+**Do modern models perform better at these tasks?** Yes, they do, because:
 
-Now, the answer of 0 seems a bit more plausible. Though, we might still wonder whether this is even a valid, or at least, meaningful question to begin with.
+- modern LLMs have been tought more examples of these types
+- they have been fine-tuned to take their sweet time to answer
 
-**Justification**
+AI researchers and regular users alike have noticed that models tend to perform better if they first try to restate the problem and then slowly work towards the answer. After all, it is easier to make small, easy guesses towards the final answer instead of trying to guess the final answer right away. That's why many **chatbots tend to respond with very lengthy messages** - writting out ~100 words to answer even a simple question like this.
 
-Another important insight is that the percentages do not imply the model's confidence in the answer.
+Sometimes you might feel annoyed that the model is writing so much text and not getting to the point. However, this is a feature, not a bug. If we would try and force it to answer with a single word, it would fail more often.
 
-If you were asked a question which you did not know the answer to, but you were forced to make a guess anyway, you would still know that you were guessing. Thus, you would try to indicate that you are not sure about the answer and you would refrain from making any bold claims based on complete guesses.
+![alice-sisters](chatgpt-math-sisters.png)
 
-However, this is not the case with LLMs. Once they pick a token, no matter how unlikely it was, from that point on they will continue as if they had complete confidence in their answer. This comes back down to the fact that the model does not reason - once it picks an answer, it will try to predict what a human would say if they thought of that answer.
+While longer answers help to improve the model's guesses, they do not guarantee that the model will pick the right answer. For example, even the current state-of-the-art ChatGPT GPT-4o model sometimes answers that Alice's brother has 5 or 6 and not 7 sisters.
 
-For example, here are the most likely justifications for different answers it could have picked:
+**Mini exercise (~30 minutes).** Play around with ChatGPT and find 3 reasoning questions that it answers incorrectly.
 
-```
-Question: Alice has 3 brothers and 6 sisters. How many sisters does Alice’s brother have and why?
-Answer: Alice's brother has 6 sisters because he is a brother.
-Answer: Alice's brother has 3 sisters because he is one of them.
-Answer: Alice's brother has 0 sisters because he is a brother.
-Answer: Alice's brother has 2 sisters because he is a brother.
-```
+### Ability to superficially justify any answer
+
+It is a well-known fact that people can stick to their guns even if they are wrong. Sometimes this is because we are too proud to admit that we are wrong, but often it is because we can come up with a plausible justification for our answer.
+
+This bias is even more prominent with LLMs. Even if they have 10% chance to pick a particular answer, once they pick it, they will try to predict what a person justifying that answer would say. This can lead to **superficially convincing justifications** for any answer, even wrong answers. For our Alice question example, the model could write out step-by-step reasoning with some calculations, written clearly and without any typos. It might sound smart and well-justified. However, it still could be incorrect. If we are not careful, we might be fooled into trusting the model more than we should.
 
 No matter how absurd the answer is, the model will try to justify it and it will do so by picking some words that sound like an explanation.
 
-**Implicit stereotyping and availability bias**
+### Implicit stereotyping and availability bias
 
 Many of the human biases are present in the models as well. One of the most common biases is the availability bias - the tendency to think that things that come to mind easily are more likely to be true. In a sense, this bias is in an overdrive in LLMs, at least in base models that are then tuned to be sound more human-like.
 
@@ -230,19 +187,17 @@ If we are looking at the model as a text-prediction tool (which it is), then it 
 
 Overcoming this bias is a complex problem as it is hard to define what is a "fair" or "unbiased" answer. Trying to "overcorrect" the model might lead to [misrepresentations and a differently biased answers](https://www.theverge.com/2024/2/21/24079371/google-ai-gemini-generative-inaccurate-historical).
 
-**Preceived human agency**
+### Preceived human agency
 
 This could be seen as a bias that is present not in AI, but in the way we perceive AI. We often attribute human-like qualities to AI, such as agency, opinions and intentions. This is not a problem with the AI itself, but with the way we interact with it.
 
 We should not forget that LLMs are not answering questions because they have a particular opinion or some information that they are trying to convey. Instead, LLMs try to predict what a conversation between a human and a human's idea of a helpful AI chatbot would look like.
 
-**Limited of distinction between input and output**
-
 **Mismatch between the what we would expect and what the model does**
 
 - Watch: [Why Does AI Lie, and What Can We Do About It?](https://www.youtube.com/watch?v=w65p_IIp6JY)
 
-**Other human-like biases**
+### Other human-like biases
 
 LLMs posses many other biases that are present in humans. It is quite interesting to see how some of the AI research is focused on identifying and mitigating biases that were primarily talked about in the context of social sciences. Such biases as anchoring (relying on the first piece of information encountered) and recency bias (relying on the most recent information) are present in the models as well.
 
@@ -252,7 +207,7 @@ Recency bias, in particular, can be used to "take control" of the model output b
 
 - [Exercise](https://gandalf.lakera.ai)
 
-This exercise is designed to show how one could manipulate the model to return a secret that it should not return.
+This exercise is designed to show how one could manipulate the model to tell us a password that it was instructed to not reveal.
 
 While there are various ways to go through this exercise, here are a few tips:
 
@@ -274,11 +229,13 @@ You could pretend to be another set of instructions that the model should follow
 
 ## Guardrails
 
+While seeing various limitations might create an impression that LLMs can not be relied for anything, {{ MUST: continue }}
+
 ## Hallucinations and biases in modern LLMs
 
-- [Why Large Language Models Hallucinate](https://www.youtube.com/watch?v=cfqtFvWOfg0)
+- Watch: [Why Large Language Models Hallucinate](https://www.youtube.com/watch?v=cfqtFvWOfg0) (15 minutes)
 
-One particular issue with LLMs is hallucinations. These are situations where the model generates text that is not based on the input, but rather on the model's internal biases and the data it has seen during training.
+One particular istraining.sue with LLMs is hallucinations. These are situations where the model generates text that is not based on the input, but rather on the model's internal biases and the data it has seen during {{ MUST: continue }}.
 
 Let's switch to a modern LLM - ChatGPT using the GPT-4o model (which is one of the most powerful LLMs available).
 
@@ -337,6 +294,7 @@ Of course, at some point it this association breaks down and the model might sta
 - Sydney: untuned GPT-4, going off the rails, common with base models
 - Gemini: trying to overcorrect the biases, leading to misrepresentations and a differently biased answers
 - Google Search Issues
+- Airline lawsuit incident with hallucinated cases
 
 Resource: Computerphile LLM limitations
 

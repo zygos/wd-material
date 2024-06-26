@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { Selectable } from 'kysely'
-import type { Article } from '@server/shared/types'
+import type { ArticlePublic } from '@server/shared/types'
 
 interface Props {
-  article: Selectable<Article>
+  article: ArticlePublic
 }
 
 const props = defineProps<Props>()
@@ -18,7 +17,7 @@ const truncatedContent = computed(() =>
 
 <template>
   <div class="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-700">
-    <h4 class="text-xl font-semibold hover:text-blue-700">
+    <h4 class="text-2xl font-bold hover:text-blue-700">
       <RouterLink :to="`/article/${article.id}`">
         {{ article.title }}
       </RouterLink>

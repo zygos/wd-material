@@ -284,23 +284,14 @@ Create 2 new files in the root of our project:
     },
     "environment": {
       "NODE_ENV": "production",
-      // DB_SSL is a new environment variable that is accepted by server/config.ts
-      // and passed to TypeORM to enable encrypted connection to the database.
-      // You might not have it in your capstone, so please check the server/config.ts in
-      // the provided monorepo examples.
-      "DB_SSL": "true",
-      "DB_SYNC": "true",
-      // add your NEON credentials here
-      "DB_HOST": "{{ ... }}",
-      "DB_NAME": "{{ ... }}",
-      "DB_USER": "{{ ... }}",
-      "DB_PASSWORD": "{{ ... }}"
+      "DATABASE_URL": "{{ YOUR DATABASE CONNECTION STRING }}",
+      "TOKEN_KEY": "{{ A LONG STRING OF RANDOM ALPHANUMERIC CHARACTERS }}"
     }
   }
 }
 ```
 
-Make sure to fill in your database credentials and the image names. Since this file contains secrets such as the database password, **do not commit it to your git repository**! We will use this file only for demonstration purposes, and you should delete it right after you are done with the exercise.
+Make sure to fill in your database credentials and the image names. Since this file contains secrets such as the database password, **do not commit it to your git repository**! We will use this file only for demonstration purposes, and you should **delete it** right after you are done with the exercise.
 
 Then, create `public-endpoint.json`, which tells Lightsail which container should be public. In our case, we are keeping the `client` container public, and it will be responsible for serving the front end and proxying all `/api` requests to the back-end container:
 
@@ -358,7 +349,7 @@ Now is your time to apply what you have learned to your capstone project.
 
 Your task is to:
 
-- create a new database that can be accessed from your deployed server (Amazon RDS, Neon, Planetscale, ...);
+- create a new database that can be accessed from your deployed server (Amazon RDS, Neon, ...);
 - extend your capstone project GitHub Actions workflow to include building and deploying your application to Lightsail (or you can choose a different AWS service, if you are already familiar with AWS);
 - configure your capstone project to include the necessary configuration;
 - push to the `main` (`master`) branch of your capstone repo to trigger the GitHub Actions pipeline, which deploys your web application;

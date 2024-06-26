@@ -212,8 +212,8 @@ After applying these changes, run `npm run migrate:latest`. If you get an error 
 
 Update the `gen-types` script in `package.json` to use `postgres` dialect instead of `sqlite`. Also, you could apply a few optional changes, such as:
 
-- Removing the `better-sqlite3` package and its types package from your project.
-- Adding `.url()` validation to the `connectionString` in the `config.ts` file to ensure it is a valid URL and removing the `:memory:` default value as it is not applicable to PostgreSQL.
+- Remove the `better-sqlite3` package and its `@types` package from your project. You can do that with `npm rm better-sqlite3 @types/better-sqlite3`.
+- Add `.url()` validation to the `connectionString` in the `config.ts` file to ensure it is a valid URL. Also, remove the `:memory:` default value as it is not applicable to PostgreSQL.
 
 **4. Run the project**
 
@@ -228,6 +228,8 @@ If everything is set up correctly, you should be able to run the project without
 Once you are done with this stack update, download a possible solution to identify any differences between your solution and the provided one.
 
 The changes you should be aware about have been tagged with the `NEW:` comments. You can search for those in the project to find the changes we have applied. In VS Code you can do this by pressing `Ctrl/Cmd + Shift + F` and typing `NEW:` in the search bar.
+
+If at any point you find a project solution incompatible with your solution due to migration errors, create a new database for the suggested solution project.
 
 # Directions for further research (1 hour+)
 

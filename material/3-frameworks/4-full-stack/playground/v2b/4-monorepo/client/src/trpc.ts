@@ -1,5 +1,5 @@
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
-// @ts-ignore - importing through direct path propagates types faster
+// @ts-ignore - importing through a direct path propagates types faster
 import type { AppRouter } from '@server/shared/trpc'
 import { apiBase } from '@/config'
 import { getStoredAccessToken } from '@/utils/auth'

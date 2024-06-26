@@ -364,7 +364,7 @@ const cart = [
 
 Expected result:
 ```js
-const priceRemaining = 1395 // 15 + 600 + 80 + 700
+const priceRemaining = 695 // 600 + 80 + 15
 ```
 
 Spend 5 - 10 minutes on writing a possible solution before looking at the provided solution. It could be useful to look up the `reduce` method.

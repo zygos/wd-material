@@ -45,5 +45,7 @@ export default publicProcedure
         throw error
       })
 
-    return userCreated
+    return {
+      id: userCreated.id,
+    }
   })

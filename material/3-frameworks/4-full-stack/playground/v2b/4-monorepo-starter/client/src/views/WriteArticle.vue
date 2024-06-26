@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { trpc } from '@/trpc'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { FwbButton, FwbHeading, FwbInput, FwbTextarea } from 'flowbite-vue'
@@ -14,7 +13,13 @@ const articleForm = ref({
 })
 
 const [createArticle, errorMessage] = useErrorMessage(async () => {
-  const article = await trpc.article.create.mutate(articleForm.value)
+  // TODO: call the API to create a new article instead of hard-coding the data
+  const article = {
+    id: 1,
+    title: articleForm.value.title,
+    content: articleForm.value.content,
+    userId: 123,
+  }
 
   router.push({
     name: 'Article',

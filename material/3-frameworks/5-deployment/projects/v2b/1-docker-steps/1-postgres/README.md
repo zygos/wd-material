@@ -11,7 +11,7 @@ Now, if we run `docker compose up`, Docker will:
 - spin up a new PostgreSQL container, which by default exposes port `5432`
 - map it to port `5435` on our machine, since you might already have a PostgreSQL database running on port `5432`
 - create a new user `turing` with password `turing`
-- create a new database `bugs`
+- create a new database `blog`
 - persist the database data in a volume - virtual storage managed by Docker
 
 This was quite a bit faster than installing PostgreSQL on our machine and creating a new database manually.
@@ -37,15 +37,15 @@ docker exec -it {CONTAINER_ID} bash
 
 # You should be inside the container now.
 # Connect to the container's PostgreSQL database with:
-psql -U turing -d bugs
+psql -U turing -d blog
 
 # Run \l to see the list of databases.
 \l
 
-# You should see the bugs database in the list.
+# You should see the blog database in the list.
    Name    | Owner  | Encoding | ...
 -----------+--------+----------+ ...
- bugs      | turing | UTF8     | ...
+ blog      | turing | UTF8     | ...
  postgres  | turing | UTF8     | ...
  ...
 
@@ -64,14 +64,14 @@ exit
 4. Click on the three dots on the right side of the container name and click on "Open In Termainal".
 5. Now, you can run the same commands as above.
 6. Alternatively, you can click "Logs", "Inspect", "Files" and "Stats" tabs to explore the container.
-7. Open up Volumes on the left side and you should see the `bugs-db` volume. Click on it, you will see the files in the volume that are persisted across container restarts.
+7. Open up Volumes on the left side and you should see the `blog-db` volume. Click on it, you will see the files in the volume that are persisted across container restarts.
 
 **Connect to the database from PostgreSQL client on your machine.**
 
 Since we have exposed the PostgreSQL database on port `5435` on our machine, we can connect to it from our machine. We will use `psql` to connect to the database. Given that you have installed PostgreSQL and you have `psql` command line tool, you can connect to the database with:
 
 ```sh
-sudo psql -U turing -d bugs -p 5435 -h localhost -W
+sudo psql -U turing -d blog -p 5435 -h localhost -W
 ```
 
 You will be prompted for the password. Enter `turing` and you should be connected to the database.

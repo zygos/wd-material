@@ -46,7 +46,6 @@ export default function createApp(db: Database) {
       res.send(
         renderTrpcPanel(appRouter, {
           url: `http://localhost:${config.port}/api/v1/trpc`,
-          transformer: 'superjson',
         })
       )
     )

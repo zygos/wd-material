@@ -15,13 +15,14 @@ const randomId = () =>
  */
 export const fakeUser = <T extends Partial<Insertable<User>>>(
   overrides: T = {} as T
-): Insertable<User> => ({
-  email: random.email(),
-  firstName: random.first(),
-  lastName: random.last(),
-  password: 'Password.123!',
-  ...overrides,
-})
+) =>
+  ({
+    email: random.email(),
+    firstName: random.first(),
+    lastName: random.last(),
+    password: 'Password.123!',
+    ...overrides,
+  }) satisfies Insertable<User>
 
 export const fakeAuthUser = <T extends Partial<AuthUser>>(
   overrides: T = {} as T
@@ -37,12 +38,13 @@ export const fakeAuthUser = <T extends Partial<AuthUser>>(
  */
 export const fakeArticle = <T extends Partial<Insertable<Article>>>(
   overrides: T
-): Insertable<Article> => ({
-  title: random.string(),
-  content: random.paragraph(),
-  userId: randomId(),
-  ...overrides,
-})
+) =>
+  ({
+    title: random.string(),
+    content: random.paragraph(),
+    userId: randomId(),
+    ...overrides,
+  }) satisfies Insertable<Article>
 
 /**
  * Generates a fake comment with some default test data.
@@ -50,11 +52,12 @@ export const fakeArticle = <T extends Partial<Insertable<Article>>>(
  */
 export const fakeComment = <T extends Partial<Insertable<Comment>>>(
   overrides: T
-): Insertable<Comment> & { createdAt: Date } => ({
-  content: random.paragraph({ sentences: 2 }),
-  articleId: randomId(),
-  userId: randomId(),
-  isSpam: false,
-  ...overrides,
-  createdAt: new Date(),
-})
+) =>
+  ({
+    content: random.paragraph({ sentences: 2 }),
+    articleId: randomId(),
+    userId: randomId(),
+    isSpam: false,
+    ...overrides,
+    createdAt: new Date(),
+  }) satisfies Insertable<Comment>

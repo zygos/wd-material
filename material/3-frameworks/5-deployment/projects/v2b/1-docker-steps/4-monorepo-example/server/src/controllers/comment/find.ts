@@ -19,8 +19,7 @@ export default publicProcedure
       input: { articleId },
       ctx: { repos },
     }): Promise<CommentPublic[]> => {
-      const comments =
-        await repos.commentRepository.findPublicByArticleId(articleId)
+      const comments = await repos.commentRepository.findByArticleId(articleId)
 
       return comments
     }

@@ -4,7 +4,6 @@ import { trpc } from '@/trpc'
 import type { CommentPublic } from '@server/shared/types'
 import { computed } from 'vue'
 
-// comment as v-model
 const { articleAuthorId, comment } = defineProps<{
   articleAuthorId: number
   comment: CommentPublic
@@ -42,7 +41,7 @@ const onImageError = (event: Event) => {
 </script>
 
 <template>
-  <div class="p-4" data-testid="comment">
+  <div class="border-b border-gray-200 p-4" data-testid="comment">
     <div class="flex items-start space-x-4">
       <div class="flex-shrink-0">
         <img

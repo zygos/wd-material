@@ -15,7 +15,7 @@ import { computed, ref } from 'vue'
 
 // Intial state.
 // Auth token is string OR null.
-const authToken = ref(getStoredAccessToken(localStorage))
+const authToken = ref<string | null>(getStoredAccessToken(localStorage))
 
 // Our client knowing about authUserId is not needed in our current setup
 // but it would be useful in most real-world apps.

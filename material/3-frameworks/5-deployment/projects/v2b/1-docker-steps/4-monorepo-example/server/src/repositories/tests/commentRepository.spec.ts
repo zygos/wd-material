@@ -8,13 +8,14 @@ import { wrapInRollbacks } from '@tests/utils/transactions'
 import { insertAll, selectAll } from '@tests/utils/records'
 import { pick } from 'lodash-es'
 import { userKeysPublic } from '@server/entities/user'
+import { commentKeysPublic } from '@server/entities/comment'
 import { commentRepository } from '../commentRepository'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const repository = commentRepository(db)
 
 // An example of repository tests with a database.
-const [userOne] = await insertAll(db, 'user', [fakeUser()])
+const [userOne, userTwo] = await insertAll(db, 'user', [fakeUser(), fakeUser()])
 const [articleOne, articleTwo] = await insertAll(db, 'article', [
   fakeArticle({
     userId: userOne.id,
@@ -42,7 +43,7 @@ describe('create', () => {
     // Then
     expect(createdComment).toEqual({
       id: expect.any(Number),
-      ...comment,
+      ...pick(comment, commentKeysPublic),
       author: pick(userOne, userKeysPublic),
     })
   })
@@ -106,30 +107,36 @@ describe('markAsSpam', async () => {
   })
 })
 
-describe('findPublicByArticleId', () => {
-  it('should find non-spam comments with authors by article id', async () => {
+describe('findByArticleId', () => {
+  it('should find comments with authors by article id', async () => {
     // Given
     const comments = await insertAll(db, 'comment', [
-      fakeCommentDefault({
+      fakeComment({
         articleId: articleOne.id,
-        isSpam: true,
+        userId: userOne.id,
       }),
-      fakeCommentDefault({
+      fakeComment({
         articleId: articleTwo.id,
+        userId: userOne.id,
       }),
-      fakeCommentDefault({
+      fakeComment({
         articleId: articleOne.id,
+        userId: userTwo.id,
       }),
     ])
 
     // When
-    const commentsFound = await repository.findPublicByArticleId(articleOne.id)
+    const commentsFound = await repository.findByArticleId(articleOne.id)
 
     // Then
     expect(commentsFound).toEqual([
       {
-        ...comments[2],
+        ...pick(comments[0], commentKeysPublic),
         author: pick(userOne, userKeysPublic),
+      },
+      {
+        ...pick(comments[2], commentKeysPublic),
+        author: pick(userTwo, userKeysPublic),
       },
     ])
   })
@@ -139,7 +146,19 @@ describe('findPublicByArticleId', () => {
     const articleId = 456
 
     // When
-    const commentsFound = await repository.findPublicByArticleId(articleId)
+    const commentsFound = await repository.findByArticleId(articleId)
+
+    // Then
+    expect(commentsFound).toEqual([])
+  })
+
+  it('should not return spam comments', async () => {
+    // Given
+    const [commentSpam] = await insertAll(db, 'comment', [fakeCommentDefault()])
+    await repository.markAsSpam(commentSpam.id)
+
+    // When
+    const commentsFound = await repository.findByArticleId(articleOne.id)
 
     // Then
     expect(commentsFound).toEqual([])

@@ -21,7 +21,7 @@ onMounted(fetchArticles)
     <div v-if="!isLoggedIn" class="rounded-md bg-white px-6 py-8">
       <div class="items-center lg:flex">
         <div class="lg:w-1/2">
-          <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-100">Welcome to my blog</h2>
+          <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-100">Open blogging platform</h2>
           <p class="mt-4 text-gray-500 dark:text-gray-400 lg:max-w-md">
             Hi! Join the community and start sharing your thoughts with the world. Sign up now and
             start writing your first article.

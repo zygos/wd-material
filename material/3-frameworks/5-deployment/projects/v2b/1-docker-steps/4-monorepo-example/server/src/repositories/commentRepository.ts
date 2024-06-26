@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Database, Comment, DB } from '@server/database'
-import { commentKeysPublic, type CommentPublic } from '@server/entities/comment'
-import { userKeysPublic, type UserPublic } from '@server/entities/user'
+import { type CommentPublic, commentKeysPublic } from '@server/entities/comment'
+import { type UserPublic, userKeysPublic } from '@server/entities/user'
 import { prefixTable } from '@server/utils/strings'
 import {
   type AliasedRawBuilder,
@@ -34,7 +34,7 @@ export function commentRepository(db: Database) {
     /**
      * Retrieves all article comments with their author (user).
      */
-    async findPublicByArticleId(articleId: number): Promise<CommentPublic[]> {
+    async findByArticleId(articleId: number): Promise<CommentPublic[]> {
       /*
        * Demonstration of multiple different methods to achieve the same
        * result - comments with nested authors.
@@ -49,27 +49,25 @@ export function commentRepository(db: Database) {
       //   .selectFrom('comment')
       //   .innerJoin('user', 'comment.userId', 'user.id')
       //   .where('articleId', '=', articleId)
+      //   .where('isSpam', '!=', true)
       //   .select([
       //     // id -> comment.id, articleId -> comment.articleId, etc.
-      //     ...prefixTable('comment', commentKeys),
-      //     'user.id as authorId',
-      //     'user.firstName as authorFirstName',
-      //     'user.lastName as authorLastName',
+      //     ...prefixTable('comment', commentKeysPublic),
+      //     'firstName',
+      //     'lastName',
       //   ])
       //   .orderBy('comment.id', 'asc')
       //   .execute()
-
+      //
       // // move all author fields to a nested author object
-      // return comments.map(
-      //   ({ authorFirstName, authorLastName, authorId, ...comment }) => ({
-      //     ...comment,
-      //     author: {
-      //       id: authorId,
-      //       firstName: authorFirstName,
-      //       lastName: authorLastName,
-      //     },
-      //   })
-      // )
+      // return comments.map(({ firstName, lastName, ...comment }) => ({
+      //   ...comment,
+      //   author: {
+      //     id: comment.userId,
+      //     firstName,
+      //     lastName,
+      //   },
+      // }))
 
       /*
        * Method B - using JOIN + json_build_object Postgres function to nest
@@ -78,7 +76,7 @@ export function commentRepository(db: Database) {
       // return db
       //   .selectFrom('comment')
       //   .innerJoin('user', 'comment.userId', 'user.id')
-      //   .select(prefixTable('comment', commentKeys))
+      //   .select(prefixTable('comment', commentKeysPublic))
       //   .select(withAuthorJoin)
       //   .where('articleId', '=', articleId)
       //   .groupBy(['user.id', 'comment.id'])
@@ -124,3 +122,5 @@ function withAuthor(eb: ExpressionBuilder<DB, 'comment'>) {
       .whereRef('user.id', '=', 'comment.userId')
   ).as('author') as AliasedRawBuilder<UserPublic, 'author'>
 }
+
+export type CommentRepository = ReturnType<typeof commentRepository>

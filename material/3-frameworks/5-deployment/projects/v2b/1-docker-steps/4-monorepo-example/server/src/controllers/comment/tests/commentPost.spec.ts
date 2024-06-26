@@ -1,6 +1,10 @@
 import { createCallerFactory } from '@server/trpc'
 import { authContext } from '@tests/utils/context'
-import { fakeComment, fakeUser } from '@server/entities/tests/fakes'
+import {
+  fakeArticle,
+  fakeComment,
+  fakeUser,
+} from '@server/entities/tests/fakes'
 import { insertAll, selectAll } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { createTestDatabase } from '@tests/utils/database'
@@ -19,29 +23,32 @@ const [userArticleAuthor, userOther] = await insertAll(db, 'user', [
   fakeUser(),
   fakeUser(),
 ])
-const [article] = await insertAll(db, 'article', {
-  title: 'My Article',
-  content: 'Lorem ipsum dolor sit amet',
-  userId: userArticleAuthor.id,
-})
+const [article] = await insertAll(
+  db,
+  'article',
+  fakeArticle({
+    userId: userArticleAuthor.id,
+  })
+)
 
 it('allows creating a comment', async () => {
   // ARRANGE (Given)
-  const { post } = createCaller(authContext({ db }, userArticleAuthor))
   const comment = fakeComment({ articleId: article.id })
 
   // ACT (When)
+  const { post } = createCaller(authContext({ db }, userOther))
   const commentReturned = await post(comment)
+
+  // ASSERT (Then)
   const [commentSaved] = await selectAll(db, 'comment', (cb) =>
     cb('id', '=', commentReturned.id)
   )
-
-  // ASSERT (Then)
   expect(commentReturned).toMatchObject(commentSaved)
+  expect(commentSaved).toHaveProperty('userId', userOther.id)
   expect(commentReturned.author).toMatchObject({
-    id: userArticleAuthor.id,
-    firstName: userArticleAuthor.firstName,
-    lastName: userArticleAuthor.lastName,
+    id: userOther.id,
+    firstName: userOther.firstName,
+    lastName: userOther.lastName,
   })
 
   // an extra check that the password is not returned
@@ -51,9 +58,9 @@ it('allows creating a comment', async () => {
 it('throws an error if the article does not exist', async () => {
   // ARRANGE (Given)
   const comment = fakeComment({ articleId: article.id + 999999 })
-  const { post } = createCaller(authContext({ db }))
 
   // ACT (When) & ASSERT (Then)
+  const { post } = createCaller(authContext({ db }))
   await expect(post(comment)).rejects.toThrow(/not found/i)
 })
 

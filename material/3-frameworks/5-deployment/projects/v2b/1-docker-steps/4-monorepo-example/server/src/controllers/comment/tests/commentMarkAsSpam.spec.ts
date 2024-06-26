@@ -1,17 +1,28 @@
 import { createCallerFactory } from '@server/trpc'
 import { NoResultError } from 'kysely'
+import type { ArticleRepository } from '@server/repositories/articleRepository'
+import type { CommentRepository } from '@server/repositories/commentRepository'
+import { fakeComment, fakeUser } from '@server/entities/tests/fakes'
+import { userKeysPublic } from '@server/entities/user'
+import { pick } from 'lodash-es'
 import commentRouter from '..'
 
 const createCaller = createCallerFactory(commentRouter)
 
-// Example of testing with mocked repositories.
 const repos = {
   articleRepository: {
-    hasUserId: vi.fn(async () => true),
-  },
+    hasUserId: vi.fn(async (): Promise<boolean> => true),
+  } satisfies Partial<ArticleRepository>,
+
   commentRepository: {
-    markAsSpam: vi.fn(async (id) => ({ id, isSpam: true })),
-  },
+    markAsSpam: vi.fn(async (id: number) =>
+      fakeComment({
+        id,
+        author: pick(fakeUser({ id: 123 }), userKeysPublic),
+        isSpam: true,
+      })
+    ),
+  } satisfies Partial<CommentRepository>,
 }
 
 const { markAsSpam } = createCaller({

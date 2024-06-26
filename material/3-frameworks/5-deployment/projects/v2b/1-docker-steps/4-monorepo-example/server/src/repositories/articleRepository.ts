@@ -46,3 +46,5 @@ export function articleRepository(db: Database) {
     },
   }
 }
+
+export type ArticleRepository = ReturnType<typeof articleRepository>
