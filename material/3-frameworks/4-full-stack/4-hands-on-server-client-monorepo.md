@@ -98,7 +98,7 @@ Your tasks are to:
 ## Technical requirements
 
 - The application should hash the password and not return it to the client under any circumstances.
-- The application can return comment author's id, first name and last name, but not the email or password.
+- The application can return the comment author's id, first name and last name, but not the email or password.
 - The application performs some reasonable validation on user input.
 - The key user flows are tested with E2E tests.
 - The application should return article's comments and their authors' public information in a single request.
@@ -120,8 +120,7 @@ Since we will be working on a very minimal application, we can only cover some t
 ## Project starter
 
 **Step 0.** Setup the project.
-{{ MUST: Update the link }}
-1. [Download the project starter](https://drive.google.com/file/d/1o3KWOKqs6ul1FETnRRZRlu_itpDCwAEs/view?usp=drive_link).
+1. [Download the project starter](https://drive.google.com/file/d/1caOYq8OQxT9OPdLccVjc5N343uI001Q_/view?usp=drive_link).
 2. Run `npm i` in the top-level folder to install all dependencies.
 3. Create a new PostgreSQL database, or use your existing one from previous exercises.
 4. Setup `.env` files in the `client` and `server` folders based on `.env.example` files.
@@ -138,7 +137,7 @@ A few notes on the starter project:
 
 - To simplify serializing/deserializing Date objects, we have added `superjson` to the project. It does not make a difference in tests, but if you want to call your endpoints using a tool like Postman, you will need to wrap the request body in `{"json": ...}`.
 - You can navigate through the existing front-end code without any authentication. It does not make any calls to the back end yet. You could provide random credentials, and it would pretend to log you in.
-- You might it best to reuse and adapt some code from the previous exercises.
+- It might be best to reuse and adapt some code from the previous exercises.
 - It includes various helper functions that you might find helpful - `entities/tests/fakes.ts`, `tests/utils/**`. However, you are not required to use them.
 
 ## Recommended approach
@@ -211,7 +210,6 @@ Follow this approach to tackle the hands-on exercise:
 
 - Spend up to 10 hours attempting to solve the task on your own.
 - If you struggle during the first hours and find it too difficult, try seeking help from your peers or JTLs for an additional 10 hours. Spend half of this time working with someone else, whether a study buddy, a peer who has completed the exercise, or a JTL in an open session.
-// MUST: update the guide to reflect the new approach
-- If you still need help, look at [the provided solution](https://drive.google.com/file/d/1VMKySTmrxedH9K5vQdKb5jQgPl_7Npkl/view?usp=drive_link) and [its walkthrough guide](https://drive.google.com/file/d/1NSyue4W5W0jtadZQ6AmWU5A_8T-s3dZ1/view?usp=drive_link). Spend up to 10 hours on the walkthrough.
+- If you still need help, look at [the provided solution](https://drive.google.com/file/d/1zGtGnt8mVv0-1TiIg4rpWhyz_KTX6Pmg/view?usp=drive_link) and [its walkthrough guide](https://drive.google.com/file/d/19JVUssemq4aRh_4ez5hXqlGsPWHWzVEV/view?usp=drive_link). Spend up to 10 hours on the walkthrough.
 - Try to go back to your solution once the provided solution clears up any obstacles you encountered.
 - We recommend checking the final provided solution, even if you have completed the task on your own, to compare approaches and potentially learn new techniques.

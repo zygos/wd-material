@@ -1,3 +1,23 @@
+# Sprint 1 - HTML and CSS - the Foundation of Web Pages
+
+Congratulations on reaching Module 2! By now, you should have quite a lot of confidence in your abilities to work with code. This will be extremely useful when we start learning the main languages of front-end web development - JavaScript. Before we get into it though (beginning in sprint 2), we will start with two other core technologies underlying all of front-end web development - HTML and CSS.
+
+Similarly to first sprints of module 1, you can expect the first parts to give you an introduction to the main concepts and then a quite steep jump in difficulty in the hands-on exercises and the graded projects. You may want to immediately check what those tasks are going to be by navigating to parts 4 and 5 of this sprint. This will give even more context about what to focus while going through the resources in parts 1-3. To encourage thinking about why you are learning various parts of the sprint even more, the sprint is framed as a work situation.
+
+Good luck!
+
+## Sprint description
+
+You've recently started working at a travel agency. You have just received an email from your project manager informing you that you will need to start working on a travel agency website redesign. However, you realize you need to learn more about front-end web development. So, you decide to start a crash course that covers everything you need to know to accomplish this task - how do websites work, what's HTML, CSS, and how to use them to build a website?
+
+*Sprint goals*
+Get a basic understanding of internet protocols
+Learn how to use HTML and CSS to build web pages
+Learn how to use the developer tools provided in the web browser
+Build a travel agency websitew to use HTML and CSS to build web pages
+Learn how to use the developer tools provided in the web browser
+Build a travel agency website
+
 Part 1: Internet
 
 You have just received an email from your project manager informing you that you will need to start working on a travel agency website redesign in approximately a week. However, you realize you need to learn more about front-end web development. So, you decide to start a crash course that covers everything you need to know to accomplish this task - how do websites work, what's HTML, CSS, and how to use them to build a website?

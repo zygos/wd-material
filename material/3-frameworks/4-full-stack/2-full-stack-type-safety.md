@@ -134,18 +134,17 @@ Try out these actions in your mini tRPC project.
 
 ## Exercise: Writing and testing tRPC endpoints (6 hours)
 
-This exercise will focus on the tRPC server part and how it differs from a regular Express.js server. We will use tRPC inside of Express, which means that we are not losing any of the flexibility of Express.js. We are only adding some type-safe functionality on top of it. It is even possible to have some endpoints in an application using regular Express.js `res` and `req` objects and some endpoints using tRPC. We could also use `req` and `res` in tRPC endpoints.
+This exercise will focus on the tRPC server and how it differs from a regular Express.js server. We will use tRPC inside of Express, meaning we will not lose any of Express.js's flexibility. We are only adding some type-safe functionality to it. It is possible to have some endpoints in an application using regular Express.js `res` and `req` objects and some endpoints using tRPC. We could also use `req` and `res` in tRPC endpoints.
 
-{{ MUST: update the file link }}
-**Step 0.** [Download](https://drive.google.com/file/d/1003-iIXqCA4v9lfhAcv3402hefEXk-qH/view?usp=drive_link) and setup `2-trpc-server` project:
+**Step 0.** [Download](https://drive.google.com/file/d/1tprJsgD0VKxaFSvZ_V0gENso1dl5PyMo/view?usp=drive_link) and setup `2-trpc-server` project:
 
 1. Run `npm i` in the root directory to install dependencies.
 2. Create a new PostgreSQL database (or continue using the one you have created in the previous part).
 3. Add the connection details to a new `.env` file, which you can base on the `.env.example`.
 4. Run `npm run migrate:latest` to run the database migrations.
-5. Make sure you can run `npm run dev` to start the server, though do not expect it to do anything useful yet.
+5. Make sure you can run `npm run dev` to start the server, but do not expect it to do anything useful.
 
-**Note.** In the next sprint part, we will discuss password handling, authentication, and authorization. For this part, we will not use any proper authentication or authorization. We will assume that anyone who can access our server has the necessary permissions to do so. Since our application is not deployed to the internet, this is not a crazy assumption.
+**Note.** We will discuss password handling, authentication, and authorization later in the sprint. For this part, we will not use proper authentication or authorization. We will assume that anyone who can access our server has the necessary permissions to do so. Since our application is not deployed to the Internet, this is not a crazy assumption.
 
 **Step 1.** Investigate the server.
 
@@ -157,13 +156,13 @@ While we are introducing a lot of new files, you should be already familiar with
 - repositories to abstract away database queries
 - individual route handlers (controllers)
 
-Because some of our endpoints might depend on multiple repositories or schemas, we will restructure our application to use a more layered architecture. It is neither better, nor worse than entirely colocated folder structure. For this particular project, it might suit us better. So instead of:
+Because some endpoints depend on multiple repositories or schemas, we will restructure our application to a more layered architecture. It is neither better nor worse than an entirely colocated folder structure. For this particular project, it might suit us better. So instead of:
 
 ```
 users/
-  controller.ts
-  repository.ts
-  schema.ts
+ controller.ts
+ repository.ts
+ schema.ts
 ...
 ```
 
@@ -171,18 +170,18 @@ We will have:
 
 ```
 controllers/
-  user/
-    updateProfile.ts
+ user/
+ updateProfile.ts
 repositories/
-  userRepository.ts
+ userRepository.ts
 entities/
-  user.ts
-  ...
+ user.ts
+ ...
 ```
 
-This slightly complicates the creation of new tables as we might need to create a few more folders. However, it more clearly communicates the fact that some of our endpoints might need the help of multiple repositories or schemas.
+This complicates the creation of new tables, as we may need to create files in different folders. However, it communicates the fact that some of our endpoints might need the help of multiple repositories or schemas.
 
-Here is a quick overview of the all folders:
+Here is a quick overview of all the folders:
 
 ```
 /controllers - our request handlers
@@ -200,40 +199,40 @@ Let's look at a hypothetical endpoint that would update a user's profile.
 ```ts
 export default publicProcedure
 
-  // Middleware functions to run before the main function.
-  // In this case, we have provided a helper function that
-  // injects the listed repositories to our procedure. This
-  // allows us to mock them in our tests very easily.
-  .use(
-    provideRepos({
-      userRepository,
-    })
-  )
+  // Middleware functions to run before the main function.
+  // In this case, we have provided a helper function that
+  // injects the listed repositories into our procedure. This
+  // allows us to mock them very easily in our tests.
+ .use(
+    provideRepos({
+      userRepository,
+ })
+ )
 
-  // What we accept as an input in our request.
-  .input(
-    z.object({
-      email: z.string().email(),
-      password: z.string().min(8),
-    })
-  )
+  // What do we accept as input in our request?
+ .input(
+    z.object({
+ email: z.string().email(),
+ password: z.string().min(8),
+ })
+ )
 
-  // What we will do with the input.
-  .mutation(
-    async ({ input, ctx }) => {
-      // input contains the validated input
-      const { id, firstName } = input
+  // What will we do with the input?
+ .mutation(
+    async ({ input, ctx }) => {
+      // input contains the validated input
+      const { id, firstName } = input
 
-      // ctx.repos contains the injected repositories
-      const { userRepository } = ctx.repos
+      // ctx.repos contains the injected repositories
+      const { userRepository } = ctx.repos
 
-      const userUpdated = await userRepository
-        .update(id, { firstName })
+      const userUpdated = await userRepository
+ .update(id, { firstName })
 
-      // Send a response back to the client.
-      return userUpdated
-    }
-  )
+      // Send a response back to the client.
+      return userUpdated
+ }
+ )
 ```
 
 **Step 2.** Fix the greeting message.
@@ -241,7 +240,7 @@ export default publicProcedure
 Let's jump back to the procedure we have at hand:
 
 - `user/greet.ts` - a simple procedure that accepts a name and returns a greeting message.
-- `user/signup.ts` - a procedure that should accept an email and a password, create a new user in the database and return the user's id.
+- `user/signup.ts` - a procedure that should accept an email and a password, create a new user in the database and return the user's ID.
 
 Our requirements have slightly changed, and now **we must use an exclamation mark** at the end of the greeting message.
 
@@ -257,11 +256,11 @@ While using **automated unit/integration tests** should be your **primary way of
 
 - Because every time we visit a URL in a browser, it performs a `GET` request, we can use our browser to test out our queries just by visiting their URLs. In our case, that would be `http://localhost:3000/api/v1/trpc/user.greet?input="Peter"`.
 - Use a GUI REST client, such as [Insomnia](https://insomnia.rest/), [Postman](https://www.postman.com/), [Bruno](https://www.usebruno.com/) or [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client) to test out your endpoints. For example, you could POST to `http://localhost:3000/api/v1/trpc/user.signup` with JSON body containing the necessary fields. You can read more about how [tRPC maps procedures to HTTP](https://trpc.io/docs/rpc).
-- We have added one more method - using a generated panel page. In `app.ts` you will find a route handler for `/api/v1/trpc-panel`, which is handled by an external package. This package displays a basic GUI for your tRPC endpoints. You can visit it by going to `http://localhost:3000/api/v1/trpc-panel`. There you will be able to test out your endpoints manually. This package has some limitations and it might not work with some more complex endpoints with middleware functions.
+- We have added one more method - using a generated panel page. In `app.ts` you will find a route handler for `/api/v1/trpc-panel`, which is handled by an external package. This package displays a basic GUI for your tRPC endpoints. You can visit it by going to `http://localhost:3000/api/v1/trpc-panel`. There, you will be able to test out your endpoints manually. This package has some limitations and might not work with more complex endpoints and multiple middleware functions.
 
 While these other methods are useful, they should not replace automated tests.
 
-Now we will move on to a more complex procedure - **adding a signup procedure**.
+Now, we will move on to a more complex procedure - **adding a signup procedure**.
 
 **Step 4.** Prepare to add a signup procedure.
 
@@ -269,50 +268,50 @@ Let's add the most naive signup procedure possible. It should:
 
 - accept an email, a password, a first name, and a last name.
 - create a new user in the database. No password hashing, nothing fancy. We will work on additional security measures later in the sprint.
-- return an object containing just the `{ id }`. We could also return the saved `user` object or reflect back the input data. The key is not to return the password.
+- return an object containing just the `{ id }`. We could also return the saved `user` object or reflect the input data. The key is not to return the password.
 
-First, we should think whether we have the necessary data structures in place. We have a `user` table in our database, but currently it does not contain `email` and `password` fields. We will need to add them to the database.
+First, we should consider whether we have the necessary data structures in place. Our database has a `user` table, but it does not currently contain `email` and `password` fields. We will need to add them.
 
-Add a migration by running `npm run migrate:new emailPassword` to create a new migration file in the `database/migrations` folder. Go to the new migration file and add the necessary SQL to add `email` and `password` text columns to the `user` table. The `email` field should be unique, both fields should be not nullable.
+**Add a migration** by running `npm run migrate:new emailPassword` to create a new migration file in the `database/migrations` folder. Go to the new migration file and add the necessary SQL to add `email` and `password` text columns to the `user` table. The `email` field should be unique, and both fields should not be nullable.
 
-Once it seems to be ready, try running it with `npm run migrate:latest`. If it fails, try again. If it succeeds, run `npm run gen:types` to update the TypeScript types (`database/types.ts` file), so they reflect the new `email` and `password` columns.
+Once it seems ready, try running it with `npm run migrate:latest`. If it fails, try again. If it succeeds, run `npm run gen:types` to update the TypeScript types (`database/types.ts` file) so they reflect the new `email` and `password` columns.
 
 **Step 5.** Add a simple signup procedure that passes the test.
 
-Start by looking at a provided `userSignup.spec.ts` test file to know what the procedure should do and how you could test your other procedures.
+Start by looking at a provided `userSignup.spec.ts` test file to know what the procedure should do and how to test your other procedures.
 
-If we run, `npm test signup`, our test fails. **Finish the `signup` procedure** in the `controllers/user/signup.ts` file to make the test pass.
+If we run `npm test signup`, our test fails. **Finish the `signup` procedure** in the `controllers/user/signup.ts` file to make the test pass.
 
-**Note.** Besides our validated `input`, every procedure receives the context - `ctx` (defined in `trpc/index.ts`). It will be our primary vehicle for dependency injection for stateful objects, such as database connections. In our tests, we will use it to pass a database connection that is configured to automatically rollback everything that happens inside a test.
+**Note.** Besides our validated `input`, every procedure receives the context - `ctx` (defined in `trpc/index.ts`). It will be our primary vehicle for dependency injection for stateful objects like database connections. In our tests, we will use it to pass a database connection configured to roll back everything that happens inside a test automatically.
 
-**Hint.** You can use the `userRepository` object from the `ctx.repos` to interact with the database.
+**Hint:** You can interact with the database using the `userRepository` object from the `ctx.repos`.
 
 **Step 6.** Instead of inline schema, derive your validation schema from the `entities/user.ts` file.
 
-We are using a custom schema for our signup procedure. That is not a problem in itself, and we might not need to rush to reuse existing validation functions. However, we could forsee a potential problem. We will need to add a login procedure in the future, and if this procedure has its own schema, it might get out of sync with the signup schema. We generally would like to have a single set of schemas that we can reuse across our application, which make sure that all `user` fields follow the same rules. Imagine the user confusion if we would allow 7-character passwords in the signup procedure, but require 8-character passwords in the login procedure. This would throw an error in the login procedure and we would have a very angry user 😠.
+We are using a custom schema for our signup procedure. That isn't always a problem, and we might not need to rush to reuse existing validation functions. However, we could foresee a potential problem. We will need to add a login procedure in the future, and if this procedure has its schema, it might get out of sync with the signup schema. We generally would like a single set of schemas, ensuring that `user` fields follow the same rules throughout the application. Imagine the confusion if we would allow 7-character passwords in the signup procedure but require 8-character passwords in the login procedure. The login procedure would throw an error for a password that was accepted by the signup procedure. Then, the user could not login 😠.
 
-**First**, look into the `entities/user.ts` file and adapt it to contain our new `email` and `password` fields. This file will contain the central schema for our `user` entity and the procedures will derive their schemas from it.
+**First**, look into the `entities/user.ts` file and adapt it to contain our new `email` and `password` fields. This file will contain the central schema for our `user` entity, and the procedures will derive their schemas from it.
 
-**Then**, import this schema into the `signup` procedure and derive a signup validation schema from it. You can use Zod's `pick` method to specify a subset of properties from an object that you want to accept and validate.
+**Then**, import this schema into the `signup` procedure and derive a signup validation schema from it. You can use Zod's `pick` method to specify a subset of properties from an object you want to accept and validate.
 
 **Step 7.** Add an `article/findAll.ts` procedure to list all articles.
 
-Now you should be familiar with the structure of a tRPC procedure. Try to add a new procedure that lists all articles in the database. It should return an array of articles. There is no need to join other tables. We recommend the following steps:
+Now, you should be familiar with the structure of a tRPC procedure. Try to add a new procedure that lists all articles in the database. It should return an array of articles. There is no need to join other tables. We recommend the following steps:
 
 1. it should return an empty array when there are no articles;
 2. it should return a list of articles when there are some articles;
-3. it should return latest articles first. You can use the `id` field for that. Alternatively, you can add a `createdAt` field to the `article` entity.
+3. it should return the latest articles first. You can use the `id` field for that. Alternatively, add a `createdAt` field to the `article` entity.
 
-This is a good time to practice TDD. Write a test first for an empty array and then write a procedure that makes the test pass. That might require a lot less code than you think. At this step you might not even need to touch the database.
+This is an excellent time to practice TDD. Write a test for an empty array and then write a procedure that makes the test pass. That might require a lot less code than you think. At this step, you might not even need to touch the database.
 
-Once you need to deal with the database, you can use the test utility functions, such as `insertAll` and, optionally `clearTables`, to prepare the database for your tests.
+Once you deal with the database, you can use the test utility functions, such as `insertAll` and, optionally, `clearTables`, to prepare the database for your tests.
 
-Then, we recommend to introduce an `articleRepository` that will abstract away the database queries from the procedure. We would also recommend to practice dependency injection with the utility function `provideRepos`. You can see its usage in the `user/signup.ts` file. Just make sure to add your new `articleRepository` into the `repositories/index.ts` file as it is used to type-check the repositories.
+Then, we recommend introducing an `articleRepository` that will abstract away the database queries from the procedure. We also recommend practicing dependency injection with the utility function `provideRepos`. You can see its usage in the `user/signup.ts` file. Just make sure to add your new `articleRepository` to the `repositories/index.ts` file, as it is used to type-check the repositories.
 
-There will be a solution available for this step later on in this sprint.
+A solution will be available for this step later on in this sprint.
 
 # Directions for further research (1 hour+)
 
 - What are the trade-offs between REST APIs and RPC APIs?
-- How could you have Express.js endpoints and tRPC endpoints in the same application?
-- How could throw human-friendly errors in your tRPC procedures?
+- How could you have Express.js and tRPC endpoints in the same application?
+- How could you throw human-friendly errors in your tRPC procedures?

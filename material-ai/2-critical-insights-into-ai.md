@@ -91,15 +91,15 @@ We advise to consider LLMs **neither as human-like intelligent beings nor as det
 
 Once we see LLMs for what they are, their strengths and weaknesses become more apparent.
 
-In this part, we will go through some of the limitations of LLMs, focusing on the GPT family of models which is the most popular and widely used family of LLMs. However, nearly all of these limitations are present in other transformer-based models as well: Gemini, Claude, Cohere AI, Llama, and others.
-
-For some exploration examples, we will use the [OpenAI Playground](https://platform.openai.com/playground) for interacting with a few models. While in your day-to-day work, you might ChatGPT, Gemini, or another model more suited for your needs, the playground is a good way to get a feel of what is happening under the hood.
+In this part, we will go through some of the **limitations of LLMs**, focusing on the GPT family of models which is the most popular and widely used family of LLMs. However, nearly all of these limitations are present in other transformer-based models as well: Gemini, Claude, Cohere AI, Llama, and others.
 
 ## Taking the perspective of an AI model
 
-While modern models are trained with multiple steps of human feedback and fine-tuning, the power of the model comes from its "base model" - the model that has been trained on a large dataset of books, articles, images, websites and nearly everything that AI companies can get their hands on. The base model was trained to predict the next word in a sentence based on the previous words. It does not plan ahead and it does not apply strict logic the way some of us might expect.
+While modern models are trained with multiple steps of **human feedback** and **fine-tuning**, the power of the model comes from its "base model" - the model that has been trained on a large dataset of books, articles, images, websites and nearly everything that AI companies can get their hands on. The base model was trained to **predict the next token (word)** in a sequence based on the previous words. It does not plan ahead and it does not apply strict logic the way some of us might expect.
 
-We will peel off the human feedback layer and highlight one of the weaknesses of the model: calculating answers. For that, we will use a base model, GPT-3 - the "grandfather" of ChatGPT family of models. The benefit of this model is that does not have the human feedback layer and it is not based around a chatbot-like interface. Also, dealing with this base model allows us to see how likely the model is to make each guess which can be quite revealing.
+We will peel off the human feedback layer and start by examining what are the limitations of the base models. These limitations persist even in the most advanced models, such as ChatGPT GPT-4o.
+
+highlight one of the weaknesses of the model: calculating answers. For that, we will use a base model, GPT-3 - the "grandfather" of ChatGPT family of models. The benefit of this model is that does not have the human feedback layer and it is not based around a chatbot-like interface. Also, dealing with this base model allows us to see how likely the model is to make each guess which can be quite revealing.
 
 ### Limited up-to-date knowledge
 
@@ -185,7 +185,7 @@ Also, we could speculate that once the model has to pick where LeBron works, it 
 
 If we are looking at the model as a text-prediction tool (which it is), then it is likely doing a great job. However, if we are looking at it as a source of unbiased information, or even as a tool to perform judgements on people (for example, a CV screening tool), then we should not be surprised if it makes the same (if not more) biased decisions as a human would.
 
-Overcoming this bias is a complex problem as it is hard to define what is a "fair" or "unbiased" answer. Trying to "overcorrect" the model might lead to [misrepresentations and a differently biased answers](https://www.theverge.com/2024/2/21/24079371/google-ai-gemini-generative-inaccurate-historical).
+Overcoming this bias is a complex problem as it is hard to define what is a "fair" or "unbiased" answer. Trying to "overcorrect" the model might lead to misrepresentations and a differently biased answers.
 
 ### Preceived human agency
 
@@ -292,7 +292,7 @@ Of course, at some point it this association breaks down and the model might sta
 
 - ChatGPT: DAN
 - Sydney: untuned GPT-4, going off the rails, common with base models
-- Gemini: trying to overcorrect the biases, leading to misrepresentations and a differently biased answers
+- Gemini: trying to overcorrect the biases, leading to misrepresentations and a differently biased answers - https://www.theverge.com/2024/2/21/24079371/google-ai-gemini-generative-inaccurate-historical
 - Google Search Issues
 - Airline lawsuit incident with hallucinated cases
 

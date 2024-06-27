@@ -53,7 +53,7 @@ In this GitHub Actions example, our goal is to:
 
 ![E2E test](https://imgur.com/LFSFEZc.png)
 
-[Download the GitHub Actions example](https://drive.google.com/file/d/1xFUBLzhY8YAiFS0TJ_3nHb1UoyqpfCQr/view?usp=drive_link).
+[Download the GitHub Actions example](https://drive.google.com/file/d/1rwc_vdQGNZuM61yO40c2vN6el1UFyk2x/view?usp=drive_link).
 
 1. To set up and start the project, run `npm run demo` in the project's root. This all-in-one script will install dependencies, add `.env` files, and launch both the FE and BE. It can run against an in-memory database for demo purposes, so there is no need to set up a database.
 2. Create a private GitHub repository and push this project to it.
@@ -207,9 +207,9 @@ Previously, we worked with `Dockerfile` to build individual Docker images. When 
 
 We will explore several examples of containerizing applications with Docker and orchestrating containers using Docker Compose.
 
-Download the [Docker Compose examples](https://drive.google.com/file/d/14Mq7pmpK4QtC_aQBmVLWV2GGImLHtFhX/view?usp=sharing).
+Download the [Docker Compose examples](https://drive.google.com/file/d/1tvffGxIvhmKRelnPfJw1oljoFMTuiDT_/view?usp=drive_link).
 
-Each example and exercise includes a `README.md` file. **Proceed through the exercises and examples one-by-one**.
+Each example and exercise includes a `README.md` file. Your goal is to complete the provided `Dockerfile` and `docker-compose.yml` files so each project can successfully start up. **Proceed through the exercises and examples one-by-one**.
 
 The final section will provide a comprehensive example that may resemble your capstone project, especially if you utilize project templates and examples from previous modules.
 

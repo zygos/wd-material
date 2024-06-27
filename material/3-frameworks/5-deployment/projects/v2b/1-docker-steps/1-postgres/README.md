@@ -1,4 +1,3 @@
-MUST: update to use blogging application application example
 ## Start a PostgreSQL database with Docker
 
 Our first example involves spinning up a new PostgreSQL database container with Docker.

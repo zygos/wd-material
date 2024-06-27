@@ -1,4 +1,4 @@
-Here we will focus on the front end example with a very minimal application.
+Here we will focus on the tiny front end application without a back end.
 
 ## Project Setup
 

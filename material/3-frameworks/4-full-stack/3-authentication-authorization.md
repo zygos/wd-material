@@ -117,7 +117,7 @@ type UserRepository = {
 ```
 </details>
 
-You can check out the solution in the `auth-2` folder, which can be [downloaded here](https://drive.google.com/file/d/1GGpsfrykXsFswDfrIeneOOjtfu-LxMPV/view?usp=drive_link) (as well as all the other solutions).
+You can check out the solution in the `auth-2` folder, which can be [downloaded here](https://drive.google.com/file/d/1wcHIl1kIf4rvlx3JZV12VH24gfTQJuSc/view?usp=drive_link) (as well as all the other solutions).
 
 **Note.** In these exercises, we are not using dependency injection as you still might feel uncomfortable with it while we are introducing new concepts. However, if you want a more testable solution, add dependency injection to this exercise. Generally, that would involve passing `userRepository` to the `ctx` and then passing in additional dependencies that we will use later as arguments to the router/procedures.
 

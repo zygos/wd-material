@@ -173,67 +173,67 @@ const pool = new Pool({/* ... */})
 
 While SQLite and PostgreSQL differ quite a bit under the hood, the vast majority of your SQLite queries will work just as well in PostgreSQL. To understand a few differences of where you might need to adjust your queries, you will need to go through migrating a project from SQLite to PostgreSQL.
 
-We will work on the same project with articles, comments and users. The project has evolved a bit.
+We will work on the same project with articles, comments, and users. You can [download the starting project](https://drive.google.com/file/d/1NaEGFRPG8N2KXXmiicJ4i7hFTK-lRLqo/view?usp=drive_link).
 
-- A developer noticed that it's quite hard to manage the configuration of the project. They have refactored the project to use a `src/config.ts` file to manage the configuration. This file is used to store all the configuration values the project needs. It should be used for machine-specific configuration and secrets instead of `process.env` or hardcoding values in the codebase. We recommend inspecting the file and how it is used.
-- The project allows wrapping the tests in transactions. This way, we can interact with a real database and after each test, the database will be rolled back to the state before the test. This is done to ensure that the tests are isolated from each other and do not affect each other's results. It uses some advanced helper functions to achieve this and it is not necessary to understand them at this point.
+There have been a few notable changes.
+
+A developer noticed that managing the project's configuration is quite difficult. They have refactored the project to use a `src/config.ts` file to manage the configuration. This file stores all the configuration values the project needs. Use it to validate the machine-specific configuration. We recommend inspecting the file and looking at where it is imported and used.
+- The project allows wrapping the tests in transactions. This way, we can interact with a real database, and after each test, the database will roll back to the state before the test. This technique isolates the tests. It uses some advanced helper functions to achieve this behavior, and it is unnecessary to understand them at this point.
 - A developer has refactored some files to simplify the codebase and prepare it for using PostgreSQL.
 
-Now, you have been tasked with migrating the codebase to use PostgreSQL instead of SQLite.
+Now, your task is to migrate the codebase to use PostgreSQL instead of SQLite.
 
-If you are looking for a challenge, you can try to do this on your own as it is not that hard.
+If you are looking for a challenge, you can do it independently, as it is not that hard.
 
 On the other hand, if you are looking for a more guided approach, you can follow the steps below:
 
 **0. Set up a fresh PostgreSQL database**
 
-You can run the following command when connected to your PostgreSQL database to create a new database:
+Connect to your created PostgreSQL user and create a new database:
 
 ```sql
-CREATE DATABASE database_name;
+CREATE DATABASE my_database_name;
 ```
 
 **1. Connect to PostgreSQL instead of SQLite**
 
-In the `src/database/index.ts` file, we have a function which connects to the database. Luckily, this is the only place where we need to change the database connection. Go back to the Kysely [Getting Started guide](https://kysely.dev/docs/getting-started) and figure out how to connect to a PostgreSQL database instead of SQLite. While it is fine to provide database, host, user, password, and port as separate properties, we recommend using the `connectionString` to provide all the connection information in a single string. This makes the database configuration a bit easier to manage.
+In the `src/database/index.ts` file, we have a function which connects to the database. Luckily, this is the only place to change the database connection. Go back to the Kysely [Getting Started guide](https://kysely.dev/docs/getting-started) and figure out how to connect to a PostgreSQL database instead of SQLite. While providing database, host, user, password, and port as separate properties is fine, we recommend using the `connectionString` to provide all the connection information in a single string. This makes the database configuration more straightforward to manage.
 
-Instead of providing a file path to the SQLite database, you will need to provide a connection string to the PostgreSQL database. The connection string should have the following format: `postgres://username:password@localhost:5432/database_name`. Use that in your `.env` file.
+Instead of providing a file path to the SQLite database, you must provide a connection string to the PostgreSQL database. The connection string should have the following format: `postgres://username:password@localhost:5432/database_name`. Use that in your `.env` file.
 
 **2. Update migrations to use PostgreSQL data types**
 
-While the majority of SQLite data types work out of the box in PostgreSQL, there are a few differences. In our case, there are just two general changes you need to make:
+While most SQLite data types work out of the box in PostgreSQL, there are a few differences. In our case, there are just two general changes you need to make:
 
 - Instead of `AUTOINCREMENT`, we recommend using the `GENERATED ALWAYS AS IDENTITY` syntax for the primary key column. You should be able to figure out what to change in the migration files, as Kysely provides a method to form this SQL statement.
 - Instead of `datetime` for capturing moments in time, we recommend using `timestamptz` for storing timestamps with time zone information. This is a PostgreSQL-specific data type that stores the timestamp in UTC and includes the time zone information. This makes it more resilient to changes in the server database configuration.
 
-After applying these changes, run `npm run migrate:latest`. If you get an error - investigate the error message, try to fix it and run the migrations again.
+After applying these changes, run `npm run migrate:latest`. If you get an error - investigate the error message, try to fix it, and rerun the migrations.
 
 **3. Tie up loose ends**
 
 Update the `gen-types` script in `package.json` to use `postgres` dialect instead of `sqlite`. Also, you could apply a few optional changes, such as:
 
 - Remove the `better-sqlite3` package and its `@types` package from your project. You can do that with `npm rm better-sqlite3 @types/better-sqlite3`.
-- Add `.url()` validation to the `connectionString` in the `config.ts` file to ensure it is a valid URL. Also, remove the `:memory:` default value as it is not applicable to PostgreSQL.
+- Add `.url()` validation to the `connectionString` in the `config.ts` file to ensure it is a valid URL. Also, remove the `:memory:` default value, as it does not apply to PostgreSQL.
 
 **4. Run the project**
 
 If everything is set up correctly, you should be able to run the project without any issues:
 
 - `npm run test` should run the tests without any errors.
-- `npm run dev` should start the development server without any errors.
+- `npm run dev` should start the development server without errors.
 
 ## PostgreSQL: Connecting with Kysely (solution) (1 hour)
 
-{{ MUST: add download link }}
-Once you are done with this stack update, download a possible solution to identify any differences between your solution and the provided one.
+Once you are done with this stack update, [download a suggested solution](https://drive.google.com/file/d/1FtXH3phA2KxVidTbkUbYjCqbb7lEbJxE/view?usp=drive_link) to identify any differences between your solution and the provided one.
 
-The changes you should be aware about have been tagged with the `NEW:` comments. You can search for those in the project to find the changes we have applied. In VS Code you can do this by pressing `Ctrl/Cmd + Shift + F` and typing `NEW:` in the search bar.
+We have tagged the changes you should know about with the `NEW:` comments. You can search for them in the project to find the changes we have applied. You can do this in VS Code by pressing `Ctrl/Cmd + Shift + F` and typing `NEW:` into the search bar.
 
-If at any point you find a project solution incompatible with your solution due to migration errors, create a new database for the suggested solution project.
+If you find a project solution incompatible with your solution due to migration errors at any point, create a new database for the suggested solution project.
 
 # Directions for further research (1 hour+)
 
 - When might you still prefer using SQLite over a full-fledged database?
 - What are the differences between `SERIAL` vs. `GENERATED AS IDENTITY` vs. `UUID`?
-- How can you create an index in a database with TypeORM?
-- What is an eager relation in TypeORM?
+- What are the differences between a query builder, such as Kysely or Knex and an ORM, such as TypeORM or Prisma?

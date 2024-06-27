@@ -329,7 +329,7 @@ Remember to move these files outside your repository (or even delete them). You 
 
 ## Example: GitHub Actions to build and deploy a monorepo (1 hour)
 
-We have ported the same process you just went through manually to an automated GitHub Actions workflow. You [download it here](https://drive.google.com/file/d/12df8nG9DpdIw2iSpUQ5yzcI90krHsSPV/view?usp=sharing). It is built for the `monorepo-example` example in the previous sprint part.
+We have ported the same process you just went through manually to an automated GitHub Actions workflow. You [download it here](https://drive.google.com/file/d/1p8Z4bquwNEnJmyXu92IYUvAGuSjYqMxJ/view?usp=drive_link). It is built for the `monorepo-example` example in the previous sprint part.
 
 For it to work, you must copy over this workflow and add the necessary variables/secrets configuration in your GitHub Actions configuration.
 

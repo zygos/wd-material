@@ -1,5 +1,3 @@
-MUST: update exercise to have an unfinished/detached front end and some missing procedures in the back end.
-
 ## Setup
 
 1. `npm install`
